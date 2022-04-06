@@ -1,0 +1,2977 @@
+openapi: 3.0.1
+info:
+  contact:
+    email: openapisupport@saxobank.com
+  title: Services.CorporateActions
+  description: 'The Corporate Actions service group provides end points for getting voluntary/mandatory events, electing on events, & setting standing instructions for future events.<div class=well style=''border: 1px solid rgb(204, 82, 0); border-image: none; background-color: rgb(255, 209, 179);padding:1px;''><strong> Note:</strong> </br>This service is subject to special licensing agreements and not generally available to all OpenAPI applications.</div>'
+  version: 2.1.725+1134194981
+servers:
+  - url: https://gateway.saxobank.com/sim/openapi
+paths:
+  /ca/v2/holdings:
+    get:
+      tags:
+        - Holdings
+      summary: Get client holdings
+      description: Get client holdings based on client/account/event
+      operationId: HoldingsGetHoldingsAsync
+      parameters:
+        - name: $skip
+          in: query
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+        - name: $top
+          in: query
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+            default: 0
+        - name: AccountGroupKey
+          in: query
+          description: Account group identifier
+          schema:
+            allOf:
+              - minLength: 1
+                type: string
+                x-type-name: AccountGroupKey
+          example: BxS0VWLta8lJ3SBpjGBQjw==
+        - name: AccountKey
+          in: query
+          description: Account identifier
+          schema:
+            allOf:
+              - minLength: 1
+                type: string
+                x-type-name: AccountKey
+          example: 2y0tX0m9ZH7MH8HK38qM9g==
+        - name: ClientKey
+          in: query
+          description: Client identifier
+          schema:
+            allOf:
+              - minLength: 1
+                type: string
+                x-type-name: ClientKey
+          example: 7m4I|vtYLUnEGg77o9uQhw==
+        - name: EventId
+          in: query
+          description: Event id
+          schema:
+            type: string
+          example: '987468'
+        - name: IncludeSubAccounts
+          in: query
+          description: Indicate whether to include events from sub-clients.
+          schema:
+            type: boolean
+          example: false
+        - name: ManagementTypes
+          in: query
+          description: SaxoInternal - Management type filter for holdings.
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ManagementType'
+          example: ['Client','TradeAdvisory']
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HoldingListResult'
+              example:
+                __count: 1
+                Data:
+                  - AccountId: 123INET
+                    Amount: 100
+                    CashReserved:
+                      Currency: USD
+                      Value: 2583.62
+                    ClientId: '906869'
+                    ClientName: John
+                    ElectedAmount: 20
+                    EventId: '9652429'
+                    Options:
+                      - ElectedAmount: 20
+                        ElectionType: Manual
+                        Instruction:
+                          Status: Accepted
+                        OptionId: '1'
+                        Remarks: Remarks by client...
+                    OwnerId: '532'
+        '404':
+          description: Requested resource not found.
+        '400':
+          description: Request contains invalid parameters.
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - InvalidPagingParameters
+                    type: string
+                    x-enum-descriptions:
+                      InvalidPagingParameters: Invalid paging parameters
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  /ca/v2/events/lookupdata:
+    get:
+      tags:
+        - Events
+      summary: Lookup for filters
+      description: Serves as a lookup for available filters
+      operationId: EventsGetLookupDataAsync
+      parameters:
+        - name: AccountGroupKey
+          in: query
+          description: Account group to get the events for.
+          schema:
+            allOf:
+              - minLength: 1
+                type: string
+                x-type-name: AccountGroupKey
+          example: BxS0VWLta8lJ3SBpjGBQjw==
+        - name: AccountKey
+          in: query
+          description: Account to get the events for.
+          schema:
+            allOf:
+              - minLength: 1
+                type: string
+                x-type-name: AccountKey
+          example: 2y0tX0m9ZH7MH8HK38qM9g==
+        - name: ClientKey
+          in: query
+          description: Client to get the events for.
+          schema:
+            allOf:
+              - minLength: 1
+                type: string
+                x-type-name: ClientKey
+          example: 7m4I|vtYLUnEGg77o9uQhw==
+        - name: FieldGroups
+          in: query
+          description: Specify lookup fields required in response.
+          schema:
+            $ref: '#/components/schemas/LookupFieldGroups'
+          example: All
+        - name: IncludeSubAccounts
+          in: query
+          description: Indicate whether to include events from sub-clients.
+          schema:
+            type: boolean
+          example: false
+      responses:
+        '200':
+          description: Lookup data retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LookupListResult'
+              example:
+                Data:
+                  - FieldGroup: EventTypes
+                    Values:
+                      - Code: DVCA
+                        Name: Cash Dividend
+                  - FieldGroup: AssetTypes
+                    Values:
+                      - Code: Stock
+                        Name: Stock
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  /ca/v2/events:
+    get:
+      tags:
+        - Events
+      summary: Get corporate action events
+      description: 'Get list of Mandatory and Voluntary events, excluding cancelled events, if specified client holds position on corresponding instrument.'
+      operationId: EventsGetEventsAsync
+      parameters:
+        - name: $skip
+          in: query
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+        - name: $top
+          in: query
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+            default: 100
+        - name: AccountGroupKey
+          in: query
+          description: Account group to get the events for.
+          schema:
+            allOf:
+              - minLength: 1
+                type: string
+                x-type-name: AccountGroupKey
+          example: BxS0VWLta8lJ3SBpjGBQjw==
+        - name: AccountKey
+          in: query
+          description: Account to get the events for.
+          schema:
+            allOf:
+              - minLength: 1
+                type: string
+                x-type-name: AccountKey
+          example: 2y0tX0m9ZH7MH8HK38qM9g==
+        - name: AssetTypes
+          in: query
+          description: Asset type filter for events.
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/AssetType'
+          example: ['Stock','Bond']
+        - name: ClientKey
+          in: query
+          description: Client to get the events for.
+          schema:
+            allOf:
+              - minLength: 1
+                type: string
+                x-type-name: ClientKey
+          example: 7m4I|vtYLUnEGg77o9uQhw==
+        - name: CorporateActionTypes
+          in: query
+          description: Corporate action type filter for events.
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/CorporateActionType'
+          example: ['Mandatory','Voluntary']
+        - name: ElectionStatuses
+          in: query
+          description: Election status filter for events.
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ElectionStatus'
+          example: ['Elected','PartialElected']
+        - name: EventStatus
+          in: query
+          description: Event status filter.
+          schema:
+            $ref: '#/components/schemas/EventStatusNullable'
+          example: Active
+        - name: EventTypes
+          in: query
+          description: Event type filter. Use event type codes to filter.
+          schema:
+            type: array
+            items:
+              type: string
+          example: ['DVCA','DVOP']
+        - name: FromDeadlineDate
+          in: query
+          description: Events on or after specified deadline date.
+          schema:
+            allOf:
+              - type: string
+                format: date
+                x-type-name: Date
+          example: '2020-06-16'
+        - name: FromExDate
+          in: query
+          description: Events on or after specified ex date.
+          schema:
+            allOf:
+              - type: string
+                format: date
+                x-type-name: Date
+          example: '2020-06-16'
+        - name: FromPayDate
+          in: query
+          description: Events on or after specified pay date.
+          schema:
+            allOf:
+              - type: string
+                format: date
+                x-type-name: Date
+          example: '2020-06-16'
+        - name: FromRecordDate
+          in: query
+          description: Events on or after specified record date.
+          schema:
+            allOf:
+              - type: string
+                format: date
+                x-type-name: Date
+          example: '2020-06-16'
+        - name: IncludeSubAccounts
+          in: query
+          description: Indicate whether to include events from sub-clients.
+          schema:
+            type: boolean
+          example: false
+        - name: Keywords
+          in: query
+          description: 'Looks for keywords in instrument description, ISIN code, and instrument symbol.'
+          schema:
+            type: string
+          example: Appl
+        - name: SortColumn
+          in: query
+          description: Specify a column to sort on. Default sort will be provided on Date.
+          schema:
+            $ref: '#/components/schemas/SortColumn'
+          example: Date
+        - name: SortType
+          in: query
+          description: Specify ascending or descending sort. Default sort type will be Descending.
+          schema:
+            $ref: '#/components/schemas/SortType'
+          example: Desc
+        - name: ToDeadlineDate
+          in: query
+          description: Events on or before specified deadline date.
+          schema:
+            allOf:
+              - type: string
+                format: date
+                x-type-name: Date
+          example: '2020-06-16'
+        - name: ToExDate
+          in: query
+          description: Events on or before specified ex date.
+          schema:
+            allOf:
+              - type: string
+                format: date
+                x-type-name: Date
+          example: '2020-06-16'
+        - name: ToPayDate
+          in: query
+          description: Events on or before specified pay date.
+          schema:
+            allOf:
+              - type: string
+                format: date
+                x-type-name: Date
+          example: '2020-06-16'
+        - name: ToRecordDate
+          in: query
+          description: Events on or before specified record date.
+          schema:
+            allOf:
+              - type: string
+                format: date
+                x-type-name: Date
+          example: '2020-06-16'
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventListResult'
+              example:
+                __count: 1
+                Data:
+                  - AssetType: Stock
+                    BidIntervalRate:
+                      Currency: EUR
+                      Value: 1
+                    ClaimPeriod:
+                      End:
+                        Status: Ongoing
+                      Start:
+                        Status: Ongoing
+                    CorporateActionType: Voluntary
+                    DisplayAndFormat:
+                      Description: Chargeurs SA
+                      IsinCode: FR0000130692
+                      Symbol: CRI:xpar
+                    Effective:
+                      Date: '2021-02-12'
+                    Electable: Electable
+                    ElectionStatus: PartialElected
+                    EventId: '9652429'
+                    EventIndicators:
+                      - Indicator: AdditionalBusinessProcess
+                        Values:
+                          - Code: NPLE
+                            Description: The issuer only allows a single option to be selected per designated holding.
+                            Name: No Split Election
+                      - Indicator: Change
+                        Values:
+                          - Code: BERE
+                            Description: Change from bearer into registered form.
+                            Name: Bearer to Registered
+                      - Indicator: Consent
+                        Values:
+                          - Code: CTRM
+                            Description: This is a change in the terms and conditions of the bond.
+                            Name: Change in Terms
+                      - Indicator: Dividend
+                        Values:
+                          - Code: FINL
+                            Description: 'Payment of a dividend, less the amounts already paid through interim dividends.'
+                            Name: Final
+                    EventState: Preliminary
+                    EventStatus: Past
+                    EventType:
+                      Code: DVCA
+                      Description: 'Distribution of cash to shareholders, in proportion to their equity holding. Ordinary dividends are recurring and regular. Shareholder must take cash and may be offered a choice of currency.'
+                      Name: Cash Dividend
+                    Ex:
+                      Date: '2020-06-16'
+                    Holdings:
+                      - AccountId: 123INET
+                        Amount: 100
+                        CashReserved:
+                          Currency: USD
+                          Value: 2583.62
+                        ClientId: '906869'
+                        ClientName: John
+                        ElectedAmount: 20
+                        EventId: '9652429'
+                        Options:
+                          - ElectedAmount: 20
+                            ElectionType: Manual
+                            Instruction:
+                              Status: Accepted
+                            OptionId: '1'
+                            Remarks: Remarks by client...
+                        OwnerId: '532'
+                    InformationToComply: RestrictionsMayApply
+                    InterestPeriod:
+                      End:
+                        Status: Ongoing
+                      Start:
+                        Status: Ongoing
+                    MaxPrice:
+                      Currency: EUR
+                      Type: Actual
+                      Value: 60
+                    MaxQuantitySought: 1000
+                    MinPrice:
+                      Currency: EUR
+                      Type: Actual
+                      Value: 5
+                    MinQuantitySought: 4
+                    Narrative: '<b>ADTX</b><p>Rights issue trading period of rights: ______________   terms: you may apply for _____ new share for every ______ rights held at _________ per share.<br/>Client must ensure that they instruct in the multiple/s advised in the notification.<br/>Failure to comply will result in the rejection of instruction/s and client/s will not be notified of the rejection.<br/>Option 1: exercise (receive shares) option 2: oversubscribe (please state the number of additional shares you wish to oversubscribe for).<br/>Option 3: lapse (default) should the client wish to oversubscribe, kindly ensure to exercise full quantity of rights.<br/>Oversubscription may be subject to scaleback based at the account level.<br/>For clients who elect to exercise and oversubscribe, please ensure your account is funded on the same day of instructions submission; failure to do so will result in your instruction being rejected.<br/>Total subscription cost/s including oversubscription will be debited on the next business day after the instruction deadline date.<br/>A potential future resultant entitlement will be booked to a dummy security and may be subject to a proration factor being applied where oversubscription has been elected.<br/>Note that any reduction or change in this position may be a result of this factor.<br/>The final resultant entitlement will be booked on the market identifier upon receipt from agent.<br/>In the case where scaleback of subscription/oversubscription occurs, cost will be refunded without interest as soon as practical upon receipt from the agent.<br/>We will attempt to sell any tradeable rights position left uninstructed or instructed to lapse on the last rights trading date if the value of the client position is worth more than eur 30 or equivalent to the currency of the security.<br/>For non tradeable rights, rights not exercised will be lapsed worthless.<br/>We hereby informs the client that, according to the laws of the country of its incorporation or the laws of the country of residence of its customers and the laws applicable to an issuer of securities which are subject to corporate actions, the client, will decide to participate or not to such corporate actions upon its sole and exclusive discretion and judgment.<br/>The client will bear any detrimental consequence arising out of or connected to such instruction.<br/>For the avoidance of doubt, any information in relation to the corporate actions sent to the client may have been obtained from sources which are not under the bank''s control and accordingly, the bank shall not be held responsible for the truth and the accuracy of this information.<br/>Please refer to the prospectus of the event for any further details.<br/><br/></p><b>ADTX</b><p>Rights issue trading period of rights: ______________   terms: you may apply for _____ new share for every ______ rights held at _________ per share.<br/>Client must ensure that they instruct in the multiple/s advised in the notification.<br/>Failure to comply will result in the rejection of instruction/s and client/s will not be notified of the rejection.<br/>Option 1: exercise (receive shares) option 2: oversubscribe (please state the number of additional shares you wish to oversubscribe for).<br/>Option 3: lapse (default) should the client wish to oversubscribe, kindly ensure to exercise full quantity of rights.<br/>Oversubscription may be subject to scaleback based at the account level.<br/>For clients who elect to exercise and oversubscribe, please ensure your account is funded on the same day of instructions submission; failure to do so will result in your instruction being rejected.<br/>Total subscription cost/s including oversubscription will be debited on the next business day after the instruction deadline date.<br/>A potential future resultant entitlement will be booked to a dummy security and may be subject to a proration factor being applied where oversubscription has been elected.<br/>Note that any reduction or change in this position may be a result of this factor.<br/>The final resultant entitlement will be booked on the market identifier upon receipt from agent.<br/>In the case where scaleback of subscription/oversubscription occurs, cost will be refunded without interest as soon as practical upon receipt from the agent.<br/>We will attempt to sell any tradeable rights position left uninstructed or instructed to lapse on the last rights trading date if the value of the client position is worth more than eur 30 or equivalent to the currency of the security.<br/>For non tradeable rights, rights not exercised will be lapsed worthless.<br/>We hereby informs the client that, according to the laws of the country of its incorporation or the laws of the country of residence of its customers and the laws applicable to an issuer of securities which are subject to corporate actions, the client, will decide to participate or not to such corporate actions upon its sole and exclusive discretion and judgment.<br/>The client will bear any detrimental consequence arising out of or connected to such instruction.<br/>For the avoidance of doubt, any information in relation to the corporate actions sent to the client may have been obtained from sources which are not under the bank''s control and accordingly, the bank shall not be held responsible for the truth and the accuracy of this information.<br/>Please refer to the prospectus of the event for any further details.<br/><br/></p>'
+                    NewBoardLotQuantity: 20
+                    NewDenominationQuantity: 100
+                    NumberofDaysAccrued: 23
+                    Options:
+                      - BidIntervalRate:
+                          Currency: EUR
+                          Value: 1
+                        CashMovements:
+                          - CashMovementType: Credit
+                            Currency: USD
+                            PriceType: Actual
+                            SubscriptionPrice: 11.9623
+                        CashRequired: false
+                        Deadline:
+                          Date: '2021-02-23T08:30:00.0000000+00:00'
+                        IsDefault: false
+                        IsGross: false
+                        IsTaxable: true
+                        MaxPrice:
+                          Currency: EUR
+                          Type: Actual
+                          Value: 60
+                        MinPrice:
+                          Currency: EUR
+                          Type: Actual
+                          Value: 5
+                        OptionId: '1'
+                        OptionIndicators:
+                          - Indicator: BidRange
+                            Values:
+                              - Code: DIVI
+                                Description: All values (including minimum and maximum prices) are divisible by the bid interval.
+                                Name: Divisible
+                        OptionType:
+                          Code: CASH
+                          Name: Cash
+                        Payment:
+                          Date: '2020-06-16'
+                        PayoutBreakdown:
+                          - Amount: 5.9623
+                            Component:
+                              Code: INTRT
+                              Description: Interest
+                              Name: Interest
+                            Currency: USD
+                          - Amount: 6
+                            Component:
+                              Code: LTCG
+                              Description: Long term capital gain
+                              Name: Long term capital gain
+                            Currency: USD
+                      - CashRequired: false
+                        Deadline:
+                          Date: '2021-02-23T08:30:00.0000000+00:00'
+                        IsDefault: true
+                        IsGross: false
+                        IsTaxable: true
+                        NetRate: 0.08
+                        OptionId: '2'
+                        OptionIndicators:
+                          - Indicator: CertificationBreakdown
+                            Values:
+                              - Code: DOMI
+                                Description: The holder of the security has to certify his domicile.
+                                Name: Country of Domicile
+                        OptionType:
+                          Code: SECU
+                          Description: Securities Option
+                        Payment:
+                          Date: '2020-06-16'
+                        SecurityMovements:
+                          - Currency: AUD
+                            DisplayAndFormat:
+                              Description: Telstra Corp. Ltd
+                              IsinCode: AU000000TLS2
+                              Symbol: TLS:xasx
+                            SecurityMovementType: Credit
+                            Uic: 5081
+                    Record:
+                      Status: Ongoing
+                    StrikePrice:
+                      Currency: EUR
+                      Type: Actual
+                      Value: 25
+                    TradingSuspended:
+                      Status: Ongoing
+                    Uic: 13126
+        '404':
+          description: Requested resource not found.
+        '400':
+          description: Request contains invalid parameters.
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - InvalidRequest
+                    type: string
+                    x-enum-descriptions:
+                      InvalidRequest: Default error code returned when it cannot be determined which part of the request is malformed.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  '/ca/v2/events/{EventId}':
+    get:
+      tags:
+        - Events
+      summary: Get corporate action event
+      description: 'Get specified event, if event is not cancelled, where client holds position on corresponding instrument.'
+      operationId: EventsGetEventAsync
+      parameters:
+        - name: ClientKey
+          in: query
+          description: Client identifier
+          schema:
+            allOf:
+              - minLength: 1
+                type: string
+                x-type-name: ClientKey
+          example: 5DG7K1P5cqYBZ77tl7Af4w==
+        - name: EventId
+          in: path
+          description: Corporate action identifier
+          required: true
+          schema:
+            type: string
+          example: '875684'
+        - name: IncludeSubAccounts
+          in: query
+          description: Indicate whether to include events from sub-clients.
+          schema:
+            type: boolean
+          example: false
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+              example:
+                AssetType: Stock
+                BidIntervalRate:
+                  Currency: EUR
+                  Value: 1
+                ClaimPeriod:
+                  End:
+                    Status: Ongoing
+                  Start:
+                    Status: Ongoing
+                CorporateActionType: Voluntary
+                DisplayAndFormat:
+                  Description: Chargeurs SA
+                  IsinCode: FR0000130692
+                  Symbol: CRI:xpar
+                Effective:
+                  Date: '2020-06-16'
+                Electable: Electable
+                ElectionStatus: PartialElected
+                EventId: '9652429'
+                EventIndicators:
+                  - Indicator: AdditionalBusinessProcess
+                    Values:
+                      - Code: NPLE
+                        Description: The issuer only allows a single option to be selected per designated holding.
+                        Name: No Split Election
+                  - Indicator: Change
+                    Values:
+                      - Code: BERE
+                        Description: Change from bearer into registered form.
+                        Name: Bearer to Registered
+                  - Indicator: Consent
+                    Values:
+                      - Code: CTRM
+                        Description: This is a change in the terms and conditions of the bond.
+                        Name: Change in Terms
+                  - Indicator: Dividend
+                    Values:
+                      - Code: FINL
+                        Description: 'Payment of a dividend, less the amounts already paid through interim dividends.'
+                        Name: Final
+                EventState: Preliminary
+                EventStatus: Past
+                EventType:
+                  Code: DVCA
+                  Description: 'Distribution of cash to shareholders, in proportion to their equity holding. Ordinary dividends are recurring and regular. Shareholder must take cash and may be offered a choice of currency.'
+                  Name: Cash Dividend
+                Ex:
+                  Date: '2020-06-16'
+                Holdings:
+                  - AccountId: 123INET
+                    Amount: 100
+                    CashReserved:
+                      Currency: USD
+                      Value: 2583.62
+                    ClientId: '906869'
+                    ClientName: John
+                    ElectedAmount: 20
+                    EventId: '9652429'
+                    Options:
+                      - ElectedAmount: 20
+                        ElectionType: Manual
+                        Instruction:
+                          Status: Accepted
+                        OptionId: '1'
+                        Remarks: Remarks by client...
+                    OwnerId: '532'
+                InformationToComply: RestrictionsMayApply
+                InterestPeriod:
+                  End:
+                    Status: Ongoing
+                  Start:
+                    Status: Ongoing
+                MaxPrice:
+                  Currency: EUR
+                  Type: Actual
+                  Value: 60
+                MaxQuantitySought: 1000
+                MinPrice:
+                  Currency: EUR
+                  Type: Actual
+                  Value: 5
+                MinQuantitySought: 4
+                Narrative: '<b>ADTX</b><p>Rights issue trading period of rights: ______________   terms: you may apply for _____ new share for every ______ rights held at _________ per share.<br/>Client must ensure that they instruct in the multiple/s advised in the notification.<br/>Failure to comply will result in the rejection of instruction/s and client/s will not be notified of the rejection.<br/>Option 1: exercise (receive shares) option 2: oversubscribe (please state the number of additional shares you wish to oversubscribe for).<br/>Option 3: lapse (default) should the client wish to oversubscribe, kindly ensure to exercise full quantity of rights.<br/>Oversubscription may be subject to scaleback based at the account level.<br/>For clients who elect to exercise and oversubscribe, please ensure your account is funded on the same day of instructions submission; failure to do so will result in your instruction being rejected.<br/>Total subscription cost/s including oversubscription will be debited on the next business day after the instruction deadline date.<br/>A potential future resultant entitlement will be booked to a dummy security and may be subject to a proration factor being applied where oversubscription has been elected.<br/>Note that any reduction or change in this position may be a result of this factor.<br/>The final resultant entitlement will be booked on the market identifier upon receipt from agent.<br/>In the case where scaleback of subscription/oversubscription occurs, cost will be refunded without interest as soon as practical upon receipt from the agent.<br/>We will attempt to sell any tradeable rights position left uninstructed or instructed to lapse on the last rights trading date if the value of the client position is worth more than eur 30 or equivalent to the currency of the security.<br/>For non tradeable rights, rights not exercised will be lapsed worthless.<br/>We hereby informs the client that, according to the laws of the country of its incorporation or the laws of the country of residence of its customers and the laws applicable to an issuer of securities which are subject to corporate actions, the client, will decide to participate or not to such corporate actions upon its sole and exclusive discretion and judgment.<br/>The client will bear any detrimental consequence arising out of or connected to such instruction.<br/>For the avoidance of doubt, any information in relation to the corporate actions sent to the client may have been obtained from sources which are not under the bank''s control and accordingly, the bank shall not be held responsible for the truth and the accuracy of this information.<br/>Please refer to the prospectus of the event for any further details.<br/><br/></p><b>ADTX</b><p>Rights issue trading period of rights: ______________   terms: you may apply for _____ new share for every ______ rights held at _________ per share.<br/>Client must ensure that they instruct in the multiple/s advised in the notification.<br/>Failure to comply will result in the rejection of instruction/s and client/s will not be notified of the rejection.<br/>Option 1: exercise (receive shares) option 2: oversubscribe (please state the number of additional shares you wish to oversubscribe for).<br/>Option 3: lapse (default) should the client wish to oversubscribe, kindly ensure to exercise full quantity of rights.<br/>Oversubscription may be subject to scaleback based at the account level.<br/>For clients who elect to exercise and oversubscribe, please ensure your account is funded on the same day of instructions submission; failure to do so will result in your instruction being rejected.<br/>Total subscription cost/s including oversubscription will be debited on the next business day after the instruction deadline date.<br/>A potential future resultant entitlement will be booked to a dummy security and may be subject to a proration factor being applied where oversubscription has been elected.<br/>Note that any reduction or change in this position may be a result of this factor.<br/>The final resultant entitlement will be booked on the market identifier upon receipt from agent.<br/>In the case where scaleback of subscription/oversubscription occurs, cost will be refunded without interest as soon as practical upon receipt from the agent.<br/>We will attempt to sell any tradeable rights position left uninstructed or instructed to lapse on the last rights trading date if the value of the client position is worth more than eur 30 or equivalent to the currency of the security.<br/>For non tradeable rights, rights not exercised will be lapsed worthless.<br/>We hereby informs the client that, according to the laws of the country of its incorporation or the laws of the country of residence of its customers and the laws applicable to an issuer of securities which are subject to corporate actions, the client, will decide to participate or not to such corporate actions upon its sole and exclusive discretion and judgment.<br/>The client will bear any detrimental consequence arising out of or connected to such instruction.<br/>For the avoidance of doubt, any information in relation to the corporate actions sent to the client may have been obtained from sources which are not under the bank''s control and accordingly, the bank shall not be held responsible for the truth and the accuracy of this information.<br/>Please refer to the prospectus of the event for any further details.<br/><br/></p>'
+                NewBoardLotQuantity: 20
+                NewDenominationQuantity: 100
+                NumberofDaysAccrued: 23
+                Options:
+                  - BidIntervalRate:
+                      Currency: EUR
+                      Value: 1
+                    CashMovements:
+                      - CashMovementType: Credit
+                        Currency: USD
+                        PriceType: Actual
+                        SubscriptionPrice: 11.9623
+                    CashRequired: false
+                    Deadline:
+                      Date: '2021-02-23T08:30:00.0000000+00:00'
+                    IsDefault: false
+                    IsGross: false
+                    IsTaxable: true
+                    MaxPrice:
+                      Currency: EUR
+                      Type: Actual
+                      Value: 60
+                    MinPrice:
+                      Currency: EUR
+                      Type: Actual
+                      Value: 5
+                    OptionId: '1'
+                    OptionIndicators:
+                      - Indicator: BidRange
+                        Values:
+                          - Code: DIVI
+                            Description: All values (including minimum and maximum prices) are divisible by the bid interval.
+                            Name: Divisible
+                    OptionType:
+                      Code: CASH
+                      Name: Cash
+                    Payment:
+                      Date: '2020-06-16'
+                    PayoutBreakdown:
+                      - Amount: 5.9623
+                        Component:
+                          Code: INTRT
+                          Description: Interest
+                          Name: Interest
+                        Currency: USD
+                      - Amount: 6
+                        Component:
+                          Code: LTCG
+                          Description: Long term capital gain
+                          Name: Long term capital gain
+                        Currency: USD
+                  - CashRequired: false
+                    Deadline:
+                      Date: '2021-02-23T08:30:00.0000000+00:00'
+                    IsDefault: true
+                    IsGross: false
+                    IsTaxable: true
+                    NetRate: 0.08
+                    OptionId: '2'
+                    OptionIndicators:
+                      - Indicator: CertificationBreakdown
+                        Values:
+                          - Code: DOMI
+                            Description: The holder of the security has to certify his domicile.
+                            Name: Country of Domicile
+                    OptionType:
+                      Code: SECU
+                      Description: Securities Option
+                    Payment:
+                      Date: '2020-06-16'
+                    SecurityMovements:
+                      - Currency: AUD
+                        DisplayAndFormat:
+                          Description: Telstra Corp. Ltd
+                          IsinCode: AU000000TLS2
+                          Symbol: TLS:xasx
+                        SecurityMovementType: Credit
+                        Uic: 5081
+                Record:
+                  Status: Ongoing
+                StrikePrice:
+                  Currency: EUR
+                  Type: Actual
+                  Value: 25
+                TradingSuspended:
+                  Status: Ongoing
+                Uic: 13126
+        '404':
+          description: Requested resource not found.
+        '400':
+          description: Request contains invalid parameters.
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - InvalidRequest
+                    type: string
+                    x-enum-descriptions:
+                      InvalidRequest: Default error code returned when it cannot be determined which part of the request is malformed.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  /ca/v1/proxyvoting/events:
+    get:
+      tags:
+        - Proxy Voting
+      description: Get proxy voting events for client. Requires separate license.
+      operationId: ProxyVotingGetProxyVotingEventsAsync
+      parameters:
+        - name: $skip
+          in: query
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+        - name: $top
+          in: query
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+            default: 50
+        - name: ClientKey
+          in: query
+          description: Client identifier to get events for
+          required: true
+          schema:
+            minLength: 1
+            type: string
+            x-type-name: ClientKey
+          example: W-CgwnsUEpETkiR8MPJalA==
+        - name: SortColumn
+          in: query
+          description: Specify a column to sort on. Default sorting on records is descending by ReceivedDate and ascending by IssuerName.
+          schema:
+            $ref: '#/components/schemas/SortColumnNullable'
+        - name: SortType
+          in: query
+          description: Specify ascending or descending sort. Default sort type will be Ascending.
+          schema:
+            $ref: '#/components/schemas/SortType'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProxyVotingEventListResult'
+              example:
+                __count: 1
+                Data:
+                  - AccountId: '384930295'
+                    ActionUrl: http://....
+                    Cins: A08010AA5
+                    Cusip: '123456789'
+                    CutoffDate: '2020-06-16'
+                    DeliveryType:
+                      Code: ED
+                      Description: Sent via email
+                    IsinCode: US0978731104
+                    IssuerName: 'American International Group, Inc.'
+                    JobNumber: S75596
+                    Materials:
+                      - MaterialType:
+                          Code: 10K
+                          Description: 10-K Report
+                        Url: http://....
+                    ReceivedDate: '2020-06-16'
+                    Status:
+                      Code: VW
+                      Description: Viewed
+                    StatusDate: '2020-06-16'
+                    Subtype:
+                      Code: S
+                      Description: Special meeting
+                    Type:
+                      Code: PX
+                      Description: Proxy
+        '403':
+          description: User is not authorized to access the requested data.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  /ca/v2/standinginstructions:
+    get:
+      tags:
+        - Standing Instructions
+      summary: Get standing instructions.
+      description: Fetches a list of standing instructions configured by client or partner.
+      operationId: StandingInstructionGet
+      parameters:
+        - name: ClientKey
+          in: query
+          description: Client Key to fetch standing instructions for.
+          schema:
+            allOf:
+              - minLength: 1
+                type: string
+                x-type-name: ClientKey
+          example: 7m4I|vtYLUnEGg77o9uQhw==
+        - name: IncludeSubAccounts
+          in: query
+          description: Indicates whether to include standing instructions from sub-clients.
+          schema:
+            type: boolean
+          example: false
+      responses:
+        '200':
+          description: Indicates that instructions were retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandingInstructionListResult'
+              example:
+                Data:
+                  - AccountDisplayName: Derivatives
+                    AccountId: '12642445'
+                    AssetType: Stock
+                    ClientId: '9971842'
+                    CreatedDate: '2020-06-16'
+                    DisplayAndFormat:
+                      Description: ABB Ltd
+                      IsinCode: CH0012221716
+                      Symbol: ABB:xome
+                    OptionType: SECU
+                    StandingInstructionId: '31272'
+                    Uic: 101
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+    post:
+      tags:
+        - Standing Instructions
+      summary: Create new standing instruction.
+      description: "Creates new standing instructions - configured for given account and instrument. \r\n            Standing instructions will be used to perform auto elections by the Election Robot."
+      operationId: StandingInstructionPost
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StandingInstructionRequest'
+            example:
+              ClientKey: 7m4I|vtYLUnEGg77o9uQhw==
+              StandingInstructions:
+                - AccountKey: dIm75edbgnW6aBK3CIc-sw==
+                  AssetType: Stock
+                  OptionType: SECU
+                  Uic: 101
+      responses:
+        '201':
+          description: Indicates that the election was performed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandingInstructionResponseListResult'
+              example:
+                __count: 2
+                Data:
+                  - AccountId: '12642445'
+                    AssetType: Stock
+                    CreatedDate: '2020-06-16'
+                    OptionType: SECU
+                    StandingInstructionId: '31272'
+                    Uic: 101
+                  - AccountId: '12642445'
+                    AssetType: Stock
+                    CreatedDate: '2020-06-16'
+                    ErrorCode: InvalidInstrumentDetail
+                    OptionType: CASH
+                    StandingInstructionId: '21272'
+                    Uic: 2103
+        '403':
+          description: Logged in client doesn't have necessary permissions to create standing instruction.
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - TradeFollowersCannotElectStandingInstructions
+                    type: string
+                    x-enum-descriptions:
+                      TradeFollowersCannotElectStandingInstructions: TradeFollowers are not allowed to Elect Standing Instructions.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+    delete:
+      tags:
+        - Standing Instructions
+      summary: Delete standing instructions
+      description: 'Removes standing instructions, which disables configured auto election.'
+      operationId: StandingInstructionDelete
+      parameters:
+        - name: ClientKey
+          in: query
+          description: Client Identifier Key
+          required: true
+          schema:
+            minLength: 1
+            type: string
+            x-type-name: ClientKey
+          example: W-CgwnsUEpETkiR8MPJalA==
+        - name: StandingInstructionIds
+          in: query
+          description: Standing instruction ids to delete.
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          example: ['111112']
+      responses:
+        '204':
+          description: No Content
+        '200':
+          description: Standing Instructions successfully deleted.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - InstructionIdNotFound
+                    type: string
+                    x-enum-descriptions:
+                      InstructionIdNotFound: Instruction Id's not found
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '403':
+          description: Logged in client doesn't have necessary permissions to delete standing instruction.
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - TradeFollowersCannotElectStandingInstructions
+                    type: string
+                    x-enum-descriptions:
+                      TradeFollowersCannotElectStandingInstructions: TradeFollowers are not allowed to Elect Standing Instructions.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - InstructionIdNotSpecified
+                    type: string
+                    x-enum-descriptions:
+                      InstructionIdNotSpecified: Instruction Id's not specified by user.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  /ca/v2/elections:
+    put:
+      tags:
+        - Elections
+      summary: Send election instruction
+      description: "Sends an instruction about elections to make for a given account and event.\r\n            When posting an instruction to elect, all previous elections for the specified account/event are overwritten."
+      operationId: ElectionElectAsync
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ElectionRequest'
+            example:
+              AccountKey: 2y0tX0m9ZH7MH8HK38qM9g==
+              EventId: '9652429'
+              Options:
+                - Amount: 100
+                  OptionId: '1'
+                  Remarks: Electing on 100 holdings for option 1.
+      responses:
+        '204':
+          description: No Content
+        '202':
+          description: Election instructions have been accepted.
+        '403':
+          description: Logged in client doesn't have necessary accesses to make election.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - AccountNotActive
+                      - BlocksExistForOwnedContracts
+                      - ClientFxDslLimitation
+                      - ClientFxNopLimitation
+                      - ClientNotActive
+                      - ClientSingleCurrencyExposureLimitation
+                      - ContactExposureLimitation
+                      - CurrencyConversionRateOutOfToleranceRange
+                      - ElectionAmountExceedsEligibleHolding
+                      - ElectionAmountGreaterThanMaxExercisableQuantity
+                      - ElectionAmountLessThanMinExercisableQuantity
+                      - ElectionAmountNotMultipleOfMinExercisableMultipleQuantity
+                      - EventNotElectable
+                      - ForcedExposureReductionViolation
+                      - HasSystemOrders
+                      - IllegalInstrumentTypeForAccount
+                      - InstrumentForcedExposureReductionViolation
+                      - InsufficientCash
+                      - InvalidElectionAmount
+                      - InvalidEvent
+                      - InvalidEventForHolding
+                      - InvalidEventStatusToElectOn
+                      - InvalidEventTypeForElection
+                      - InvalidOptionInElectionInstruction
+                      - InvestmentValueLessThanMinimumLimit
+                      - MarginBorderLine
+                      - OnlySidedReductionAllowed
+                      - OptionNotAvailableForElection
+                      - OrderPlacementWouldExceedMargin
+                      - OrdersAlreadyExistForOwnedContracts
+                      - OverSubscriptionNotAllowed
+                      - OwnerRejection
+                      - PostingModeViolation
+                      - RelatedPositionAlreadyClosed
+                      - RelatedPositionLockedUntilSettlement
+                      - SaxoExposureError
+                      - SaxoMarginRequirementError
+                      - SaxoSymbolError
+                      - SellExceedsSettledExposure
+                      - SplitElectionsNotAllowedOnEvent
+                      - TradeCannotCloseRelatedPosition
+                      - TradeFollowerCannotElect
+                      - TradeLeaderCanElectOnlyOneOption
+                      - TradingDisabled
+                      - TradingProfileViolation
+                      - UnknownPosition
+                      - WouldComeTooCloseToAccountValueProtectionLimit
+                      - WouldExceedAccountValueProtectionLimit
+                      - WouldExceedCreditLine
+                      - WouldExceedEquityConcentrationLimit
+                      - WouldExceedMargin
+                      - WouldExceedMarginCeiling
+                      - WouldExceedMaxCreditLine
+                      - WouldExceedMaxCreditLineLimit
+                      - WouldExceedPrecheckMarginUtilizationLimit
+                      - WouldExceedSettlementLine
+                      - WouldExceedTradingLine
+                    type: string
+                    x-enum-descriptions:
+                      ElectionAmountLessThanMinExercisableQuantity: Invalid election instruction if elected amount in option is more than minimum exercisable quantity as specified in corresponding option.
+                      ElectionAmountGreaterThanMaxExercisableQuantity: Invalid election instruction if elected amount in option is more than maximum exercisable quantity as specified in corresponding option.
+                      ElectionAmountNotMultipleOfMinExercisableMultipleQuantity: Invalid election instruction if elected amount in option is not in multiple as specified in corresponding option.
+                      InvalidEventForHolding: Invalid election instruction if event is not applicable for client's holding account.
+                      ElectionAmountExceedsEligibleHolding: 'Invalid election instruction if total election amount is more than eligible holding, excluding over subscription.'
+                      InvalidOptionInElectionInstruction: Invalid election instruction if election is made on the option which is not available in event.
+                      InvalidEvent: Invalid election instruction if elected event doesn't exist.
+                      InvalidElectionAmount: Invalid election instruction if election amount is less than 0.
+                      InvalidEventStatusToElectOn: Invalid election instruction if status of elected event is other than Approved.
+                      OptionNotAvailableForElection: Invalid election instruction if election is made on Inactive or Cancelled option.
+                      OverSubscriptionNotAllowed: Invalid election instruction if instruction contains over subscribed without fully electing holdings under exercise.
+                      SplitElectionsNotAllowedOnEvent: Invalid election instruction if election are made on more than one option for events where it is specified that split elections can't be done.
+                      TradeLeaderCanElectOnlyOneOption: Trade leader can elect only one option.
+                      TradeFollowerCannotElect: Trade follower is not allowed to elect.
+                      InvalidEventTypeForElection: Invalid event type for election.
+                      EventNotElectable: Event is not electable.
+                      OwnerRejection: The owner of the client rejected the clients pre check.
+                      WouldExceedMaxCreditLine: 'Client tries to buy stocks, while he doesn’t have enough collateral available.'
+                      WouldExceedMaxCreditLineLimit: 'Client tries to buy stocks, and as a result of the trade, he will breach his loan limit.'
+                      ContactExposureLimitation: Client is part of a contact. The aggregated exposure of the contact is not within the bounderies set for any of the clients which are a member of the contact.
+                      InsufficientCash: Client does not have sufficient cash.
+                      MarginBorderLine: Client is on borderline margin.
+                      OrdersAlreadyExistForOwnedContracts: There are already orders for all owned contracts.
+                      SaxoExposureError: Exposure would be exceeded.
+                      SaxoMarginRequirementError: Client does not have enough margin.
+                      SaxoSymbolError: System couldn't find the security for which election was made.
+                      WouldExceedMargin: Continuing the trade would seriously exceed margin.
+                      AccountNotActive: The account is not active.
+                      ClientNotActive: The client is not active.
+                      UnknownPosition: Related position not found.
+                      IllegalInstrumentTypeForAccount: Illegal instrument type for account.
+                      ForcedExposureReductionViolation: Only exposure reduction is allowed for the traded instrument.
+                      PostingModeViolation: Either insufficient position to close or opening in wrong direction.
+                      TradingProfileViolation: Trade would violate conditions set by client trading profile.
+                      OrderPlacementWouldExceedMargin: Placing the order would exceed margin.
+                      WouldExceedMarginCeiling: Would exceed margin ceiling.
+                      OnlySidedReductionAllowed: Only exposure reduction is allowed for the traded instrument.
+                      WouldExceedEquityConcentrationLimit: Execution of an operation would exceed equity concentration limit.
+                      WouldExceedTradingLine: Continuing the action would exceed trading line utilization.
+                      WouldExceedCreditLine: Continuing the action would exceed credit line utilization.
+                      RelatedPositionAlreadyClosed: The position that this trade was intended to close is already closed.
+                      TradeCannotCloseRelatedPosition: Trade cannot close related position as they do not match.
+                      WouldExceedSettlementLine: Continuing the action would exceed settlement line utilization.
+                      WouldExceedAccountValueProtectionLimit: The equity value would go below the configured limit on the account.
+                      InstrumentForcedExposureReductionViolation: Only exposure reduction is allowed for the traded instrument.
+                      ClientFxNopLimitation: Order causes client to exceed FX NOP limit.
+                      ClientSingleCurrencyExposureLimitation: Order causes client to exceed.
+                      WouldExceedPrecheckMarginUtilizationLimit: Would exceed the clients own risk aversion limit.
+                      TradingDisabled: Trading is disabled for the client. Any and all prechecks will be rejected for the client.
+                      RelatedPositionLockedUntilSettlement: Trade cannot close related position as related position is locked until settlement.
+                      SellExceedsSettledExposure: Instructions cannot be placed for quantity more than held.
+                      InvestmentValueLessThanMinimumLimit: Order/trade value is less than the minimum allowed.
+                      WouldComeTooCloseToAccountValueProtectionLimit: The equity value would get too close to the configured limit on the account. But still above.
+                      CurrencyConversionRateOutOfToleranceRange: Election would result in breach of currency conversion tolerance range.
+                      BlocksExistForOwnedContracts: Block already exists for the security election made for.
+                      ClientFxDslLimitation: Order causes client to exceed FX DSL Limit.
+                      HasSystemOrders: Pre check condition does not support client having any system orders.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  /ca/v2/elections/bulk:
+    put:
+      tags:
+        - Elections
+      summary: Send bulk election instructions
+      description: "Sends instructions about elections to make for given accounts and event.\r\n            When posting these instructions to elect, all previous elections for the specified accounts/event are overwritten."
+      operationId: ElectionBulkElectAsync
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkElectionRequest'
+            example:
+              Accounts:
+                - AccountKey: 2y0tX0m9ZH7MH8HK38qM9g==
+              EventId: '9652429'
+              Options:
+                - AmountPct: 75
+                  OptionId: '1'
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkElectionResponseListResult'
+              example:
+                Data:
+                  - AccountId: '845935'
+                    Status: Accepted
+        '202':
+          description: Election instructions have been accepted.
+        '403':
+          description: Logged in client doesn't have necessary accesses to make election.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - BulkBuyUpNotAllowed
+                      - BulkOverSubscriptionNotAllowed
+                      - EventNotElectable
+                      - InvalidBulkElectionAmount
+                      - InvalidEvent
+                      - InvalidEventStatusToElectOn
+                      - InvalidEventTypeForElection
+                      - InvalidOptionInElectionInstruction
+                      - InvalidTotalBulkElectionAmount
+                      - NoSubAccountHasHoldingOnEvent
+                      - OptionNotAvailableForElection
+                      - SplitElectionsNotAllowedOnEvent
+                    type: string
+                    x-enum-descriptions:
+                      NoSubAccountHasHoldingOnEvent: No sub-account in the request has holding for event in the request.
+                      InvalidEventStatusToElectOn: Invalid election instruction if status of elected event is other than Approved.
+                      InvalidOptionInElectionInstruction: Invalid election instruction if election is made on the option which is not available in event.
+                      InvalidBulkElectionAmount: Invalid bulk election instruction if election percentage is less than 0 or greater than 100.
+                      InvalidTotalBulkElectionAmount: Total percentage across options cannot exceed 100%.
+                      OptionNotAvailableForElection: Invalid election instruction if election is made on Inactive or Cancelled option.
+                      SplitElectionsNotAllowedOnEvent: Invalid election instruction if election are made on more than one option for events where it is specified that split elections can't be done.
+                      BulkOverSubscriptionNotAllowed: Over subscription is not allowed in bulk elections.
+                      BulkBuyUpNotAllowed: BuyUp is not allowed in bulk elections.
+                      InvalidEvent: Invalid election instruction if elected event doesn't exist.
+                      InvalidEventTypeForElection: Invalid event type for election.
+                      EventNotElectable: Event is not electable.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+components:
+  schemas:
+    Account:
+      additionalProperties: false
+      title: Account key wrapper
+      required:
+        - AccountKey
+      type: object
+      properties:
+        AccountKey:
+          title: Account key
+          minLength: 1
+          type: string
+          x-type-name: AccountKey
+    AssetType:
+      additionalProperties: false
+      title: Allowed AssetTypes for SI
+      enum:
+        - Bond
+        - CertificateBonus
+        - CertificateCappedBonus
+        - CertificateCappedCapitalProtected
+        - CertificateCappedOutperformance
+        - CertificateConstantLeverage
+        - CertificateDiscount
+        - CertificateExpress
+        - CertificateTracker
+        - CertificateUncappedCapitalProtection
+        - CertificateUncappedOutperformance
+        - CompanyWarrant
+        - MiniFuture
+        - MutualFund
+        - Stock
+        - Warrant
+        - WarrantDoubleKnockOut
+        - WarrantKnockOut
+        - WarrantOpenEndKnockOut
+        - WarrantSpread
+      type: string
+      x-enum-descriptions:
+        Stock: Stock.
+        Bond: Bond.
+        MutualFund: Mutual Fund.
+        Warrant: Warrant
+        MiniFuture: MiniFuture.
+        WarrantSpread: Warrant with built-in spread.
+        WarrantKnockOut: Warrant with a knock-out barrier.
+        WarrantOpenEndKnockOut: Knock-out Warrant with no expiry.
+        WarrantDoubleKnockOut: Warrant with two knock-out barriers.
+        CertificateUncappedCapitalProtection: "Guarantees a percentage increase of the underlying asset's value above the issue\r\n            price at expiry/maturity. Max loss is the amount invested multiplied by the CapitalProtection\r\n            percentage."
+        CertificateCappedCapitalProtected: "Guarantees a capped percentage increase of the underlying asset's value above\r\n            the issue price at expiry/maturity. Max loss is the amount invested multiplied\r\n            by the CapitalProtection percentage."
+        CertificateDiscount: "Yields a capped return if the underlying asset's value is above the specified\r\n            cap level at expiry. If the underlying's value is below the strike at expiry,\r\n            the investor received the underlying or equivalent value. Offers direct exposure\r\n            in underlying at a lower price (discount) with a capped potential profit and\r\n            limited loss."
+        CertificateCappedOutperformance: Capped Outperformance Certificate.
+        CertificateCappedBonus: Certificate Capped Bonus.
+        CertificateExpress: Certificate Express kick out.
+        CertificateTracker: "A certificate that mirrors the price movement of the underlying instrument. Often\r\n            used to trade movements in indicies. Movements can be a fixed ratio of the underlying\r\n            and can be inverted for bearish/short speculation. Risk is equivalent to owning\r\n            the underlying."
+        CertificateUncappedOutperformance: "Provides leveraged returns when the underlying price exceeds the threshold strike\r\n            price. The amount leverage is defined by the Participation %. When the underlying\r\n            is below the strike price, the certificate mirrors the underlying price 1:1."
+        CertificateBonus: "Mirrors the price movement of the underlying only if and when the underlying\r\n            price exceeds the defined barrier. If the certificate expires below the barrier,\r\n            it offers partial protection/return of investment."
+        CertificateConstantLeverage: Certificate Constant Leverage.
+        CompanyWarrant: 'Unlisted warrant issued by a corporation, often physically settled.'
+    AssetTypeNullable:
+      additionalProperties: false
+      allOf:
+        - $ref: '#/components/schemas/AssetType'
+    BulkElectionRequest:
+      additionalProperties: false
+      title: Bulk election instruction
+      required:
+        - Accounts
+        - EventId
+        - Options
+      type: object
+      properties:
+        Accounts:
+          title: Accounts on which elections are to be made
+          type: array
+          items:
+            $ref: '#/components/schemas/Account'
+        EventId:
+          title: Event on which election is to be made
+          pattern: ^\d*$
+          type: string
+        Options:
+          title: Instruction per option for bulk election
+          type: array
+          items:
+            $ref: '#/components/schemas/BulkOptionInstruction'
+    BulkElectionResponse:
+      additionalProperties: false
+      title: Bulk election response
+      type: object
+      properties:
+        AccountId:
+          title: Account id
+          type: string
+        Message:
+          title: Message
+          type: string
+        Status:
+          title: Status
+          allOf:
+            - $ref: '#/components/schemas/StatusCode'
+    BulkElectionResponseListResult:
+      additionalProperties: false
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/BulkElectionResponse'
+          description: The collection of entities for this feed.
+        MaxRows:
+          type: number
+          description: The maximum number of rows that can be returned (if applicable).
+        __count:
+          type: number
+          description: The total count of items in the feed.
+        __next:
+          type: string
+          description: The link for the next page of items in the feed.
+    BulkOptionInstruction:
+      additionalProperties: false
+      title: Election instruction on option for bulk election
+      required:
+        - OptionId
+        - AmountPct
+      type: object
+      properties:
+        AmountPct:
+          title: 'Quantity to be elected, in percentage'
+          type: number
+        OptionId:
+          title: Option on which election is to be made
+          pattern: ^\d*$
+          type: string
+    CashMovement:
+      additionalProperties: false
+      title: Cash movement
+      type: object
+      properties:
+        Amount:
+          title: Amount
+          allOf:
+            - type: number
+        CashMovementType:
+          title: Cash movement type
+          allOf:
+            - $ref: '#/components/schemas/MovementType'
+        Currency:
+          title: Currency
+          type: string
+        DeemedRate:
+          title: Deemed rate
+          allOf:
+            - type: number
+        GrossDividend:
+          title: Gross dividend
+          allOf:
+            - type: number
+        InterestRate:
+          title: Interest rate
+          allOf:
+            - type: number
+        NetDividend:
+          title: Net dividend
+          allOf:
+            - type: number
+        OfferPrice:
+          title: Offer price
+          allOf:
+            - type: number
+        PriceType:
+          title: Price type
+          allOf:
+            - $ref: '#/components/schemas/ValueTypeNullable'
+        Quantity:
+          title: Quantity
+          allOf:
+            - type: number
+        SubscriptionPrice:
+          title: Subscription price
+          allOf:
+            - type: number
+    CodeDescription:
+      additionalProperties: false
+      title: Code/Description
+      type: object
+      properties:
+        Code:
+          title: Code
+          type: string
+        Description:
+          title: Description
+          type: string
+        Name:
+          title: Name
+          type: string
+    CorporateActionType:
+      additionalProperties: false
+      title: Corporate action type
+      enum:
+        - Mandatory
+        - Voluntary
+      type: string
+      x-enum-descriptions:
+        Mandatory: 'Mandatory event: Event where no response is required and action is applied automatically.'
+        Voluntary: 'Voluntary event: Event where a response is required. If no response is received before the reply deadline, the option marked as Default will be applied.'
+    DateAndStatus:
+      additionalProperties: false
+      title: Date or date status
+      type: object
+      properties:
+        Date:
+          title: Date value
+          allOf:
+            - type: string
+              format: date
+              x-type-name: Date
+        Status:
+          title: Date status
+          allOf:
+            - $ref: '#/components/schemas/DateStatusNullable'
+    DatePeriod:
+      additionalProperties: false
+      title: Time period
+      type: object
+      properties:
+        End:
+          title: End date/time
+          allOf:
+            - $ref: '#/components/schemas/DateAndStatus'
+        Start:
+          title: Start date/time
+          allOf:
+            - $ref: '#/components/schemas/DateAndStatus'
+    DateStatus:
+      additionalProperties: false
+      title: Date status
+      enum:
+        - Ongoing
+        - Unknown
+      type: string
+      x-enum-descriptions:
+        Unknown: Unknown
+        Ongoing: Ongoing
+    DateStatusNullable:
+      additionalProperties: false
+      allOf:
+        - $ref: '#/components/schemas/DateStatus'
+    DateTimeAndStatus:
+      additionalProperties: false
+      title: Date or date status
+      type: object
+      properties:
+        Date:
+          title: Date value
+          allOf:
+            - type: string
+              format: date-time
+              x-type-name: UtcDateTime
+        Status:
+          title: Date status
+          allOf:
+            - $ref: '#/components/schemas/DateStatusNullable'
+    Electable:
+      additionalProperties: false
+      title: Indicates if event is electable
+      enum:
+        - Electable
+        - NotElectable
+      type: string
+      x-enum-descriptions:
+        Electable: Election is applicable on event
+        NotElectable: Election is not applicable on event
+    ElectionRequest:
+      additionalProperties: false
+      title: Election instruction
+      required:
+        - AccountKey
+        - EventId
+        - Options
+      type: object
+      properties:
+        AccountKey:
+          title: Account on which elections are to be made
+          minLength: 1
+          type: string
+          x-type-name: AccountKey
+        EventId:
+          title: Event on which election is to be made
+          pattern: ^\d*$
+          type: string
+        Options:
+          title: Instruction per option
+          type: array
+          items:
+            $ref: '#/components/schemas/OptionInstruction'
+    ElectionStatus:
+      additionalProperties: false
+      title: Election status
+      enum:
+        - Elected
+        - NotElected
+        - PartialElected
+      type: string
+      x-enum-descriptions:
+        Elected: Elected
+        PartialElected: Partially elected
+        NotElected: Not elected
+    ElectionStatusNullable:
+      additionalProperties: false
+      allOf:
+        - $ref: '#/components/schemas/ElectionStatus'
+    ElectionType:
+      additionalProperties: false
+      title: Election type
+      enum:
+        - Auto
+        - Manual
+      type: string
+      x-enum-descriptions:
+        Auto: Auto elections made through standing instructions
+        Manual: Manual elections
+    Event:
+      additionalProperties: false
+      title: Event details
+      type: object
+      properties:
+        AffectedAccounts:
+          title: "Number of accounts on which correspondng event is applicable.\r\n            Available when IncludeSubAccounts is set to true in the request."
+          allOf:
+            - type: integer
+              format: int32
+        AssetType:
+          title: Asset type
+          allOf:
+            - $ref: '#/components/schemas/AssetTypeNullable'
+        BidIntervalRate:
+          title: Acceptable price increment used for submitting a bid
+          allOf:
+            - $ref: '#/components/schemas/PriceAndRate'
+        ClaimPeriod:
+          title: Claim period
+          allOf:
+            - $ref: '#/components/schemas/DatePeriod'
+        CorporateActionType:
+          title: Corporate action type
+          allOf:
+            - $ref: '#/components/schemas/CorporateActionType'
+        DisplayAndFormat:
+          title: Instrument additional properties
+          allOf:
+            - $ref: '#/components/schemas/InstrumentDisplayAndFormat'
+        Effective:
+          title: Date at which an event is officially effective from the issuer's perspective
+          allOf:
+            - $ref: '#/components/schemas/DateAndStatus'
+        Electable:
+          title: Indicates whether this event is electable
+          allOf:
+            - $ref: '#/components/schemas/Electable'
+        ElectionStatus:
+          title: Election status
+          allOf:
+            - $ref: '#/components/schemas/ElectionStatusNullable'
+        EligibleHoldings:
+          title: "Total holding amount, across accounts, eligible for corresponding event.\r\n            Available when IncludeSubAccounts is set to true in the request."
+          allOf:
+            - type: number
+        EventId:
+          title: Corporate action event Id
+          type: string
+        EventIndicators:
+          title: Event indicators
+          type: array
+          items:
+            $ref: '#/components/schemas/IndicatorDetail'
+        EventState:
+          title: Current state of the event
+          allOf:
+            - $ref: '#/components/schemas/EventState'
+        EventStatus:
+          title: Event status
+          allOf:
+            - $ref: '#/components/schemas/EventStatus'
+        EventType:
+          title: Type of event
+          allOf:
+            - $ref: '#/components/schemas/CodeDescription'
+        Ex:
+          title: Execution date of event
+          allOf:
+            - $ref: '#/components/schemas/DateAndStatus'
+        Holdings:
+          title: "Client holdings on an event\r\n            Available when IncludeSubAccounts is set to false in the request."
+          type: array
+          items:
+            $ref: '#/components/schemas/Holding'
+        InformationToComply:
+          title: Indicates whether restrictions apply to the event
+          allOf:
+            - $ref: '#/components/schemas/InformationToComplyNullable'
+        InterestPeriod:
+          title: Period during which the interest rate has been applied
+          allOf:
+            - $ref: '#/components/schemas/DatePeriod'
+        MaxPrice:
+          title: 'Maximum or cap price at which a holder can bid, for example on a Dutch auction offer'
+          allOf:
+            - $ref: '#/components/schemas/PriceAndRate'
+        MaxQuantitySought:
+          title: Maximum quantity sought
+          allOf:
+            - type: number
+        MinPrice:
+          title: 'Minimum or floor price at which a holder can bid, for example on a Dutch auction offer'
+          allOf:
+            - $ref: '#/components/schemas/PriceAndRate'
+        MinQuantitySought:
+          title: Minimum quantity sought
+          allOf:
+            - type: number
+        Narrative:
+          title: Event narrative
+          type: string
+        NewBoardLotQuantity:
+          title: Quantity of equity that makes up the new board lot
+          allOf:
+            - type: number
+        NewDenominationQuantity:
+          title: 'New Denomination of the equity following, for example, an increase or decrease in nominal value'
+          allOf:
+            - type: number
+        NumberofDaysAccrued:
+          title: Number of days used for calculating the accrued interest amount
+          allOf:
+            - type: integer
+              format: int32
+        Options:
+          title: Event options
+          type: array
+          items:
+            $ref: '#/components/schemas/EventOption'
+        Record:
+          title: Record date of event
+          allOf:
+            - $ref: '#/components/schemas/DateAndStatus'
+        StrikePrice:
+          title: Strike price
+          allOf:
+            - $ref: '#/components/schemas/PriceAndRate'
+        TradingSuspended:
+          title: Date at which trading of a security is suspended as the result of an event
+          allOf:
+            - $ref: '#/components/schemas/DateAndStatus'
+        Uic:
+          title: Instrument uic
+          type: integer
+          format: int32
+    EventListResult:
+      additionalProperties: false
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+          description: The collection of entities for this feed.
+        MaxRows:
+          type: number
+          description: The maximum number of rows that can be returned (if applicable).
+        __count:
+          type: number
+          description: The total count of items in the feed.
+        __next:
+          type: string
+          description: The link for the next page of items in the feed.
+    EventOption:
+      additionalProperties: false
+      title: Event Options
+      type: object
+      properties:
+        BidIntervalRate:
+          title: Acceptable price increment used for submitting a bid
+          allOf:
+            - $ref: '#/components/schemas/PriceAndRate'
+        CashMovements:
+          title: Cash movement credits and debits
+          type: array
+          items:
+            $ref: '#/components/schemas/CashMovement'
+        CashRequired:
+          title: Denotes that client is required to have sufficient cash in order to elect the option
+          type: boolean
+        Deadline:
+          title: Client deadline date at option level
+          allOf:
+            - $ref: '#/components/schemas/DateTimeAndStatus'
+        GrossRate:
+          title: Gross rate
+          allOf:
+            - type: number
+        IsDefault:
+          title: 'Indicates if this is the default option. This option is where all positions will be allocated, that have not been otherwise elected on.'
+          type: boolean
+        IsGross:
+          title: Is gross
+          type: boolean
+        IsTaxable:
+          title: Is taxable
+          type: boolean
+        MaxExercisableQuantity:
+          title: Maximum Exercisable quantity
+          allOf:
+            - type: number
+        MaxPrice:
+          title: Maximum or cap price at which a holder can bid
+          allOf:
+            - $ref: '#/components/schemas/PriceAndRate'
+        MinExercisableMultipleQuantity:
+          title: Minimum exercisable multiple quantity
+          allOf:
+            - type: number
+        MinExercisableQuantity:
+          title: Minimum exercisable quantity
+          allOf:
+            - type: number
+        MinPrice:
+          title: Minimum or floor price at which a holder can bid
+          allOf:
+            - $ref: '#/components/schemas/PriceAndRate'
+        Narrative:
+          title: Option narrative
+          type: string
+        NetRate:
+          title: Net rate
+          allOf:
+            - type: number
+        NewBoardLotQuantity:
+          title: Quantity of equity that makes up the new board lot
+          allOf:
+            - type: number
+        NewDenominationQuantity:
+          title: 'New Denomination of the equity following, for example, an increase or decrease in nominal value'
+          allOf:
+            - type: number
+        OptionId:
+          title: The Option number for the Corporate Action Event
+          type: string
+        OptionIndicators:
+          title: Option indicators
+          type: array
+          items:
+            $ref: '#/components/schemas/IndicatorDetail'
+        OptionStatus:
+          title: Option status Inactive/Cancel
+          allOf:
+            - $ref: '#/components/schemas/OptionStatusNullable'
+        OptionType:
+          title: Option type code and description
+          allOf:
+            - $ref: '#/components/schemas/CodeDescription'
+        Payment:
+          title: The date where the resulting allocations are paid
+          allOf:
+            - $ref: '#/components/schemas/DateAndStatus'
+        PayoutBreakdown:
+          title: "Lists all the components in payout breakdown. \r\n            This field is only available for Australian market."
+          type: array
+          items:
+            $ref: '#/components/schemas/PayoutBreakdownComponent'
+        SecurityMovements:
+          title: Security movement credits and debits
+          type: array
+          items:
+            $ref: '#/components/schemas/SecurityMovement'
+        TradingPeriod:
+          title: Trading period
+          allOf:
+            - $ref: '#/components/schemas/DatePeriod'
+    EventState:
+      additionalProperties: false
+      title: State of the event
+      enum:
+        - Approved
+        - Confirmed
+        - Preliminary
+        - Withdrawn
+      type: string
+      x-enum-descriptions:
+        Approved: Event in approved state
+        Confirmed: Event in confirmed state
+        Preliminary: Event in preliminary state
+        Withdrawn: Event in withdrawn state
+    EventStatus:
+      additionalProperties: false
+      title: Event status
+      enum:
+        - Active
+        - Past
+        - Upcoming
+      type: string
+      x-enum-descriptions:
+        Active: Active events
+        Past: Past events
+        Upcoming: Upcoming events
+    EventStatusNullable:
+      additionalProperties: false
+      allOf:
+        - $ref: '#/components/schemas/EventStatus'
+    Holding:
+      additionalProperties: false
+      title: Event Holding
+      type: object
+      properties:
+        AccountDisplayName:
+          title: Account display name
+          type: string
+        AccountId:
+          title: Account id
+          type: string
+        AccountKey:
+          title: Account key
+          type: string
+        Amount:
+          title: Eligible holding
+          type: number
+        CashReserved:
+          title: Cash reserved after electing on corresponding option
+          allOf:
+            - $ref: '#/components/schemas/PriceAndRate'
+        ClientId:
+          title: Client Id
+          type: string
+        ClientKey:
+          title: Client key
+          type: string
+        ClientName:
+          title: Client name
+          type: string
+        ElectedAmount:
+          title: The amount of positions that have already been elected on
+          allOf:
+            - type: number
+        ElectionStatus:
+          title: Election status
+          allOf:
+            - $ref: '#/components/schemas/ElectionStatusNullable'
+        EventId:
+          title: Corporate action event Id
+          type: string
+        Options:
+          title: List of previously instructed options and their status
+          type: array
+          items:
+            $ref: '#/components/schemas/HoldingOption'
+        OwnerId:
+          title: Owner Id
+          type: string
+        StandingInstructionStatus:
+          title: Indicates if there is a standing instruction created for this holding
+          allOf:
+            - $ref: '#/components/schemas/StandingInstructionStatusNullable'
+    HoldingListResult:
+      additionalProperties: false
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Holding'
+          description: The collection of entities for this feed.
+        MaxRows:
+          type: number
+          description: The maximum number of rows that can be returned (if applicable).
+        __count:
+          type: number
+          description: The total count of items in the feed.
+        __next:
+          type: string
+          description: The link for the next page of items in the feed.
+    HoldingOption:
+      additionalProperties: false
+      title: Indicates previous elections made on a corporate action event for positions in an account
+      type: object
+      properties:
+        ElectedAmount:
+          title: The amount elected
+          allOf:
+            - type: number
+        ElectionType:
+          title: Indicates if election was auto or manual
+          allOf:
+            - $ref: '#/components/schemas/ElectionType'
+        Instruction:
+          title: Instruction status
+          allOf:
+            - $ref: '#/components/schemas/Instruction'
+        OptionId:
+          title: The event option id instructed on
+          type: string
+        Remarks:
+          title: Remarks by client
+          type: string
+    Indicator:
+      additionalProperties: false
+      title: Indicators
+      enum:
+        - AdditionalBusinessProcess
+        - BidRange
+        - CertificationBreakdown
+        - Change
+        - Consent
+        - Dividend
+        - Offer
+        - RenounceableStatusofEntitlement
+        - Sequence
+      type: string
+      x-enum-descriptions:
+        Dividend: 'Payment of a dividend, less the amounts already paid through interim dividends'
+        Sequence: "FINAL: This is the final event in a series of successive events.\r\n            INTERIM: This is an interim event in a series of successive events"
+        Offer: "Dissenter's Rights: Securities' holder has the right to disagree with a mandatory event. This right is not inherent in all offers and therefore must be noted in announcements only when applicable.\r\n            Restriction Exchange: Exchange of Restricted to Unrestricted(or vice versa).\r\n            First Come First Served: Securities will be accepted in the order they have been submitted until the target number of quantity sought is reached.\r\n            Final Offer: Final or last offer to holders subject to offer conditions being reached, for example, 50% accepted on a tender.\r\n            Partial Offer: Partial offer .\r\n            Squeeze Out Bid: Offer launched by a company, in possession of a large number of the shares (90% - 95%) of a company(generally as a result of a tender offer), in order to acquire the remaining shares of that company"
+        RenounceableStatusofEntitlement: "Non Renounceable: Intermediate securities cannot be sold.\r\n            Renounceable: Intermediate securities can be sold"
+        AdditionalBusinessProcess: The issuer only allows a single option to be selected per designated holding
+        Change: "Bearer to Registered: Change from bearer into registered form.\r\n            Certificates: Change of all instruments into certificates.\r\n            Decimalisation: Process of changing the accounting method of a security, for example, mutual fund, from units to a quantity with decimals.\r\n            Dematerialised to Physical: Change from dematerialised into physical form.\r\n            Global Permanent to Physical: Change from global permanent to physical form.\r\n            Global Temporary to Global Permanent: Change from global temporary to global permanent form.\r\n            Global Temporary to Physical: Change from global temporary to physical form.\r\n            NAME: Change of the issuing company's name. Event shows the change from old name to new name and may involve surrendering physical shares with the old name to the registrar.\r\n            Physical to Dematerialised: Change from physical into dematerialised form.\r\n            Registered to Bearer: Change from registered into bearer form.\r\n            Terms: Change in the terms of the security"
+        Consent: "Change in Terms: This is a change in the terms and conditions of the bond.\r\n            Due and Payable: This is a change in the due and payable conditions"
+        CertificationBreakdown: Certification breakdown type indicator
+        BidRange: Specifies the type of acceptable bid range values.
+    IndicatorDetail:
+      additionalProperties: false
+      title: Indicator with its values
+      type: object
+      properties:
+        Indicator:
+          title: Indicator
+          allOf:
+            - $ref: '#/components/schemas/Indicator'
+        Values:
+          title: Indicator values
+          type: array
+          items:
+            $ref: '#/components/schemas/CodeDescription'
+    InformationToComply:
+      additionalProperties: false
+      title: Information to comply with
+      enum:
+        - RestrictionsMayApply
+      type: string
+      x-enum-descriptions:
+        RestrictionsMayApply: Restriction may apply
+    InformationToComplyNullable:
+      additionalProperties: false
+      allOf:
+        - $ref: '#/components/schemas/InformationToComply'
+    Instruction:
+      additionalProperties: false
+      title: Instruction
+      type: object
+      properties:
+        Reason:
+          title: "Election instruction status's reason\r\n            A detailed reason code for any errors related to the election.\r\n            For more details see: http://www.iso15022.org/UHB/uhb2006/mt567-13-field-24b.htm"
+          type: string
+        Status:
+          title: "Election instruction status\r\n            For more details see: http://www.iso15022.org/UHB/uhb2006/mt567-13-field-24b.htm"
+          allOf:
+            - $ref: '#/components/schemas/InstructionStatus'
+    InstructionStatus:
+      additionalProperties: false
+      title: Instruction status
+      enum:
+        - Accepted
+        - InProgress
+        - Rejected
+      type: string
+      x-enum-descriptions:
+        Accepted: Election instruction accepted
+        InProgress: Election instruction in progress
+        Rejected: Election instruction rejected
+    InstrumentDisplayAndFormat:
+      additionalProperties: false
+      title: Instrument additional properties
+      type: object
+      properties:
+        Description:
+          title: Instrument description
+          type: string
+        IsinCode:
+          title: Instrument isin code
+          type: string
+        Symbol:
+          title: Instrument symbol
+          type: string
+    Lookup:
+      additionalProperties: false
+      title: Lookup values
+      type: object
+      properties:
+        FieldGroup:
+          title: Specifies the field for which lookup values are loaded in this lookup
+          allOf:
+            - $ref: '#/components/schemas/LookupFieldGroups'
+        Values:
+          title: Lookup codes and names
+          type: array
+          items:
+            $ref: '#/components/schemas/CodeDescription'
+    LookupFieldGroups:
+      additionalProperties: false
+      title: Field groups available for lookup
+      enum:
+        - All
+        - AssetTypes
+        - EventTypes
+      type: string
+      x-enum-descriptions:
+        AssetTypes: Specifies that AssetTypes lookups will be included in the response.
+        EventTypes: Specifies that EventTypes lookups will be included in the response.
+        All: Specifies that all the lookups will be available in the response.
+      x-type-warning: FlaggableEnum
+    LookupListResult:
+      additionalProperties: false
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Lookup'
+          description: The collection of entities for this feed.
+        MaxRows:
+          type: number
+          description: The maximum number of rows that can be returned (if applicable).
+        __count:
+          type: number
+          description: The total count of items in the feed.
+        __next:
+          type: string
+          description: The link for the next page of items in the feed.
+    ManagementType:
+      additionalProperties: false
+      title: Account Management Type
+      enum:
+        - Client
+        - ExternallyManaged
+        - ModelAdvisory
+        - ModelManaged
+        - SelfPeriodicInvestment
+        - TradeAdvisory
+      type: string
+      x-enum-descriptions:
+        Client: The account is managed by the client. (Default).
+        TradeAdvisory: 'Advisors can call clients with trade suggestions across products, but trades are accepted by the client.'
+        ModelAdvisory: 'The account is managed by a model, but client has to accept changes to the model.'
+        ModelManaged: The account is managed by a model. Client cannot trade on the account.
+        ExternallyManaged: 'The account is managed externally (not in a saxo bank system). Client cannot trade on the account, but authorized dealers can.'
+        SelfPeriodicInvestment: Client can schedule periodic investments on one or multiple Instruments
+    Model.Domain.AssetType:
+      additionalProperties: false
+      title: The possible AssetTypes for which you can get a quote or place an order or a trade.
+      enum:
+        - Bond
+        - Cash
+        - CertificateBonus
+        - CertificateCappedBonus
+        - CertificateCappedCapitalProtected
+        - CertificateCappedOutperformance
+        - CertificateConstantLeverage
+        - CertificateDiscount
+        - CertificateExpress
+        - CertificateTracker
+        - CertificateUncappedCapitalProtection
+        - CertificateUncappedOutperformance
+        - CfdIndexOption
+        - CfdOnCompanyWarrant
+        - CfdOnEtc
+        - CfdOnEtf
+        - CfdOnEtn
+        - CfdOnFund
+        - CfdOnFutures
+        - CfdOnIndex
+        - CfdOnRights
+        - CfdOnStock
+        - CompanyWarrant
+        - ContractFutures
+        - Etc
+        - Etf
+        - Etn
+        - Fund
+        - FuturesOption
+        - FuturesStrategy
+        - FxBinaryOption
+        - FxForwards
+        - FxKnockInOption
+        - FxKnockOutOption
+        - FxNoTouchOption
+        - FxOneTouchOption
+        - FxSpot
+        - FxVanillaOption
+        - GuaranteeNote
+        - IpoOnStock
+        - ManagedFund
+        - MiniFuture
+        - MutualFund
+        - PortfolioNote
+        - Rights
+        - SrdOnEtf
+        - SrdOnStock
+        - Stock
+        - StockIndex
+        - StockIndexOption
+        - StockOption
+        - Warrant
+        - WarrantDoubleKnockOut
+        - WarrantKnockOut
+        - WarrantOpenEndKnockOut
+        - WarrantSpread
+      type: string
+      x-enum-descriptions:
+        FxSpot: Forex Spot.
+        FxForwards: Forex Forward.
+        FxVanillaOption: Forex Vanilla Option.
+        FxKnockInOption: Forex Knock In Option.
+        FxKnockOutOption: Forex Knock Out Option.
+        FxBinaryOption: Forex Binary Option.
+        FxOneTouchOption: Forex One Touch Option.
+        FxNoTouchOption: Forex No Touch Option.
+        ContractFutures: Contract Futures.
+        FuturesStrategy: Futures Strategy.
+        Stock: Stock.
+        StockOption: Stock Option.
+        Bond: Bond.
+        FuturesOption: Futures Option.
+        StockIndexOption: Stock Index Option.
+        ManagedFund: 'Obsolete: Managed Fund.'
+        Cash: Cash. Not tradeable!
+        CfdOnStock: Cfd on Stock.
+        CfdOnIndex: Cfd on Stock Index.
+        CfdOnFutures: Cfd on Futures.
+        StockIndex: Stock Index.
+        MutualFund: Mutual Fund.
+        CfdIndexOption: Cfd Index Option.
+        CfdOnEtf: Cfd on Etf
+        CfdOnEtc: Cfd on Etc
+        CfdOnEtn: Cfd on Etn
+        CfdOnFund: Cfd on Fund
+        CfdOnRights: Cfd on Rights
+        CfdOnCompanyWarrant: Cfd on unlisted warrant issued by a corporation.
+        Etf: Exchange traded fund.
+        Etc: Etc
+        Etn: Etn
+        Fund: Fund
+        Rights: Rights
+        Warrant: Warrant
+        MiniFuture: MiniFuture.
+        WarrantSpread: Warrant with built-in spread.
+        WarrantKnockOut: Warrant with a knock-out barrier.
+        WarrantOpenEndKnockOut: Knock-out Warrant with no expiry.
+        WarrantDoubleKnockOut: Warrant with two knock-out barriers.
+        CertificateUncappedCapitalProtection: Guarantees a percentage increase of the underlying asset's value above the issue price at expiry/maturity. Max loss is the amount invested multiplied by the CapitalProtection percentage.
+        CertificateCappedCapitalProtected: Guarantees a capped percentage increase of the underlying asset's value above the issue price at expiry/maturity. Max loss is the amount invested multiplied by the CapitalProtection percentage.
+        CertificateDiscount: 'Yields a capped return if the underlying asset''s value is above the specified cap level at expiry. If the underlying''s value is below the strike at expiry, the investor received the underlying or equivalent value. Offers direct exposure in underlying at a lower price (discount) with a capped potential profit and limited loss.'
+        CertificateCappedOutperformance: Capped Outperformance Certificate.
+        CertificateCappedBonus: Certificate Capped Bonus.
+        CertificateExpress: Certificate Express kick out.
+        CertificateTracker: A certificate that mirrors the price movement of the underlying instrument. Often used to trade movements in indicies. Movements can be a fixed ratio of the underlying and can be inverted for bearish/short speculation. Risk is equivalent to owning the underlying.
+        CertificateUncappedOutperformance: 'Provides leveraged returns when the underlying price exceeds the threshold strike price. The amount leverage is defined by the Participation %. When the underlying is below the strike price, the certificate mirrors the underlying price 1:1.'
+        CertificateBonus: 'Mirrors the price movement of the underlying only if and when the underlying price exceeds the defined barrier. If the certificate expires below the barrier, it offers partial protection/return of investment.'
+        CertificateConstantLeverage: Certificate Constant Leverage.
+        SrdOnStock: SRD. (Service de Règlement Différé) on Stock.
+        SrdOnEtf: SRD. (Service de Règlement Différé) on Etf.
+        IpoOnStock: IPO on Stock
+        CompanyWarrant: 'Unlisted warrant issued by a corporation, often physically settled.'
+        PortfolioNote: Danish pooled investment scheme (“Pulje”). Not online tradeable.
+        GuaranteeNote: Danish investment scheme (“Grantbevis”). Not online tradeable.
+    ModelStateDictionary:
+      type: object
+      additionalProperties:
+        type: array
+        items:
+          type: string
+    Models.CodeDescription:
+      additionalProperties: false
+      title: Code/Description
+      type: object
+      properties:
+        Code:
+          title: Code
+          type: string
+        Description:
+          title: Description
+          type: string
+    Models.SortColumn:
+      additionalProperties: false
+      title: Sort columns for distribution api
+      enum:
+        - AccountId
+        - Cins
+        - Cusip
+        - CutoffDate
+        - DeliveryType
+        - DeliveryTypeDescription
+        - Isin
+        - IssuerName
+        - JobNumber
+        - RecievedDate
+        - Status
+        - StatusDate
+        - SubType
+        - SubTypeDescription
+        - Ticker
+        - Type
+        - TypeDescription
+      type: string
+      x-enum-descriptions:
+        Type: Type
+        TypeDescription: Type description
+        SubType: Sub type
+        SubTypeDescription: Sub type description
+        IssuerName: Issuer name
+        Cusip: Cusip
+        Cins: Cins
+        Isin: Isin
+        Ticker: Ticker
+        AccountId: Account id
+        JobNumber: Job number
+        DeliveryType: DeliveryType
+        DeliveryTypeDescription: Delivery type description
+        RecievedDate: Recieved date
+        CutoffDate: Cutoff date
+        Status: Status
+        StatusDate: Status date
+    MovementType:
+      additionalProperties: false
+      title: Movement type
+      enum:
+        - Credit
+        - Debit
+        - Unknown
+      type: string
+      x-enum-descriptions:
+        Unknown: Unknown
+        Credit: Credit
+        Debit: Debit
+    OptionInstruction:
+      additionalProperties: false
+      title: Election instruction on option
+      required:
+        - OptionId
+        - Amount
+      type: object
+      properties:
+        Amount:
+          title: Quantity to be elected
+          type: number
+        OptionId:
+          title: Option on which election is to be made
+          pattern: ^\d*$
+          type: string
+        Remarks:
+          title: Remarks by client
+          type: string
+    OptionStatus:
+      additionalProperties: false
+      title: Option Status
+      enum:
+        - Cancelled
+        - Inactive
+        - Unknown
+      type: string
+      x-enum-descriptions:
+        Unknown: Unknown
+        Inactive: Inactive
+        Cancelled: Cancelled
+    OptionStatusNullable:
+      additionalProperties: false
+      allOf:
+        - $ref: '#/components/schemas/OptionStatus'
+    OptionType:
+      additionalProperties: false
+      title: Option type indicator
+      enum:
+        - CASH
+        - SECU
+      type: string
+      x-enum-descriptions:
+        CASH: Cash
+        SECU: Security
+    PayoutBreakdownComponent:
+      additionalProperties: false
+      title: Payout breakdown compoment
+      type: object
+      properties:
+        Amount:
+          title: Amount in component
+          type: number
+        Component:
+          title: Component name and description
+          allOf:
+            - $ref: '#/components/schemas/CodeDescription'
+        Currency:
+          title: Currency
+          type: string
+    PriceAndRate:
+      additionalProperties: false
+      title: Price and rate
+      type: object
+      properties:
+        Currency:
+          title: Price/Rate currency
+          type: string
+        Type:
+          title: Price/Rate action type
+          allOf:
+            - $ref: '#/components/schemas/ValueTypeNullable'
+        Value:
+          title: Price
+          allOf:
+            - type: number
+    ProxyVotingEvent:
+      additionalProperties: false
+      title: Proxy voting event
+      type: object
+      properties:
+        AccountId:
+          title: Account id
+          type: string
+        ActionUrl:
+          title: 'The URL to launch ProxyVote.com or ReorgAction.com, depending on the event type'
+          type: string
+        Cins:
+          title: 9-character CINS. Only provided if applicable to the security
+          type: string
+        Cusip:
+          title: 9-character CUSIP. Only provided if applicable to the security.
+          type: string
+        CutoffDate:
+          title: The last date by when an action on the event will be accepted
+          allOf:
+            - type: string
+              format: date
+              x-type-name: Date
+        DeliveryType:
+          title: Delivery type
+          allOf:
+            - $ref: '#/components/schemas/Models.CodeDescription'
+        IsinCode:
+          title: 12-character ISIN. Only provided if applicable to the security
+          type: string
+        IssuerName:
+          title: "Issuer/Security name up to 80 characters in length. \r\n            For US securities, the name is on the 6-digit CUSIP level. \r\n            When the CUSIP is a fund, the 9-character CUSIP description will be displayed."
+          type: string
+        JobNumber:
+          title: "6-character Broadridge generated internal identifier used to track the event. \r\n            Not applicable to distribution types PostSale and Class Action."
+          type: string
+        Materials:
+          title: Materials/documents for event
+          type: array
+          items:
+            $ref: '#/components/schemas/ProxyVotingMaterial'
+        ReceivedDate:
+          title: Date when event was first made available
+          type: string
+          format: date
+          x-type-name: Date
+        Status:
+          title: Status of event
+          allOf:
+            - $ref: '#/components/schemas/Models.CodeDescription'
+        StatusDate:
+          title: "Date of when the status last changed. \r\n            Only applies to “status” with a code of either VW, VT, or EL."
+          type: string
+          format: date
+          x-type-name: Date
+        Subtype:
+          title: Distribution subtype
+          allOf:
+            - $ref: '#/components/schemas/Models.CodeDescription'
+        Ticker:
+          title: "Ticker symbol of the issuer/security up to 8 characters in length.\r\n            Optional and only available for certain markets."
+          type: string
+        Type:
+          title: Distribution type
+          allOf:
+            - $ref: '#/components/schemas/Models.CodeDescription'
+    ProxyVotingEventListResult:
+      additionalProperties: false
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProxyVotingEvent'
+          description: The collection of entities for this feed.
+        MaxRows:
+          type: number
+          description: The maximum number of rows that can be returned (if applicable).
+        __count:
+          type: number
+          description: The total count of items in the feed.
+        __next:
+          type: string
+          description: The link for the next page of items in the feed.
+    ProxyVotingMaterial:
+      additionalProperties: false
+      title: Material\document pertaining to a distribution
+      type: object
+      properties:
+        MaterialType:
+          title: Short description of what the material/document represents
+          allOf:
+            - $ref: '#/components/schemas/Models.CodeDescription'
+        Url:
+          title: Material/document url
+          type: string
+    SI.Instruction:
+      additionalProperties: false
+      title: "A Standing instruction is a rule that defines how an election should be automatically performed.\r\n            Standing instruction only apply to Corporate action event of type DRIP or DVOP.\r\n            A standing instruction can specify that for positions in an account on a specific instrument, whenever a voluntary event occurs of type DRIP or DVOP, an election should automatically be made for either Cash or Securities."
+      required:
+        - OptionType
+      type: object
+      properties:
+        AccountKey:
+          title: Account Identifier
+          allOf:
+            - minLength: 1
+              type: string
+              x-type-name: AccountKey
+        AssetType:
+          title: Asset Type
+          allOf:
+            - $ref: '#/components/schemas/AssetTypeNullable'
+        OptionType:
+          title: The type of option to automatically elect. Must be either SECU or CASH.
+          allOf:
+            - $ref: '#/components/schemas/OptionType'
+        Uic:
+          title: The instrument that this standing instruction applies to.
+          maximum: 2147483647
+          minimum: 1
+          allOf:
+            - type: integer
+              format: int32
+    SI.StandingInstruction:
+      additionalProperties: false
+      title: "A Standing instruction is a rule that defines how an election should be automatically performed.\r\n            Standing instruction only apply to Corporate action event of type DRIP or DVOP.\r\n            A standing instruction can specify that for positions in an account on a specific instrument, whenever a voluntary event occurs of type DRIP or DVOP, an election should automatically be made for either Cash or Securities."
+      type: object
+      properties:
+        AccountDisplayName:
+          title: Account display name
+          type: string
+        AccountId:
+          title: The attain key of the account that this standing instruction applies to.
+          type: string
+        AssetType:
+          title: Asset Type
+          allOf:
+            - $ref: '#/components/schemas/AssetTypeNullable'
+        ClientId:
+          title: Client Identifier
+          type: string
+        CreatedDate:
+          title: Creation Date for Standing Instruction
+          allOf:
+            - type: string
+              format: date
+              x-type-name: Date
+        DisplayAndFormat:
+          title: Instrument Details
+          allOf:
+            - $ref: '#/components/schemas/InstrumentDisplayAndFormat'
+        OptionType:
+          title: The type of option to automatically elect. Must be either SECU or CASH.
+          allOf:
+            - $ref: '#/components/schemas/OptionType'
+        StandingInstructionId:
+          title: Standing instruction Id
+          type: string
+        Uic:
+          title: The instrument that this standing instruction applies to.
+          allOf:
+            - type: integer
+              format: int32
+    SIErrorCode:
+      additionalProperties: false
+      title: Error Codes
+      enum:
+        - ConflictingInstruction
+        - InvalidInstrumentDetail
+        - TradeFollowersCannotElect
+      type: string
+      x-enum-descriptions:
+        InvalidInstrumentDetail: Instruments details are invalid. Check UIC and Asset combination
+        ConflictingInstruction: Standing Instruction already exists.
+        TradeFollowersCannotElect: TradeFollowers are not allowed to Elect Standing Instructions.
+    SIErrorCodeNullable:
+      additionalProperties: false
+      allOf:
+        - $ref: '#/components/schemas/SIErrorCode'
+    SecurityMovement:
+      additionalProperties: false
+      title: Security movement
+      type: object
+      properties:
+        AvailableForTrade:
+          title: Available trading date
+          allOf:
+            - $ref: '#/components/schemas/DateAndStatus'
+        Currency:
+          title: Currency
+          type: string
+        DisplayAndFormat:
+          title: Instrument's additional properties
+          allOf:
+            - $ref: '#/components/schemas/InstrumentDisplayAndFormat'
+        HeldQuantity:
+          title: Held quantity
+          allOf:
+            - type: number
+        LastTrade:
+          title: Last trade date/time
+          allOf:
+            - $ref: '#/components/schemas/DateTimeAndStatus'
+        NewQuantity:
+          title: New quantity
+          allOf:
+            - type: number
+        OldQuantity:
+          title: Old quantity
+          allOf:
+            - type: number
+        PariPassu:
+          title: Pari-passu date
+          allOf:
+            - $ref: '#/components/schemas/DateAndStatus'
+        ReceivedQuantity:
+          title: Received quantity
+          allOf:
+            - type: number
+        ReinvestmentPrice:
+          title: Reinvestment price
+          allOf:
+            - type: number
+        SecurityMovementType:
+          title: Security movement type
+          allOf:
+            - $ref: '#/components/schemas/MovementType'
+        Uic:
+          title: Uic
+          allOf:
+            - type: integer
+              format: int32
+    SortColumn:
+      additionalProperties: false
+      title: Sort columns for events
+      enum:
+        - AffectedAccounts
+        - CorporateActionType
+        - Date
+        - EligibleHoldings
+        - EventId
+        - EventType
+        - InstrumentDescription
+      type: string
+      x-enum-descriptions:
+        AffectedAccounts: Sort by number of accounts affected
+        CorporateActionType: Sort by corporate action type
+        Date: Sort by Date
+        EligibleHoldings: Sort by total amount in holdings
+        EventId: Sort by event identifier
+        EventType: Sort by event type name
+        InstrumentDescription: Sort by Instrument name/description
+    SortColumnNullable:
+      additionalProperties: false
+      allOf:
+        - $ref: '#/components/schemas/Models.SortColumn'
+    SortType:
+      additionalProperties: false
+      title: Sort type
+      enum:
+        - Asc
+        - Desc
+      type: string
+      x-enum-descriptions:
+        Asc: Ascending sort
+        Desc: Descending sort
+    StandingInstructionListResult:
+      additionalProperties: false
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SI.StandingInstruction'
+          description: The collection of entities for this feed.
+        MaxRows:
+          type: number
+          description: The maximum number of rows that can be returned (if applicable).
+        __count:
+          type: number
+          description: The total count of items in the feed.
+        __next:
+          type: string
+          description: The link for the next page of items in the feed.
+    StandingInstructionRequest:
+      additionalProperties: false
+      title: Standing Instruction Request
+      required:
+        - ClientKey
+        - StandingInstructions
+      type: object
+      properties:
+        ClientKey:
+          title: Client identifier
+          minLength: 1
+          type: string
+          x-type-name: ClientKey
+        StandingInstructions:
+          title: Standing Instructions
+          type: array
+          items:
+            $ref: '#/components/schemas/SI.Instruction'
+    StandingInstructionResponse:
+      additionalProperties: false
+      title: "A Standing instruction is a rule that defines how an election should be automatically performed.\r\n            Standing instruction only apply to Corporate action event of type DRIP or DVOP.\r\n            A standing instruction can specify that for positions in an account on a specific instrument, whenever a voluntary event occurs of type DRIP or DVOP, an election should automatically be made for either Cash or Securities."
+      type: object
+      properties:
+        AccountId:
+          title: The attain key of the account that this standing instruction applies to.
+          type: string
+        AssetType:
+          title: Asset Type
+          allOf:
+            - $ref: '#/components/schemas/Model.Domain.AssetTypeNullable'
+        CreatedDate:
+          title: Creation Date for Standing Instruction
+          allOf:
+            - type: string
+              format: date
+              x-type-name: Date
+        ErrorCode:
+          title: Error Code
+          allOf:
+            - $ref: '#/components/schemas/SIErrorCodeNullable'
+        ErrorMessage:
+          title: Error Message
+          type: string
+        OptionType:
+          title: The type of option to automatically elect. Must be either SECU or CASH.
+          allOf:
+            - $ref: '#/components/schemas/OptionType'
+        StandingInstructionId:
+          title: Standing instruction Id
+          type: string
+        Uic:
+          title: The instrument that this standing instruction applies to.
+          allOf:
+            - type: integer
+              format: int32
+    StandingInstructionResponseListResult:
+      additionalProperties: false
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/StandingInstructionResponse'
+          description: The collection of entities for this feed.
+        MaxRows:
+          type: number
+          description: The maximum number of rows that can be returned (if applicable).
+        __count:
+          type: number
+          description: The total count of items in the feed.
+        __next:
+          type: string
+          description: The link for the next page of items in the feed.
+    StandingInstructionStatus:
+      additionalProperties: false
+      title: Standing instruction status
+      enum:
+        - Created
+        - NotCreated
+      type: string
+      x-enum-descriptions:
+        Created: Indicates that standing instruction is created
+        NotCreated: Indicates that standing instruction is not created
+    StandingInstructionStatusNullable:
+      additionalProperties: false
+      allOf:
+        - $ref: '#/components/schemas/StandingInstructionStatus'
+    StatusCode:
+      additionalProperties: false
+      title: Status
+      enum:
+        - Accepted
+        - Rejected
+      type: string
+      x-enum-descriptions:
+        Accepted: Accepted
+        Rejected: Rejected
+    Model.Domain.AssetTypeNullable:
+      additionalProperties: false
+      allOf:
+        - $ref: '#/components/schemas/Model.Domain.AssetType'
+    ValueType:
+      additionalProperties: false
+      title: Price type
+      enum:
+        - Actual
+        - Percentage
+      type: string
+      x-enum-descriptions:
+        Actual: Actual value
+        Percentage: Percentage
+    ValueTypeNullable:
+      additionalProperties: false
+      allOf:
+        - $ref: '#/components/schemas/ValueType'
+  responses:
+    BadRequest:
+      description: One or more of the provided parameters are invalid.
+      content:
+        application/json:
+          schema:
+            required:
+              - ErrorCode
+              - Message
+            type: object
+            properties:
+              ErrorCode:
+                enum:
+                  - InvalidRequest
+                type: string
+                x-enum-descriptions:
+                  InvalidRequest: Default error code returned when it cannot be determined which part of the request is malformed.
+              Message:
+                type: string
+              ModelState:
+                $ref: '#/components/schemas/ModelStateDictionary'
+    ServiceUnavailable:
+      description: Service Unavailable.
+    TooManyRequests:
+      description: The request was rejected due to rate limit being exceeded.
+    Unauthorized:
+      description: Indicates that the request was rejected because the 'Authorization' header was missing in the request or contained an invalid security token.
+  securitySchemes:
+    OpenApiJWTSecurityScheme:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OpenApiOAuthSecurityScheme:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://sim.logonvalidation.net/authorize
+          tokenUrl: https://sim.logonvalidation.net/token
+          scopes: { }
+tags:
+  - name: Elections
+    description: Endpoint for electing on voluntary corporate actions.
+  - name: Events
+    description: Endpoints for corporate action events
+  - name: Holdings
+    description: Endpoints for client holdings
+  - name: Proxy Voting
+    description: Get proxy voting events or subscribe for proxy voting
+  - name: Standing Instructions
+    description: "Endpoint for setting up standing instructions.\r\n            A Standing instruction is a rule that defines how an election should be automatically performed.\r\n            Standing instruction only apply to Corporate action event of type DRIP or DVOP.\r\n            A standing instruction can specify that for positions in an account on a specific instrument, whenever a voluntary event occurs of type DRIP or DVOP, an election should automatically be made for either Cash or Securities."
