@@ -1,11 +1,34 @@
 /*jslint browser: true, for: true, long: true, unordered: true */
-/*global window console */
+/*global window console yaml tokenObject getToken */
 
 (function () {
-    let tokenObject = null;
+    const yamlUtils = yaml();
+    const streamerUtils = streamer(messageCallback);
+    const urlPrefix = "https://gateway.saxobank.com/sim/openapi";
+    const usersEndpoint = "/port/v1/users/me";
+    const clientsEndpoint = "/port/v1/clients/me";
+    const messages = [];
+    let userLoaded = false;
+    let clientLoaded = false;
 
-    function displayTab(evt, cityName) {
-        // Declare all variables
+    function messageCallback(message) {
+        let messageList = "";
+        messages.unshift({
+            "dt": new Date(),
+            "payload": JSON.stringify(message.payload, null, 4),
+            "messageId": message.messageId,
+            "referenceId": message.referenceId
+        });
+        if (messages.length > 10) {
+            messages.pop();
+        }
+        messages.forEach(function (messageObject) {
+            messageList += "Message #" + messageObject.messageId + " @ " + messageObject.dt.toLocaleString() + " with reference " + messageObject.referenceId + ":\n" + messageObject.payload + "\n\n";
+        })
+        document.getElementById("idStreamingData").innerText = messageList;
+    }
+
+    function displayTab(evt, tabName) {
         let i;
         let tabcontent;
         let tablinks;
@@ -17,60 +40,83 @@
         // Get all elements with class="tablinks" and remove the class "active"
         tablinks = document.getElementsByClassName("tablinks");
         for (i = 0; i < tablinks.length; i += 1) {
-           tablinks[i].className = tablinks[i].className.replace(" active", "");
+            tablinks[i].classList.remove("active");
         }
         // Show the current tab, and add an "active" class to the button that opened the tab
-        document.getElementById(cityName).style.display = "block";
-        evt.currentTarget.className += "active";
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.classList.add("active");
     }
 
-    function getToken(data, callback) {
+    function getUserData(endpoint) {
         fetch(
-            "https://www.basement.nl/saxo/token/",
+            urlPrefix + endpoint,
             {
-                "method": "POST",
+                "method": "GET",
                 "headers": {
-                    "Content-Type": "application/json; charset=utf-8"
-                },
-                "body": JSON.stringify(data)
+                    "Authorization": "Bearer " + tokenObject.access_token
+                }
             }
         ).then(function (response) {
             if (response.ok) {
                 response.json().then(function (responseJson) {
-                    if (responseJson.hasOwnProperty("error")) {
-                        console.error(responseJson.error);
-                    } else {
-                        tokenObject = responseJson;
-                        window.setTimeout(function () {
-                            const refreshData = {
-                                "requestType": "refreshToken",
-                                "refreshToken": tokenObject.refresh_token
-                            };
-                            console.log("Requesting token refresh..");
-                            getToken(refreshData);
-                        }, Math.max(0, (responseJson.expires_in - 5) * 1000));  // Prevent negative values https://stackoverflow.com/questions/8430966/is-calling-settimeout-with-a-negative-delay-ok
-                        if (callback !== undefined) {
-                            callback();
-                        }
+                    switch (endpoint) {
+                    case usersEndpoint:
+                        yamlUtils.defaultFieldValues.ClientKey = responseJson.ClientKey;
+                        yamlUtils.defaultFieldValues.UserKey = responseJson.UserKey;
+                        userLoaded = true;
+                        break;
+                    case clientsEndpoint:
+                        yamlUtils.defaultFieldValues.AccountKey = responseJson.DefaultAccountKey;
+                        clientLoaded = true;
+                        break;
+                    default:
+                        console.error("Unexpected endpoint: " + endpoint);
+                    }
+                    if (userLoaded && clientLoaded) {
+                        yamlUtils.loadYamlEndpoint(populateScreen);
                     }
                 });
             } else {
-                processError(response);
+                response.json().then(function (responseJson) {
+                    console.error(JSON.stringify(responseJson, null, 4));
+                }).catch(function () {
+                    console.error("Error with status " + response.status + " " + response.statusText);
+                });
             }
         }).catch(function (error) {
-            console.error(error);
+            console.error("Error: " + error);
         });
     }
 
     function sendRequest() {
 
         function showResponse(response, isResponseOk) {
-            document.getElementById("idResponse").innerText = response;
+            const responseElement = document.getElementById("idResponse");
+            responseElement.innerText = response;
+            if (isResponseOk) {
+                responseElement.classList.remove("error");
+            } else {
+                responseElement.classList.add("error");
+            }
+            // And show the response tab:
             document.getElementById("idBtnResponse").click();
         }
 
-        const url = "https://gateway.saxobank.com/sim/openapi" + yaml.endpoint;
-        const method = yaml.method.toUpperCase();
+        function setupStreamer() {
+            try {
+                const postBody = JSON.parse(document.getElementById("idRequestBody").value);
+                if (postBody.ContextId !== undefined) {
+                    console.log("Requesting streaming connection.");
+                    streamerUtils.createConnection(tokenObject.access_token, postBody.ContextId);
+                    streamerUtils.startListener();
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        const url = urlPrefix + yamlUtils.properties.endpoint;
+        const method = yamlUtils.properties.method.toUpperCase();
         const fetchData = {
             "method": method,
             "headers": {
@@ -80,6 +126,9 @@
         if (method === "POST" || method === "PATCH") {
             fetchData.body = document.getElementById("idRequestBody").value;
             fetchData.headers["Content-Type"] = "application/json; charset=utf-8";
+            if (yamlUtils.properties.endpoint.slice(-14) === "/subscriptions") {
+                setupStreamer();
+            }
         }
         fetch(url, fetchData).then(function (response) {
             const correlationInfo = "X-Correlation header (for troubleshooting with Saxo): " + response.headers.get("X-Correlation");
@@ -89,9 +138,9 @@
                 });
             } else {
                 response.json().then(function (responseJson) {
-                    showResponse(JSON.stringify(responseJson, null, 4), false);
+                    showResponse(JSON.stringify(responseJson, null, 4) + "\n\n" + correlationInfo, false);
                 }).catch(function () {
-                    showResponse("Error with status " + response.status + " " + response.statusText, false);
+                    showResponse("Error with status " + response.status + " " + response.statusText + "\n\n" + correlationInfo, false);
                 });
             }
         }).catch(function (error) {
@@ -119,19 +168,24 @@
                 sendRequest();
             }
         });
+        getToken({
+            "requestType": "requestToken"
+        }, function () {
+            getUserData(usersEndpoint);
+            getUserData(clientsEndpoint);
+        });
     }
 
     function populateScreen() {
-        const httpMethod = getHttpMethod();
-        const endpoint = getEndpoint();
+        const httpMethod = yamlUtils.getHttpMethod();
+        const endpoint = yamlUtils.getEndpoint();
         // Get method from the URL:
         document.getElementById("idHttpMethod").innerText = httpMethod.toUpperCase();
         // Get endpoint from the URL:
         document.getElementById("idEndpoint").innerText = endpoint;
         // Get the request object from the yaml file:
-        document.getElementById("idRequestBody").value = getYamlRequestBody(endpoint, httpMethod);
+        document.getElementById("idRequestBody").value = yamlUtils.getYamlRequestBody(endpoint, httpMethod);
     }
 
     setupEvents();
-    loadYamlEndpoint(populateScreen);
 }());
