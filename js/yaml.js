@@ -140,11 +140,11 @@ function parseAllOf(startLine) {
         line = yaml.file[i];
         value = getValue(line, "type");
         if (value !== "") {
-            return returnType(value, yaml.file, i + 1, "");
+            return returnType(value, i + 1, "");
         }
         value = getValue(line, "$ref");
         if (value !== "") {
-            return parseReference(yaml.file, removeSurroundingQuotes(value));
+            return parseReference(removeSurroundingQuotes(value));
         }
     }
 }
@@ -157,10 +157,10 @@ function getObjectType(startLine) {
         line = yaml.file[i];
         value = getValue(line, "type");
         if (value !== "") {
-            return returnType(value, yaml.file, i + 1, "");
+            return returnType(value, i + 1, "");
         }
         if (line === "          allOf:") {
-            return parseAllOf(yaml.file, i + 1);
+            return parseAllOf(i + 1);
         }
     }
 }
@@ -175,8 +175,10 @@ function parseObject(startLine) {
     let defaultStringValue = "";
     for (i = startLine; i < yaml.file.length; i += 1) {
         line = yaml.file[i];
+        //alert(line + "\n" + JSON.stringify(result, null, 4));
         if (line.charAt(5) !== " ") {
             if (state === "properties") {
+                // Break and return the object:
                 return result;
             }
             return mainType;
@@ -184,6 +186,7 @@ function parseObject(startLine) {
         value = getValue(line, "type");
         if (value !== "") {
             mainType = returnType(value, i + 1, defaultStringValue);
+            //alert("Found: " + mainType);
         }
         if (line === "      enum:") {
             state = "enums";
@@ -200,7 +203,7 @@ function parseObject(startLine) {
 }
 
 function parseReference(reference) {
-    const searchPath = reference.split("/");  // #/components/schemas/AllocationKeyCreateRequest
+    const searchPath = reference.split("/");  // #/components/schemas/PriceSubscriptionRequest
     let prefix = "";
     let result;
     searchPath.shift();  // Remove the #
