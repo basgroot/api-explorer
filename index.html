@@ -4,24 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="ROBOTS" content="INDEX, FOLLOW" />
     <meta name="VIEWPORT" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
     <link rel="shortcut icon" type="image/x-icon" href="https://saxobank.github.io/openapi-samples-js/favicon.ico">
-    <script type="text/javascript" src="demo.js" defer></script>
+    <script type="text/javascript" src="js/utils.js" defer></script>
+    <script type="text/javascript" src="js/yaml.js" defer></script>
+    <script type="text/javascript" src="js/demo.js" defer></script>
     <title>Explorer v2</title>
 </head>
 <body>
 
 <!-- Ecample URLs:
 
-file:///C:/repos/hackathon/index.html?service=trade&method=POST&endpoint=%2Ftrade%2Fv1%2Finfoprices%2Fsubscriptions
-
+file:///C:/repos/api-explorer/index.html?service=port&method=POST&endpoint=%2Ftrade%2Fv1%2Finfoprices%2Fsubscriptions
 
 -->
 
 <!-- Endpoint -->
 <div class="endpoint">
-<span class="endpoint-method">METHOD</span>
-<span class="endpoint-url">url</span>
+<span class="endpoint-method" id="idHttpMethod">METHOD</span>
+<span class="endpoint-url" id="idEndpoint">url</span>
 </div>
 <!-- Tab links -->
 <div class="tab">
@@ -33,17 +34,18 @@ file:///C:/repos/hackathon/index.html?service=trade&method=POST&endpoint=%2Ftrad
 <!-- Tab content -->
 <div id="idTabRequest" class="tabcontent">
   <h3>Request</h3>
-  <p>London is the capital city of England.</p>
+  <textarea id="idRequestData" rows="13" wrap="off"></textarea><br />
+  <button class="tablinks" id="idBtnSendRequest">Send request</button>
 </div>
 
 <div id="idTabResponse" class="tabcontent">
   <h3>Response</h3>
-  <p>Paris is the capital of France.</p>
+  <p>No response recieved yet. But you can browse the sample responses (TODO).</p>
 </div>
 
 <div id="idTabStreamingData" class="tabcontent">
   <h3>Streaming Data</h3>
-  <p>Tokyo is the capital of Japan.</p>
+  <p>No data received yet.</p>
 </div>
 
 </body>

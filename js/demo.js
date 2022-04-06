@@ -34,5 +34,17 @@
         document.getElementById("idBtnRequest").click();
     }
 
+    function populateScreen() {
+        const httpMethod = getHttpMethod();
+        const endpoint = getEndpoint();
+        // Get method from the URL:
+        document.getElementById("idHttpMethod").innerText = httpMethod;
+        // Get endpoint from the URL:
+        document.getElementById("idEndpoint").innerText = endpoint;
+        // Get the request object from the yaml file:
+        document.getElementById("idRequestData").value = getYamlRequestBody(endpoint, httpMethod);
+    }
+
     setupEvents();
+    loadYamlEndpoint(populateScreen);
 }());
