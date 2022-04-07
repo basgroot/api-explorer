@@ -48,7 +48,6 @@ fetch("https://basgroot.github.io/api-explorer/config/navigation.json").then(r =
     coll[i].addEventListener("click", function() {
       this.classList.toggle("active");
       var content = this.nextElementSibling;
-      console.log(content);
       if (content.style.maxHeight){
         content.style.maxHeight = null;
       } else {
