@@ -191,6 +191,11 @@
     }
 
     function setupEvents() {
+        if ("onhashchange" in window) {
+            window.onhashchange = function () {
+                yamlUtils.loadYamlEndpoint(populateScreen);
+            };
+        }
         document.getElementById("idBtnRequest").addEventListener("click", function (evt) {
             displayTab(evt, "idTabRequest");
         });
@@ -229,6 +234,7 @@
             }
         }
 
+        yamlUtils.init();  // Reset cache
         const httpMethod = yamlUtils.getHttpMethod();
         const endpoint = yamlUtils.getEndpoint();
         // Get method from the URL:

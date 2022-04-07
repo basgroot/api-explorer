@@ -3,7 +3,7 @@
 
 function yaml() {
     const properties = {
-        "file": "",
+        "file": [],
         "method": "",
         "endpoint": "",
         "lineNumber": 0
@@ -17,6 +17,12 @@ function yaml() {
       "ReferenceId": "MyReferenceId",
       "RefreshRate": 200
     };
+
+    function init() {
+        properties.method = "";
+        properties.endpoint = "";
+        properties.lineNumber = 0;
+    }
 
     function getValue(line, key) {
         const keyValue = line.split(key + ": ");
@@ -392,6 +398,7 @@ function yaml() {
 
     function setupYaml() {
         return Object.freeze({
+            init,
             getHttpMethod,
             getEndpoint,
             getParameters,
