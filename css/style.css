@@ -175,10 +175,14 @@ p {
 .header-search {
   background-color: #fff;
   border: 1px;
-  border-radius: 10px;
+  border-radius: 5px;
   width: 30%;
   align-self: center;
   height: 50%;
+}
+
+.search-text {
+  padding-left: 10px;
 }
 
 .header {
@@ -186,4 +190,5 @@ p {
   height: 62px;
   background-color: #f7f7f7;
   display: flex; /* establish flex container */
+  flex-direction: row;
 }
