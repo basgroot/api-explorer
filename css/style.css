@@ -13,6 +13,7 @@
   cursor: pointer;
   padding: 14px 16px;
   transition: 0.3s;
+  border-left: 1px solid #ccc;
 }
 
 /* Change background color of buttons on hover */
@@ -53,6 +54,17 @@ button.sendRequest {
   padding: 20px 40px 60px 20px;
 }
 
+.endpoint {
+  background-color: #DDE0E4;
+  padding: 10px 10px 10px 10px;
+
+}
+
+.endpoint-inner {
+  background-color: #fff;
+  border: 1px;
+  border-radius: 4px;
+}
 
 
 /* Go from zero to full opacity */
