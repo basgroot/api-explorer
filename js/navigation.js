@@ -16,6 +16,7 @@ function createLink(title, target) {
   let l = document.createElement('a');
   l.href = target;
   l.text = title;
+  l.className = "nav-text"
   return l;
 }
 

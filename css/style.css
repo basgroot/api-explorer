@@ -49,9 +49,11 @@ pre.error {
   color: white;
 }
 
-/* Style the button that is used to open and close the collapsible content */
+
+/* Navigation  */
+
 .collapsible {
-  background-color: #eee;
+  background-color: #fff;
   color: #444;
   cursor: pointer;
   padding: 18px;
@@ -62,18 +64,22 @@ pre.error {
   font-size: 15px;
 }
 
-/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
 .active, .collapsible:hover {
   background-color: #ccc;
 }
 
-/* Style the collapsible content. Note: hidden by default */
 .content {
   padding: 0 18px;
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.2s ease-out;
-  background-color: #f1f1f1;
+  background-color: #fff;
+}
+
+a.nav-text {
+  font-size: 14;
+  color: #88909A;
+  text-decoration: none;
 }
 
 
@@ -88,7 +94,7 @@ pre.error {
   .header{
   width: 100%;
   height: 62px;
-  background-color: #F0F0F7;
+  background-color: #f7f7f7;
   }
   
   
@@ -98,7 +104,7 @@ pre.error {
   flex-direction: row; /* default value; can be omitted */
   flex-wrap: nowrap; /* default value; can be omitted */
   justify-content: space-between; /* switched from default (flex-start, see below) */
-  background-color: lightyellow;
+  background-color: #fff;
   }
   
   
@@ -106,7 +112,7 @@ pre.error {
   .left{
   width: 20%;
   height: 100vh;
-  background-color: #7f7f7f;
+  background-color: #fff;
   }
   
   
@@ -114,7 +120,7 @@ pre.error {
   .center{
   width: 60%;
   height: 100vh;
-  background-color: #9f9f9f;
+  background-color: #fff;
   }
   
   
