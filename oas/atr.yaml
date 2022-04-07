@@ -1,0 +1,3767 @@
+openapi: 3.0.1
+info:
+  title: Services.AssetTransfers
+  description: 'AssetTransfers provide endpoints for asset transfer<div class=well style=''border: 1px solid rgb(204, 82, 0); border-image: none; background-color: rgb(255, 209, 179);padding:1px;''> <strong>NOTE: </strong> This is a BETA version. It is currently only made available to select partners.</div>'
+  version: 1.0.127+eccbdfd256
+  x-framework-version: 24.0.21+826409a78a
+  x-machine: DEVOAWEB10-DK1
+servers:
+  - url: https://blue.openapi.sys.dom/openapi
+paths:
+  /atr/diagnostics/users:
+    get:
+      description: Get information about unique users served by the publishers and other performance related information.
+      operationId: atr_users
+      parameters:
+        - $ref: '#/components/parameters/XInternalIP'
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      x-network-visibility: internal
+  /atr/diagnostics/subscriptions:
+    get:
+      description: "Gets information about subscriptions in the publishers.\r\n\r\nIf no filter is specified all subscriptions from all publishers are returned."
+      operationId: atr_subscriptions
+      parameters:
+        - $ref: '#/components/parameters/XInternalIP'
+        - name: ApplicationId
+          in: query
+          description: Restricts the subscriptions to an application if specified.
+          schema:
+            title: Restricts the subscriptions to an application if specified.
+            minimum: 1
+            type: integer
+            format: int32
+            x-type-name: ApplicationId
+          example: "39"
+        - name: ContextId
+          in: query
+          description: Restricts the subscriptions to a streaming session if specified along with a session id.
+          schema:
+            title: Restricts the subscriptions to a streaming session if specified along with a session id.
+            type: string
+          example: "f7648265-1778-4b65-b6d7-ad0bd3f57ec6"
+        - name: Publisher
+          in: query
+          description: Restricts the subscriptions to a publisher if specified.
+          schema:
+            title: Restricts the subscriptions to a publisher if specified.
+            type: string
+          example: "f7648265-1778-4b65-b6d7-ad0bd3f57ec6"
+        - name: SessionId
+          in: query
+          description: Restricts the subscriptions to a session if specified.
+          schema:
+            title: Restricts the subscriptions to a session if specified.
+            pattern: '^[0-9a-fA-F]{32}$|^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+            type: string
+            x-type-name: SessionId
+          example: "c9b50ad5-5b54-4b1a-aa94-d0dc4ec8ea93"
+        - name: UserId
+          in: query
+          description: Restricts the subscriptions to a MITS user if specified.
+          schema:
+            title: Restricts the subscriptions to a MITS user if specified.
+            allOf:
+              - $ref: '#/components/schemas/UserIdNullable'
+          example: 466301703
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      x-network-visibility: internal
+  /atr/diagnostics/publishers:
+    get:
+      description: Returns the list of publisher names.
+      operationId: atr_publishers
+      parameters:
+        - $ref: '#/components/parameters/XInternalIP'
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      x-network-visibility: internal
+  /atr/v1/partner/prebookedfunds:
+    post:
+      tags:
+        - Partner - Prefunding
+      description: Credit client account based on pre-advice
+      operationId: PartnerPrebookFundPrebookFundDeposit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartnerPrebookFundDepositRequest'
+            example: {
+  "AccountKey": "sUyiJbnf57ayjlcoNp1RkA==",
+  "Amount": 100.0,
+  "BIC": "DEUTGB2LXXXX1",
+  "ClientKey": "W-CgwnsUEpETkiR8MPJalA==",
+  "ClientName": "Client Name",
+  "Currency": "Eur",
+  "ExpectedValueDate": "2020-01-01",
+  "ExternalReference": "530120200122018890999000000307",
+  "Iban": "DK123456789123456",
+  "RemitterAccount": "53540000318383"
+}
+      responses:
+        '201':
+          description: Created
+        '200':
+          description: Indicates that the request was performed correctly
+        '400':
+          description: Indicates that the request parameters was invalid
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - InvalidRequest
+                    type: string
+                    x-enum-descriptions:
+                      InvalidRequest: Default error code returned when it cannot be determined which part of the request is malformed.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '404':
+          description: Indicates that resource was not found
+        '500':
+          description: Internal Server Error
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  /atr/v1/cashmanagement/withdrawals:
+    post:
+      tags:
+        - CashManagement - Cash Withdrawal
+      summary: Submit Cash Withdrawal Request
+      description: "Allow client to do cash transfers by giving account key, amount, beneficiary instruction Id, currency and optionally sending “message to beneficiary” with a character limit of 140.\r\n             \r\nNote:\r\n\r\nIf withdrawal request is created, service will return \"201 Created\" with cut exchange rate &amp; withdrawal request Id in response.\r\n\r\nIf withdrawal request is rejected, the service will return bad request with reason for failure of transaction."
+      operationId: CashWithdrawalWithdrawl
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WithdrawalRequest'
+            example: null
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WithdrawalResponse'
+              example: {
+  "CutExchangeRate": 1.0,
+  "WithdrawalRequestId": "2425"
+}
+        '503':
+          description: Service Unavailable
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - AccountAccessDenied
+                      - AccountNotFound
+                      - AccountNotValid
+                      - CashAccessDenied
+                      - CashBelowLimit
+                      - CashLargeExposure
+                      - CashNotAllowedOnTrialAccounts
+                      - CashWithdrawlRequestRejected
+                      - ClientAccessDenied
+                      - IncorrectAccountDetails
+                      - IncorrectAmount
+                      - IncorrectReferenceNumber
+                      - InstructedClientNameNotSpecified
+                      - InsufficientCashOnAccount
+                      - InvalidRequestParameter
+                      - MissingOrWrongValueDate
+                      - Other
+                      - SendOTPFailed
+                      - TwoFactorAuthenticationRequestedButNotEnabledforClient
+                      - WouldExceedCreditLine
+                    type: string
+                    x-enum-descriptions:
+                      ClientAccessDenied: User is not authorized to access requested Client
+                      AccountAccessDenied: User is not authorized to access Account
+                      CashWithdrawlRequestRejected: Cash Withdrawal Request rejected for not meeting required conditions
+                      SendOTPFailed: Request parameters for sending verification code are invalid
+                      TwoFactorAuthenticationRequestedButNotEnabledforClient: Two factor auth is not enabled while skip two factor authentication flag set to false in request
+                      AccountNotFound: One or more of the provided parameters are invalid.
+                      AccountNotValid: One or more of the provided parameters are invalid.
+                      CashAccessDenied: One or more of the provided parameters are invalid.
+                      CashBelowLimit: One or more of the provided parameters are invalid.
+                      CashLargeExposure: One or more of the provided parameters are invalid.
+                      CashNotAllowedOnTrialAccounts: One or more of the provided parameters are invalid.
+                      InsufficientCashOnAccount: One or more of the provided parameters are invalid.
+                      WouldExceedCreditLine: One or more of the provided parameters are invalid.
+                      InvalidRequestParameter: One or more of the provided parameters are invalid.
+                      IncorrectAccountDetails: One or more of the provided parameters are invalid.
+                      IncorrectAmount: One or more of the provided parameters are invalid.
+                      InstructedClientNameNotSpecified: One or more of the provided parameters are invalid.
+                      MissingOrWrongValueDate: One or more of the provided parameters are invalid.
+                      Other: One or more of the provided parameters are invalid.
+                      IncorrectReferenceNumber: One or more of the provided parameters are invalid.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '200':
+          description: OK
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - TrialClientNotSupported
+                    type: string
+                    x-enum-descriptions:
+                      TrialClientNotSupported: Trial clients are not supported
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  '/atr/v1/cashmanagement/beneficiaryinstructions/{BeneficiaryInstructionId}':
+    delete:
+      tags:
+        - Cash Management - Beneficiary Instructions
+      summary: Retire Beneficiary Instruction
+      description: Retire beneficiary instruction
+      operationId: BeneficiaryInstructionsDeleteBeneficiaryInstructionsAsync
+      parameters:
+        - name: BeneficiaryInstructionId
+          in: path
+          description: Beneficiary Instruction Id
+          required: true
+          schema:
+            type: string
+          example: 97935
+        - name: ClientKey
+          in: query
+          description: Client Key
+          schema:
+            minLength: 1
+            type: string
+            x-type-name: ClientKey
+          example: 11eaXGFNBcXM4ZDelb0R1Q==
+      responses:
+        '204':
+          description: No Content
+        '202':
+          description: Indicates that the request is accepted
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - InvalidRequestParameter
+                    type: string
+                    x-enum-descriptions:
+                      InvalidRequestParameter: One or more of the provided parameters are invalid.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '503':
+          description: Service Unavailable
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-application-visibility: saxo-only
+  /atr/v1/cashmanagement/beneficiaryinstructions:
+    get:
+      tags:
+        - Cash Management - Beneficiary Instructions
+      summary: Get Beneficiary Instructions
+      description: Fetch list of active beneficiary instructions for a client and filters based on currency.
+      operationId: BeneficiaryInstructionsGetBeneficiaryInstructionsAsync
+      parameters:
+        - name: ClientKey
+          in: query
+          description: Client Key
+          schema:
+            minLength: 1
+            type: string
+            x-type-name: ClientKey
+          example: 11eaXGFNBcXM4ZDelb0R1Q==
+        - name: Currency
+          in: query
+          description: Currency code
+          schema:
+            pattern: '^[A-Z]{3}$'
+            type: string
+            x-type-name: CurrencyCode
+          example: USD
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BeneficiaryInstructionListResult'
+              example: {
+  "__count": 2,
+  "Data": [
+    {
+      "BeneficiaryDetails": {
+        "AccountNumber": "SSI#97935",
+        "Bic": "DBSSSGSGXXX",
+        "ClearingCode": "AU016338",
+        "CountryCode": "DKK"
+      },
+      "BeneficiaryInstructionId": "97935",
+      "ClientId": "9319113",
+      "Currency": "DKK",
+      "IntermediaryBank": {
+        "AccountNumber": "S672538819",
+        "Bic": "CITIUS33"
+      },
+      "MessageType": "MT202",
+      "Name": "SSI#97935",
+      "RegulatedBroker": {
+        "AccountNumber": "ZYA6312001",
+        "Name": "EXT LTD CLIENTS ACCOUNT"
+      }
+    },
+    {
+      "BeneficiaryDetails": {
+        "AccountNumber": "SSI#97935",
+        "Bic": "DBSSSGSGXXX",
+        "ClearingCode": "AU016338",
+        "CountryCode": "DKK"
+      },
+      "BeneficiaryInstructionId": "97935",
+      "ClientId": "9319113",
+      "Currency": "DKK",
+      "IntermediaryBank": {
+        "AccountNumber": "S672538819",
+        "Bic": "CITIUS33"
+      },
+      "MessageType": "MT202",
+      "Name": "SSI#97935",
+      "RegulatedBroker": {
+        "AccountNumber": "ZYA6312001",
+        "Name": "EXT LTD CLIENTS ACCOUNT"
+      }
+    }
+  ]
+}
+        '503':
+          description: Service Unavailable
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  '/atr/v1/partner/cashtransferlimits/{AccountKey}':
+    get:
+      tags:
+        - Partner - Cash Transfer Limits
+      description: Get available amount for transfer.
+      operationId: PartnerCashTransferLimitGetCashTransfersLimitsAsync
+      parameters:
+        - name: AccountKey
+          in: path
+          description: Account Key
+          required: true
+          schema:
+            minLength: 1
+            type: string
+            x-type-name: AccountKey
+          example: ellzACrscBL2WPH6H6xADg==
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerAccountCashTransferLimit'
+              example: {
+  "AccountKey": "sUyiJbnf57ayjlcoNp1RkA==",
+  "CashTransferLimit": 100.0,
+  "Currency": "USD"
+}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - NotNormalAccount
+                    type: string
+                    x-enum-descriptions:
+                      NotNormalAccount: Account should be normal trading account.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - CashTransferLimitsNotFound
+                      - ClientIsSameAsCallingClient
+                      - ClientNotSameAsAccount
+                    type: string
+                    x-enum-descriptions:
+                      ClientNotSameAsAccount: ClientKey and AccountKey both should have same client.
+                      ClientIsSameAsCallingClient: Client in the request should not be same as calling client.
+                      CashTransferLimitsNotFound: Cash transfer limits not found.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '503':
+          description: Service Unavailable
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  /atr/v1/partner/cashtransferlimits:
+    get:
+      tags:
+        - Partner - Cash Transfer Limits
+      description: Obsolete Get available amount for transfer.
+      operationId: PartnerCashTransferLimitGetCashTransfersLimits
+      parameters:
+        - name: AccountKey
+          in: query
+          description: AccountKey
+          required: true
+          schema:
+            minLength: 1
+            type: string
+            x-type-name: AccountKey
+        - name: ClientKey
+          in: query
+          description: ClientKey
+          required: true
+          schema:
+            minLength: 1
+            type: string
+            x-type-name: ClientKey
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerCashTransferLimitListResult'
+              example: {
+  "Data": [
+    {
+      "AccountKey": "sUyiJbnf57ayjlcoNp1RkA==",
+      "ClientKey": "W-CgwnsUEpETkiR8MPJalA==",
+      "MaxAllowedWithdrawalAmount": 100.0
+    }
+  ]
+}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - NotNormalAccount
+                    type: string
+                    x-enum-descriptions:
+                      NotNormalAccount: Account should be normal trading account.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - CashTransferLimitsNotFound
+                      - ClientIsSameAsCallingClient
+                      - ClientNotSameAsAccount
+                    type: string
+                    x-enum-descriptions:
+                      ClientNotSameAsAccount: ClientKey and AccountKey both should have same client.
+                      ClientIsSameAsCallingClient: Client in the request should not be same as calling client.
+                      CashTransferLimitsNotFound: Cash transfer limits not found.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '503':
+          description: Service Unavailable
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      deprecated: true
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-deprecated-date: '2023-01-01'
+  /atr/online:
+    post:
+      description: Attempts to take the application online
+      operationId: atr_online
+      parameters:
+        - $ref: '#/components/parameters/XInternalIP'
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      x-application-visibility: saxo-only
+      x-network-visibility: internal
+  '/atr/v1/cashmanagement/accountsummary/{AccountKey}':
+    get:
+      tags:
+        - Cash Management - Account Summary
+      summary: Get account summary
+      description: Retrieves account summary of specified account
+      operationId: AccountSummaryGetAccountSummary
+      parameters:
+        - name: AccountKey
+          in: path
+          required: true
+          schema:
+            minLength: 1
+            type: string
+            x-type-name: AccountKey
+          example: 7m4I|vtYLUnEGg77o9uQhw==
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountSummary'
+              example: {
+  "AverageMonthlyBalanceYTD": 0.0,
+  "Beneficiaries": [
+    {
+      "BeneficiaryType": "NextOfKin",
+      "Percentage": 100.0
+    }
+  ],
+  "EarliestRetirementAge": "ThreeYearsBeforePensionAge",
+  "ExceededPaymentForLifelongAnnuity": 0.0,
+  "ExpiryDate": "2052-01-01",
+  "FundingYTD": 0.0,
+  "PALTaxPaidPreviousYear": 0.0,
+  "PayoutYTD": 0.0,
+  "RemainingFundingLimit": 55900.0,
+  "ReturnYTD": 0.0,
+  "StatePensionAge": 68.0,
+  "TransferredIn": 0.0,
+  "UnsettledProfitAndLossYTD": 0.0
+}
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-application-visibility: saxo-only
+  /atr/offline:
+    post:
+      description: Attempts to take the application offline
+      operationId: atr_offline
+      parameters:
+        - $ref: '#/components/parameters/XInternalIP'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+            example: "00:00:00.0000059"
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      x-application-visibility: saxo-only
+      x-network-visibility: internal
+  /atr/v1/securitiestransfers/brokers:
+    get:
+      tags:
+        - Securities Transfers
+      description: Get list of brokers for the given ISO Country Code
+      operationId: SecuritiesTransferGetBrokers
+      parameters:
+        - name: CountryCode
+          in: query
+          description: ISO Country Code
+          required: true
+          schema:
+            pattern: '^[A-Z]{2}$'
+            type: string
+            x-type-name: CountryCode
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrokerListResult'
+              example: {
+  "Data": [
+    {
+      "Contact": "Broker Contact 1",
+      "CountryCode": "DK",
+      "Email": "BrokerEmail1@email.com",
+      "Name": "ABC Investment Bank",
+      "Phone": "+45 12345678"
+    },
+    {
+      "Contact": "Broker Contact 2",
+      "CountryCode": "DK",
+      "Email": "BrokerEmail2@email.com",
+      "Name": "Alps Investment Bank",
+      "Phone": "555 212-639-9675"
+    }
+  ]
+}
+        '503':
+          description: Service Unavailable
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - InvalidCountry
+                    type: string
+                    x-enum-descriptions:
+                      InvalidCountry: 'Requested Country '
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  /atr/v1/securitiestransfers/transfers:
+    get:
+      tags:
+        - Securities Transfers
+      description: Get list of Security Transfers executed by client based on list of comma separated transfer ids.
+      operationId: SecuritiesTransferGetTransferDetails
+      parameters:
+        - name: ClientKey
+          in: query
+          description: The client identifier in key format
+          schema:
+            minLength: 1
+            type: string
+            x-type-name: ClientKey
+        - name: TransferIds
+          in: query
+          description: Comma separate list of Transfer IDs
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferListResult'
+              example: {
+  "__count": 1,
+  "Data": [
+    {
+      "AccountId": "3495867632",
+      "AccountManager": "ABC Investment Bank",
+      "AssetType": "Stock",
+      "Broker": {
+        "Contact": "Broker Contact 1",
+        "CountryCode": "DK",
+        "Email": "BrokerEmail1@email.com",
+        "Name": "ABC Investment Bank",
+        "Phone": "+45 12345678"
+      },
+      "ClientAccountAtBroker": "0539633313",
+      "Securities": [
+        {
+          "Currency": "EUR",
+          "Description": "Apple Inc.",
+          "Exchange": "NASDAQ",
+          "InstrumentSymbolCode": "AAPL:xnas",
+          "IsinCode": "US0378331005",
+          "Price": 194.82,
+          "PurchaseDate": "2020-06-20",
+          "Quantity": 24.0,
+          "Uic": 211
+        },
+        {
+          "Currency": "GBP",
+          "Description": "ABB Ltd",
+          "Exchange": "SSE",
+          "InstrumentSymbolCode": "ABB:xome",
+          "IsinCode": "CH0012221716",
+          "Price": 32.82,
+          "PurchaseDate": "2020-09-10",
+          "Quantity": 7.0,
+          "Uic": 101
+        }
+      ],
+      "TradeDate": "2022-04-04",
+      "TransferDirection": "TransferIn",
+      "TransferId": "414"
+    }
+  ]
+}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - InvalidTransferId
+                    type: string
+                    x-enum-descriptions:
+                      InvalidTransferId: Requested Transfer Ids are not valid
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '503':
+          description: Service Unavailable
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+    post:
+      tags:
+        - Securities Transfers
+      summary: Submit Securities Transfer Request
+      description: "Submit the list of securities, which the client wants transferred in or out of Saxo Bank.\r\n             \r\nIf list of securities in the transfer are accepted the service will return \"201 Created\" and the response will contain the actual transfer result for the transaction\r\n\r\nIf one or more securities in the list are not accepted, the service will return bad request and fail complete transaction"
+      operationId: SecuritiesTransferTransfer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransferRequest'
+            example: {
+  "AccountKey": "dIm75edbgnW6aBK3CIc-sw==",
+  "AssetType": "Stock",
+  "Broker": {
+    "Contact": "Broker Contact 1",
+    "CountryCode": "DK",
+    "Email": "BrokerEmail1@email.com",
+    "Name": "ABC Investment Bank",
+    "Phone": "+45 12345678"
+  },
+  "ClientAccountAtBroker": "0539633313",
+  "ClientKey": "zpSlGZ4F0cPIx59wR3HP1g==",
+  "Securities": [
+    {
+      "Currency": "EUR",
+      "Description": "Apple Inc.",
+      "Exchange": "NASDAQ",
+      "InstrumentSymbolCode": "AAPL:xnas",
+      "IsinCode": "US0378331005",
+      "Price": 194.82,
+      "PurchaseDate": "2020-06-20",
+      "Quantity": 24.0,
+      "Uic": 211
+    },
+    {
+      "Currency": "GBP",
+      "Description": "ABB Ltd",
+      "Exchange": "SSE",
+      "InstrumentSymbolCode": "ABB:xome",
+      "IsinCode": "CH0012221716",
+      "Price": 32.82,
+      "PurchaseDate": "2020-09-10",
+      "Quantity": 7.0,
+      "Uic": 101
+    }
+  ],
+  "SettlementInstruction": {
+    "AccountAtClearingAgent": "0539633313",
+    "AgentLocalAccount": "6300772196",
+    "BuyerSellerCode": "B",
+    "BuyerSellerCodeType": "Bic",
+    "ClearingAgentCode": "9200",
+    "ClearingAgentCodeType": "Bic",
+    "FreeText": "NOTLXNO",
+    "SettlementAgentAccount": "1011248400G"
+  },
+  "TradeDate": "2022-04-04",
+  "TransferDirection": "TransferIn"
+}
+      responses:
+        '201':
+          description: Resource was created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferResponse'
+              example: {
+  "TransferId": "63HGCDS3E89DS"
+}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - AccountValidationFail
+                      - AssetTypeNotSupported
+                      - BadRequest
+                      - UicNotValidAssetType
+                      - ValidationFail
+                    type: string
+                    x-enum-descriptions:
+                      BadRequest: Bad Request
+                      UicNotValidAssetType: The UIC does not match a transferable asset type
+                      AssetTypeNotSupported: Requested Asset Type is not supported
+                      AccountValidationFail: Account Validation Failed
+                      ValidationFail: General Validation Failed
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - SecurityValidationFail
+                    type: string
+                    x-enum-descriptions:
+                      SecurityValidationFail: Security Validation Failed
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '503':
+          description: Service Unavailable
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  /atr/v1/cashmanagement/creditcard/ConfirmTransaction:
+    post:
+      tags:
+        - Asset Transfer – CreditCard
+      summary: Returns status of credit card transaction
+      description: Returns the status of a transaction.
+      operationId: CreditCardConfirmTransaction
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorldPayTransactionInformations'
+            example: {
+  "gateway": {
+    "mac": "123",
+    "orderKey": "def",
+    "paymentAmount": "100",
+    "paymentCurrency": "EUR",
+    "paymentStatus": "Success"
+  },
+  "order": {
+    "orderKey": "abc",
+    "status": "Success"
+  }
+}
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionStatusResponse'
+              example: {
+  "Account": "123456",
+  "AccountAmount": 100.18,
+  "Amount": 112.7,
+  "AmountToTransfer": 56.76,
+  "CardDescription": "VISA-Electron",
+  "ExchangeRate": 32.7,
+  "Fee": 1.32,
+  "FromCurrency": "USD",
+  "PaymentId": "159333",
+  "ToCurrency": "EUR",
+  "TransactionResult": "OK"
+}
+        '200':
+          description: Indicates that the request was performed correctly.
+        '500':
+          description: Internal Server Error
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-application-visibility: saxo-only
+  /atr/v1/cashmanagement/creditcard/preview:
+    get:
+      tags:
+        - Asset Transfer – CreditCard
+      summary: Return preview of transaction
+      description: Returns a preview of what charges and deposits will take place if the client goes ahead with the transaction
+      operationId: CreditCardGetPreview
+      parameters:
+        - name: AccountKey
+          in: query
+          description: The account to transfer to.
+          required: true
+          schema:
+            title: The account to transfer to.
+            minLength: 1
+            type: string
+            x-type-name: AccountKey
+          example: "dIm75edbgnW6aBK3CIc-sw=="
+        - name: Amount
+          in: query
+          description: The ammount to transfer
+          required: true
+          schema:
+            title: The ammount to transfer
+            minimum: 0
+            type: number
+          example: 5209683940945.14
+        - name: CardDefinitionId
+          in: query
+          description: The card definition id
+          required: true
+          schema:
+            title: The card definition id
+            type: string
+          example: "f7648265-1778-4b65-b6d7-ad0bd3f57ec6"
+        - name: Currency
+          in: query
+          description: The currency to transfer the amount in.
+          required: true
+          schema:
+            title: The currency to transfer the amount in.
+            maxLength: 3
+            minLength: 0
+            type: string
+          example: "f7648265-1778-4b65-b6d7-ad0bd3f57ec6"
+        - name: IsAutoTrading
+          in: query
+          description: 'If the account is an AutoTrading account, this has to be set as true'
+          schema:
+            title: 'If the account is an AutoTrading account, this has to be set as true'
+            type: boolean
+          example: true
+        - name: IssuerCountryCode
+          in: query
+          description: The creditcard issuer country
+          required: true
+          schema:
+            title: The creditcard issuer country
+            type: string
+          example: "f7648265-1778-4b65-b6d7-ad0bd3f57ec6"
+        - name: PaymentId
+          in: query
+          description: The payment id to use.
+          required: true
+          schema:
+            title: The payment id to use.
+            type: string
+          example: "f7648265-1778-4b65-b6d7-ad0bd3f57ec6"
+        - name: RegisteredCardId
+          in: query
+          description: 'If using a existing card, this should be set.'
+          schema:
+            title: 'If using a existing card, this should be set.'
+            type: string
+          example: "f7648265-1778-4b65-b6d7-ad0bd3f57ec6"
+      responses:
+        '200':
+          description: Indicates that the request was performed correctly.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PreviewResponse'
+              example: {
+  "Amount": 100.1,
+  "AmountToCharge": 1.75,
+  "AmountToDeposit": 2.34,
+  "DisplayFeeDisclaimer": true,
+  "ExchangeRate": 1.12,
+  "FromCurrency": "EUR",
+  "ToCurrency": "USD",
+  "TransactionFee": 1.15,
+  "TransferredFromCardAmount": 12.56,
+  "TransferredFromCardCurrency": "EUR"
+}
+        '500':
+          description: Internal Server Error
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-application-visibility: saxo-only
+  /atr/v1/cashmanagement/creditcard/logos:
+    get:
+      tags:
+        - Asset Transfer – CreditCard
+      description: Get logos by definition Id or payment provider type.
+      operationId: CreditCardGetLogosForPaymentProvider
+      parameters:
+        - name: DefinitionIds
+          in: query
+          description: Creditcard definition Ids
+          schema:
+            type: array
+            items:
+              type: string
+          example: 23
+        - name: PaymentProvider
+          in: query
+          description: Payment provider>
+          schema:
+            $ref: '#/components/schemas/PaymentProviderNullable'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardLogoResponse'
+              example: {
+  "CreditCardLogos": [
+    {
+      "ContentType": "jpeg",
+      "Data": "R0lGODlhMAAeAHAAACwAAAAAMAAeAIf38ICGPevd73rQAhIWv3787W1uYpa1rvEN7vEFqtEN6tEFopShnvEJzvEBmt",
+      "DefinitionId": 1,
+      "Height": 50.0,
+      "Width": 100.0
+    }
+  ]
+}
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-application-visibility: saxo-only
+  '/atr/v1/cashmanagement/creditcard/logos/{DefinitionId}':
+    get:
+      tags:
+        - Asset Transfer – CreditCard
+      description: Gets logo by definition Id
+      operationId: CreditCardGetLogo
+      parameters:
+        - name: DefinitionId
+          in: path
+          description: CreditCard definition Id
+          required: true
+          schema:
+            type: string
+          example: 2
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-application-visibility: saxo-only
+  /atr/v1/cashmanagement/creditcard/transactionstatuses:
+    post:
+      tags:
+        - Asset Transfer – CreditCard
+      summary: Returns status of credit card transaction
+      description: Returns the status of a transaction.
+      operationId: CreditCardTransactionStatus
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionStatusRequest'
+            example: {
+  "MerchantData": "CC_Add_New_Card",
+  "PageResponse": "PageResponse",
+  "PaymentProvider": "WorldPay",
+  "RedirectUrl": "https://developerportal-tst211.cf.saxo/openapi/explorer#/"
+}
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionStatusResponse'
+              example: {
+  "Account": "123456",
+  "AccountAmount": 100.18,
+  "Amount": 112.7,
+  "AmountToTransfer": 56.76,
+  "CardDescription": "VISA-Electron",
+  "ExchangeRate": 32.7,
+  "Fee": 1.32,
+  "FromCurrency": "USD",
+  "PaymentId": "159333",
+  "ToCurrency": "EUR",
+  "TransactionResult": "OK"
+}
+        '200':
+          description: Indicates that the request was performed correctly.
+        '500':
+          description: Internal Server Error
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-application-visibility: saxo-only
+  /atr/v1/cashmanagement/creditcard/transactionoptions:
+    get:
+      tags:
+        - Asset Transfer – CreditCard
+      description: Gets all available transaction options for credit card
+      operationId: CreditCardGetTransactionOptions
+      parameters:
+        - name: PaymentProvider
+          in: query
+          schema:
+            $ref: '#/components/schemas/PaymentProviderNullable'
+      responses:
+        '200':
+          description: Indicates that the request was performed correctly.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionOptions'
+              example: {
+  "Countries": [
+    {
+      "Iso2": "DK",
+      "Name": "Denmark"
+    }
+  ],
+  "Currencies": [
+    "USD"
+  ],
+  "MaximumAllowedStoredCards": 2,
+  "PaymentId": "159333",
+  "RestrictedCardDefinitions": [
+    {
+      "BrandId": 1,
+      "Id": 2,
+      "LockedCountry": "Denmark",
+      "LockedCurrency": "USD",
+      "Name": "VISA",
+      "ProviderId": "3"
+    }
+  ],
+  "StoredCards": [
+    {
+      "CardDefinitionId": "1",
+      "CardNumber": "123-456-789-654",
+      "IssuerCountry": "Denmark",
+      "RegisteredCardId": "2"
+    }
+  ],
+  "SubsidiaryAddress": "1 Oxford Street U.K."
+}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - NotFoundError
+                    type: string
+                    x-enum-descriptions:
+                      NotFoundError: Not found.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '500':
+          description: Internal Server Error
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-application-visibility: saxo-only
+  '/atr/v1/partner/cashtransfers/{TransactionId}':
+    get:
+      tags:
+        - Partner - Cash Transfer
+      description: Fetches the latest status of fund transfers.
+      operationId: PartnerCashTransferCashTransfersById
+      parameters:
+        - name: TransactionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferResult'
+              example: {
+  "Amount": 10000.0,
+  "Comment": "Transferring from funding account 33000/FEUR",
+  "Currency": "EUR",
+  "ExternalReference": "789456",
+  "FromAccount": "-gh-xomNFSNUYdRL0KrPpg==",
+  "FromAccountPositionId": "1267",
+  "FundingCheck": "Enforce",
+  "ToAccount": "y3kFQWkqJYMgOgaxcoqshA==",
+  "ToAccountPositionId": "1268",
+  "TransactionId": "1269",
+  "TransferRequestedOn": "2022-04-04T02:15:37.005624Z",
+  "TransferStatus": "Successful",
+  "ValueDate": "0001-01-01T00:00:00Z"
+}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - TransactionNotFound
+                    type: string
+                    x-enum-descriptions:
+                      TransactionNotFound: Transaction not found
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '400':
+          description: One or more of the provided parameters are invalid.
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - InvalidRequest
+                    type: string
+                    x-enum-descriptions:
+                      InvalidRequest: Default error code returned when it cannot be determined which part of the request is malformed.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  /atr/v1/partner/cashtransfers:
+    get:
+      tags:
+        - Partner - Cash Transfer
+      description: Fetches a summary of transfers.
+      operationId: PartnerCashTransferCashTransfersBySearchParameters
+      parameters:
+        - name: AccountKey
+          in: query
+          description: 'If specified, will only return entries pertaining to the specified account.'
+          schema:
+            title: 'If specified, will only return entries pertaining to the specified account.'
+            minLength: 1
+            type: string
+            x-type-name: AccountKey
+          example: "dIm75edbgnW6aBK3CIc-sw=="
+        - name: ClientKey
+          in: query
+          description: 'If specified, will only return entries pertaining to the specified client.'
+          schema:
+            title: 'If specified, will only return entries pertaining to the specified client.'
+            minLength: 1
+            type: string
+            x-type-name: ClientKey
+          example: "zpSlGZ4F0cPIx59wR3HP1g=="
+        - name: ExternalReference
+          in: query
+          description: Include entries with the specified ExternalReference.
+          schema:
+            title: Include entries with the specified ExternalReference.
+            type: string
+          example: "f7648265-1778-4b65-b6d7-ad0bd3f57ec6"
+        - name: FromDateTime
+          in: query
+          description: Only include entries with a TransferRequestedOn value greater than or equal to FromDateTime.
+          schema:
+            title: Only include entries with a TransferRequestedOn value greater than or equal to FromDateTime.
+            type: string
+          example: "2023-01-09T16:45:51.7198552"
+        - name: SkipToken
+          in: query
+          description: Id token of entity to start taking elements from.
+          schema:
+            title: Id token of entity to start taking elements from.
+            type: string
+          example: "f7648265-1778-4b65-b6d7-ad0bd3f57ec6"
+        - name: ToDateTime
+          in: query
+          description: Only include entries with a TransferRequestedOn value lower than or equal to ToDateTime.
+          schema:
+            title: Only include entries with a TransferRequestedOn value lower than or equal to ToDateTime.
+            type: string
+          example: "2023-01-09T16:45:51.7198552"
+        - name: Top
+          in: query
+          description: 'Number of elements to retrieve. (Default is 50, Max is 1000.)'
+          schema:
+            title: 'Number of elements to retrieve. (Default is 50, Max is 1000.)'
+            type: integer
+            format: int32
+          example: 142
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferResultListResult'
+              example: {
+  "Data": [
+    {
+      "Amount": 10000.0,
+      "Comment": "Transferring from funding account 33000/FEUR",
+      "Currency": "EUR",
+      "ExternalReference": "789456",
+      "FromAccount": "-gh-xomNFSNUYdRL0KrPpg==",
+      "FromAccountPositionId": "1267",
+      "FundingCheck": "Enforce",
+      "ToAccount": "y3kFQWkqJYMgOgaxcoqshA==",
+      "ToAccountPositionId": "1268",
+      "TransactionId": "1269",
+      "TransferRequestedOn": "2022-04-04T02:15:36.975402Z",
+      "TransferStatus": "Successful",
+      "ValueDate": "0001-01-01T00:00:00Z"
+    }
+  ]
+}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - TransactionNotFound
+                    type: string
+                    x-enum-descriptions:
+                      TransactionNotFound: Transaction not found
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '400':
+          description: One or more of the provided parameters are invalid.
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - InvalidRequest
+                    type: string
+                    x-enum-descriptions:
+                      InvalidRequest: Default error code returned when it cannot be determined which part of the request is malformed.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+    post:
+      tags:
+        - Partner - Cash Transfer
+      description: Cash transfer initiated by partner.
+      operationId: PartnerCashTransferCashTransfer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartnerCashTransferRequest'
+            example: {
+  "Amount": 10000.0,
+  "Comment": "Transferring from funding account 33000/FEUR",
+  "Currency": "EUR",
+  "ExternalReference": "789456",
+  "FromAccountKey": "-gh-xomNFSNUYdRL0KrPpg==",
+  "FundingCheck": "Enforce",
+  "ToAccountKey": "y3kFQWkqJYMgOgaxcoqshA==",
+  "ValueDate": "2022-04-04T02:15:36.939344Z"
+}
+      responses:
+        '201':
+          description: Resource was created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerCashTransferResponse'
+              example: {
+  "FromAccountPositionId": "1267",
+  "ToAccountPositionId": "1268",
+  "TransactionId": "1269"
+}
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - AccountsNotFoundForTransferDoneByIb
+                      - AccountsNotFoundForTransferDoneByWlp
+                      - CurrencyShouldBeSameAsAccount
+                    type: string
+                    x-enum-descriptions:
+                      AccountsNotFoundForTransferDoneByIb: To/from account not found.
+                      AccountsNotFoundForTransferDoneByWlp: To/from account not found.
+                      CurrencyShouldBeSameAsAccount: Currency should be same as source account and destination account.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - AccountNotValid
+                      - CurrencyMustBeSameAsAtLeastOneOfTheAccounts
+                      - FundingAccountsNotFound
+                      - FundingShouldUnderSameHierarchy
+                      - IgnoreFundingCheckNotApplicableWhileFunding
+                      - InputDataInvalid
+                      - InsufficientCash
+                      - MarginBorderLine
+                      - OneAccountShouldBeFundingAccount
+                      - OneAccountShouldBeNormalTradingAccount
+                      - OneClientShouldBeIB
+                      - OnlyOneAccountShouldBeFundingAccount
+                      - OverFundingNotAllowed
+                      - RequestedVariationMarginAmountBelowMinimumLimit
+                      - TransferDoneForAccountsOfSameClient
+                      - TrialClientsNotSupported
+                      - WouldExceedMargin
+                    type: string
+                    x-enum-descriptions:
+                      IgnoreFundingCheckNotApplicableWhileFunding: Ignore funding check not applicable while funding.
+                      FundingShouldUnderSameHierarchy: Funding should be under same hierarchy.
+                      TransferDoneForAccountsOfSameClient: Transfer can't be done between account of same client.
+                      OneAccountShouldBeFundingAccount: At least one account should be funding account.
+                      OnlyOneAccountShouldBeFundingAccount: Only one account should be funding account.
+                      OneAccountShouldBeNormalTradingAccount: At least  one account should be normal trading account.
+                      TrialClientsNotSupported: Trial clients are not supported.
+                      OneClientShouldBeIB: At least one client should be an IB.
+                      OverFundingNotAllowed: Cash OverFunding is not Allowed into Aktiesparekonto account
+                      AccountNotValid: One of the two accounts is not valid.
+                      CurrencyMustBeSameAsAtLeastOneOfTheAccounts: Transfer needs to be in the same currency as at least one of the two accounts basecurrencies.
+                      InsufficientCash: The from account has insufficient cash for this transfer.
+                      MarginBorderLine: The from account borderlines margin.
+                      WouldExceedMargin: The from account would exceed margin.
+                      InputDataInvalid: Invalid input data.
+                      RequestedVariationMarginAmountBelowMinimumLimit: Cash withdrawl/transfer amount is below the required minimum limit.
+                      FundingAccountsNotFound: Funding accounts not found.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  /atr/api/oas3:
+    get:
+      summary: Get Open API Specification 3.0 documentation for the service group.
+      description: Returns the OAS 3 document for the service group.
+      operationId: OasGetOas3
+      parameters:
+        - $ref: '#/components/parameters/XInternalIP'
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      x-network-visibility: internal
+  /atr/apistatus:
+    get:
+      description: Returns default server status information
+      operationId: atr_apistatus
+      parameters:
+        - $ref: '#/components/parameters/XInternalIP'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerStatus'
+              example: {
+  "Created": "0001-01-01T00:00:00Z",
+  "LeasePeriod": 0,
+  "LogicalProcessors": 0,
+  "MachineUptime": 0,
+  "SystemUptime": 0,
+  "TimeSpentMs": 3.99,
+  "ToolId": 0
+}
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      x-network-visibility: internal
+  /atr/isalive:
+    get:
+      description: Determines whether this service-group instance is alive.
+      operationId: atr_isalive
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+              example: "f7648265-1778-4b65-b6d7-ad0bd3f57ec6"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  '/atr/v1/cashmanagement/wiretransfers/currencies/{ClientKey}':
+    get:
+      tags:
+        - CashManagement - Wire Transfers
+      summary: End point for fetching currencies
+      description: "Returns currencies applicable for wire transfer based on client key.\r\n             If no currencies are found for the specified client, then it will return an empty result."
+      operationId: WireTransferGetCurrenciesAsync
+      parameters:
+        - name: ClientKey
+          in: path
+          description: Client Key.
+          required: true
+          schema:
+            minLength: 1
+            type: string
+            x-type-name: ClientKey
+          example: ck4AfRWzaIUCTsxKPT99TQ==
+      responses:
+        '200':
+          description: Request executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WireTransferCurrencyListResult'
+              example: {
+  "Data": [
+    {
+      "Currency": "USD"
+    },
+    {
+      "Currency": "DKK"
+    }
+  ]
+}
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-application-visibility: saxo-only
+  '/atr/v1/cashmanagement/withdrawallimits/{AccountKey}':
+    get:
+      tags:
+        - CashManagement - Cash Withdrawal Limits
+      description: Get available amount for withdrawal.
+      operationId: CashWithdrawalLimitGetCashWithdrawalLimitsAsync
+      parameters:
+        - name: AccountKey
+          in: path
+          description: AccountKey
+          required: true
+          schema:
+            minLength: 1
+            type: string
+            x-type-name: AccountKey
+          example: OV6ZL2-AYB0VvW2FzEqz7A==
+      responses:
+        '200':
+          description: Action was executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CashAccountWithdrawalLimit'
+              example: {
+  "AccountKey": "sUyiJbnf57ayjlcoNp1RkA==",
+  "Currency": "USD",
+  "MaxAllowedWithdrawalAmount": 100.0
+}
+        '400':
+          description: One or more of the provided parameters are invalid.
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - NotNormalAccount
+                    type: string
+                    x-enum-descriptions:
+                      NotNormalAccount: Account should be normal trading account
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - CashWithdrawalLimitsNotFound
+                      - ClientNotSameAsAccount
+                    type: string
+                    x-enum-descriptions:
+                      ClientNotSameAsAccount: ClientKey and AccountKey both should have same client
+                      CashWithdrawalLimitsNotFound: Cash Withdrawal limits not found
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '503':
+          description: Service Unavailable
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  /atr/v1/cashmanagement/withdrawallimits:
+    get:
+      tags:
+        - CashManagement - Cash Withdrawal Limits
+      description: Obsolete Get available amount for withdrawal.
+      operationId: CashWithdrawalLimitGetCashWithdrawalLimits
+      parameters:
+        - name: AccountKey
+          in: query
+          description: AccountKey
+          required: true
+          schema:
+            minLength: 1
+            type: string
+            x-type-name: AccountKey
+        - name: ClientKey
+          in: query
+          description: ClientKey
+          required: true
+          schema:
+            minLength: 1
+            type: string
+            x-type-name: ClientKey
+      responses:
+        '200':
+          description: Action was executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CashWithdrawalLimitListResult'
+              example: {
+  "Data": [
+    {
+      "AccountKey": "sUyiJbnf57ayjlcoNp1RkA==",
+      "ClientKey": "W-CgwnsUEpETkiR8MPJalA==",
+      "MaxAllowedWithdrawalAmount": 100.0
+    }
+  ]
+}
+        '400':
+          description: One or more of the provided parameters are invalid.
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - AccountAccessDenied
+                      - ClientAccessDenied
+                      - ClientOrAccountNotFound
+                    type: string
+                    x-enum-descriptions:
+                      ClientAccessDenied: User is not authorized to access requested Client
+                      AccountAccessDenied: User is not authorized to access Account
+                      ClientOrAccountNotFound: Client or Account not found
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - CashWithdrawalLimitsNotFound
+                      - TrialClientNotSupported
+                    type: string
+                    x-enum-descriptions:
+                      CashWithdrawalLimitsNotFound: Cash Withdrawal limits not found
+                      TrialClientNotSupported: Trial clients are not supported
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '503':
+          description: Service Unavailable
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      deprecated: true
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-deprecated-date: '2023-01-01'
+components:
+  schemas:
+    AccountSummary:
+      title: Model that contains  properties
+      type: object
+      properties:
+        AverageMonthlyBalanceYTD:
+          title: Average Monthly Balance Year to Date
+          type: number
+        Beneficiaries:
+          title: Beneficiaries
+          type: array
+          items:
+            $ref: '#/components/schemas/Beneficiary'
+        EarliestRetirementAge:
+          title: Earliest Retirement Age
+          type: string
+        ExceededPaymentForLifelongAnnuity:
+          title: Exceeded Payment For Lifelong Annuity
+          type: number
+        ExpiryDate:
+          title: Expiry Date
+          type: string
+          format: date
+          x-type-name: Date
+        FundingYTD:
+          title: Funding Year to Date
+          type: number
+        PALTaxPaidPreviousYear:
+          title: Profit and Loss after Tax Paid Previous Year
+          type: number
+        PayoutYTD:
+          title: Payout Year to Date
+          type: number
+        RemainingFundingLimit:
+          title: Remaining Funding Limit
+          type: number
+        ReturnYTD:
+          title: Return Year to Date
+          type: number
+        StatePensionAge:
+          title: State Pension Age
+          type: number
+        TransferredIn:
+          title: Transferred in
+          type: number
+        UnsettledProfitAndLossYTD:
+          title: Unsettled Profit and Loss Year to Date
+          type: number
+      additionalProperties: false
+    AccountWithInstitutionDetails:
+      title: Account Wih Institution Details. This is the bank where the beneficiary holds the account.
+      type: object
+      properties:
+        AccountNumber:
+          title: Account number
+          type: string
+        Bic:
+          title: Beneficiary Bank BIC (Swift Code)
+          type: string
+        ClearingCode:
+          title: Beneficiary Bank local Clearing Code
+          type: string
+        Iban:
+          title: Beneficiary International Bank Account Number
+          type: string
+      additionalProperties: false
+    ApiGroupInfo:
+      title: Infor for an Api Group.
+      type: object
+      properties:
+        Controller:
+          title: Gets the Api Controller name.
+          type: string
+        Routes:
+          title: Gets the routes for the ApiGroup.
+          type: array
+          items:
+            type: string
+      additionalProperties: false
+    Beneficiary:
+      title: Model that contains  properties
+      type: object
+      properties:
+        BeneficiaryType:
+          title: Beneficiary Type
+          type: string
+        Name:
+          title: Name
+          type: string
+        Percentage:
+          title: Percentage
+          type: number
+      additionalProperties: false
+    BeneficiaryDetails:
+      title: BeneficiaryDetails
+      type: object
+      properties:
+        AccountNumber:
+          title: Beneficiary local Bank Account Number
+          type: string
+        BankAddress:
+          title: Beneficiary Bank address
+          type: string
+        BankName:
+          title: Beneficiary Bank Name
+          type: string
+        Bic:
+          title: Beneficiary Bank BIC (Swift Code)
+          type: string
+        ClearingCode:
+          title: Beneficiary Bank local Clearing Code
+          type: string
+        CountryCode:
+          title: Beneficiary Bank Country Code
+          type: string
+        Iban:
+          title: Beneficiary International Bank Account Number
+          type: string
+      additionalProperties: false
+    BeneficiaryInstruction:
+      title: BeneficiaryInstructionsResponse
+      type: object
+      properties:
+        AccountWithInstitutionDetails:
+          title: Account with institution info
+          allOf:
+            - $ref: '#/components/schemas/AccountWithInstitutionDetails'
+        BeneficiaryDetails:
+          title: Beneficiary detail
+          allOf:
+            - $ref: '#/components/schemas/BeneficiaryDetails'
+        BeneficiaryInstructionId:
+          title: Beneficiary InstructionId Id
+          type: string
+        ClientId:
+          title: Client Id
+          type: string
+        Currency:
+          title: Transaction currency
+          type: string
+        IntermediaryBank:
+          title: Intermediary detail
+          allOf:
+            - $ref: '#/components/schemas/IntermediaryBank'
+        MessageType:
+          title: Swift message type of the beneficiary
+          allOf:
+            - $ref: '#/components/schemas/MessageType'
+        Name:
+          title: Instruction name
+          type: string
+        RegulatedBroker:
+          title: RegulatedBroker details
+          allOf:
+            - $ref: '#/components/schemas/RegulatedBroker'
+      additionalProperties: false
+    BeneficiaryInstructionListResult:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/BeneficiaryInstruction'
+          description: The collection of entities for this feed.
+        MaxRows:
+          type: number
+          description: The maximum number of rows that can be returned (if applicable).
+        __count:
+          type: number
+          description: The total count of items in the feed.
+        __next:
+          type: string
+          description: The link for the next page of items in the feed.
+      additionalProperties: false
+    Broker:
+      title: Broker Information
+      required:
+        - CountryCode
+        - Name
+        - Contact
+        - Phone
+        - Email
+      type: object
+      properties:
+        Contact:
+          title: Broker Contact
+          type: string
+        CountryCode:
+          title: Broker's Country Id
+          pattern: '^[A-Z]{2}$'
+          type: string
+          x-type-name: CountryCode
+        Email:
+          title: Broker Email
+          type: string
+        Name:
+          title: Broker Name
+          type: string
+        Phone:
+          title: Broker Phone Number
+          type: string
+      additionalProperties: false
+    BrokerListResult:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Broker'
+          description: The collection of entities for this feed.
+        MaxRows:
+          type: number
+          description: The maximum number of rows that can be returned (if applicable).
+        __count:
+          type: number
+          description: The total count of items in the feed.
+        __next:
+          type: string
+          description: The link for the next page of items in the feed.
+      additionalProperties: false
+    BuyerSellerCodeType:
+      title: The possible BuyerSellerCodeTypes.
+      enum:
+        - Bic
+        - Cdident
+        - Local
+        - None
+        - Text
+      type: string
+      x-enum-descriptions:
+        None: None
+        Bic: Bic
+        Local: Local
+        Text: Text
+        Cdident: Cdident
+    CardDefinition:
+      title: Card Definition
+      type: object
+      properties:
+        BrandId:
+          title: Brand Id
+          type: integer
+          format: int32
+        Id:
+          title: Id
+          type: integer
+          format: int32
+        LockedCountry:
+          title: Locked Country
+          type: string
+        LockedCurrency:
+          title: Locked Currency
+          type: string
+        Name:
+          title: Name
+          type: string
+        ProviderId:
+          title: Provider Id
+          type: string
+      additionalProperties: false
+    CardLogoResponse:
+      title: Card Logo Response
+      type: object
+      properties:
+        CreditCardLogos:
+          title: Card logo information
+          type: array
+          items:
+            $ref: '#/components/schemas/CreditCardLogo'
+      additionalProperties: false
+    CashAccountWithdrawalLimit:
+      title: Cash Account Withdrawal Limit
+      type: object
+      properties:
+        AccountKey:
+          title: AccountKey
+          minLength: 1
+          type: string
+          x-type-name: AccountKey
+        Currency:
+          title: Currency
+          pattern: '^[A-Z]{3}$'
+          type: string
+          x-type-name: CurrencyCode
+        MaxAllowedWithdrawalAmount:
+          title: Max allowed withdrawal amount
+          type: number
+      additionalProperties: false
+    CashWithdrawalLimit:
+      title: CashWithdrawalLimit
+      type: object
+      properties:
+        AccountKey:
+          title: AccountKey
+          minLength: 1
+          type: string
+          x-type-name: AccountKey
+        ClientKey:
+          title: ClientKey
+          minLength: 1
+          type: string
+          x-type-name: ClientKey
+        MaxAllowedWithdrawalAmount:
+          title: Max allowed withdrawal amount
+          type: number
+      additionalProperties: false
+    CashWithdrawalLimitListResult:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CashWithdrawalLimit'
+          description: The collection of entities for this feed.
+        MaxRows:
+          type: number
+          description: The maximum number of rows that can be returned (if applicable).
+        __count:
+          type: number
+          description: The total count of items in the feed.
+        __next:
+          type: string
+          description: The link for the next page of items in the feed.
+      additionalProperties: false
+    ClearingAgentCodeType:
+      title: The possible ClearingAgentCodeTypes.
+      enum:
+        - Bic
+        - Local
+        - None
+      type: string
+      x-enum-descriptions:
+        None: None
+        Bic: Bic
+        Local: Local
+    Country:
+      title: Country
+      type: object
+      properties:
+        Iso2:
+          title: Iso 2
+          type: string
+        Name:
+          title: Name
+          type: string
+      additionalProperties: false
+    CreditCardErrorInfo:
+      title: Credit Card Error Info
+      type: object
+      properties:
+        ErrorCode:
+          title: Error Code
+          allOf:
+            - $ref: '#/components/schemas/CreditCardLogoErrorCode'
+        Message:
+          title: Message
+          type: string
+      additionalProperties: false
+    CreditCardLogo:
+      title: Credit Card Logo
+      type: object
+      properties:
+        ContentType:
+          title: Content Type of logo file
+          type: string
+        Data:
+          title: Data of logo file in base64 format
+          type: string
+        DefinitionId:
+          title: Unique id to identify type of card
+          type: integer
+          format: int32
+        ErrorResponse:
+          title: Error response
+          allOf:
+            - $ref: '#/components/schemas/CreditCardErrorInfo'
+        Height:
+          title: Height of image
+          type: number
+        Width:
+          title: Width of Image
+          type: number
+      additionalProperties: false
+    CreditCardLogoErrorCode:
+      title: Credit Card Logo Enum
+      enum:
+        - NotFound
+      type: string
+      x-enum-descriptions:
+        NotFound: Definition Id not found.
+    DependencyInfo:
+      title: 'Represents information about named dependency, component, or subsystem.'
+      type: object
+      properties:
+        Events:
+          title: The events related to the dependency.
+          type: array
+          items:
+            $ref: '#/components/schemas/DependencyStatusEvent'
+        Name:
+          title: The unique name of the dependency.
+          type: string
+      additionalProperties: false
+    DependencyStatusEvent:
+      type: object
+      properties:
+        Message:
+          title: A free-text message describing the event.
+          type: string
+          description: 'The message can indicate the type of failure, an exception message, or likewise.'
+        Status:
+          title: The dependency status after the event.
+          allOf:
+            - $ref: '#/components/schemas/DependencyStatusKind'
+        Timestamp:
+          type: string
+          format: date-time
+          x-type-name: UtcDateTime
+      additionalProperties: false
+    DependencyStatusKind:
+      title: Represents different dependency statuses.
+      enum:
+        - Failed
+        - Initializing
+        - None
+        - Ready
+      type: string
+      x-enum-descriptions:
+        None: Indicates that no status has been set for a dependency.
+        Initializing: Indicates a dependency is initializing.
+        Ready: Indicates that a dependency has operational status.
+        Failed: Indicates that a dependency is not operational.
+    DiskDrive:
+      title: 'Data contract for logical disk drives, including Total and Free disk space'
+      type: object
+      properties:
+        DriveSize:
+          title: DriveSize (in GB)
+          type: integer
+          format: int64
+        FreeSpace:
+          title: FreeSpace (in GB)
+          type: integer
+          format: int64
+        LogicalDrive:
+          title: LogicalDrive (e.g. C or D)
+          type: string
+        PercentUsed:
+          title: PercentUsed
+          type: integer
+          format: int32
+      additionalProperties: false
+    FileVersionInfo:
+      type: object
+      properties:
+        Comments:
+          type: string
+        CompanyName:
+          type: string
+        FileBuildPart:
+          type: integer
+          format: int32
+        FileDescription:
+          type: string
+        FileMajorPart:
+          type: integer
+          format: int32
+        FileMinorPart:
+          type: integer
+          format: int32
+        FileName:
+          type: string
+        FilePrivatePart:
+          type: integer
+          format: int32
+        FileVersion:
+          type: string
+        InternalName:
+          type: string
+        IsDebug:
+          type: boolean
+        IsPatched:
+          type: boolean
+        IsPreRelease:
+          type: boolean
+        IsPrivateBuild:
+          type: boolean
+        IsSpecialBuild:
+          type: boolean
+        Language:
+          type: string
+        LegalCopyright:
+          type: string
+        LegalTrademarks:
+          type: string
+        OriginalFilename:
+          type: string
+        PrivateBuild:
+          type: string
+        ProductBuildPart:
+          type: integer
+          format: int32
+        ProductMajorPart:
+          type: integer
+          format: int32
+        ProductMinorPart:
+          type: integer
+          format: int32
+        ProductName:
+          type: string
+        ProductPrivatePart:
+          type: integer
+          format: int32
+        ProductVersion:
+          type: string
+        SpecialBuild:
+          type: string
+      additionalProperties: false
+    FundingCheck:
+      title: Specifies if funding rules should be checked or not.
+      enum:
+        - Enforce
+        - Ignore
+      type: string
+      x-enum-descriptions:
+        Enforce: Enforce funding checks
+        Ignore: Ignore funding checks
+    FundingCheckNullable:
+      $ref: '#/components/schemas/FundingCheck'
+    IServiceCustomization:
+      title: Information about how the services has been customized primarily through OpenApiStartup settings.
+      type: object
+      properties:
+        Customizations:
+          title: Gets the customizations.
+          type: array
+          items:
+            $ref: '#/components/schemas/StringStringKeyValuePair'
+      additionalProperties: false
+    IntermediaryBank:
+      title: IntermediaryBank
+      type: object
+      properties:
+        AccountNumber:
+          title: Financial institution through which the transaction must pass to reach the account with institution.
+          type: string
+        Bic:
+          title: Financial institution through which the transaction must pass to reach the account with institution.
+          type: string
+        ClearingCode:
+          title: Financial institution through which the transaction must pass to reach the account with institution.
+          type: string
+      additionalProperties: false
+    MessageType:
+      title: Message Type
+      enum:
+        - MT103
+        - MT202
+      type: string
+      x-enum-descriptions:
+        MT202: MT202
+        MT103: MT103
+    ModelStateDictionary:
+      type: object
+      additionalProperties:
+        type: array
+        items:
+          type: string
+    PartnerAccountCashTransferLimit:
+      title: Cash transfer limit
+      type: object
+      properties:
+        AccountKey:
+          title: AccountKey
+          minLength: 1
+          type: string
+          x-type-name: AccountKey
+        CashTransferLimit:
+          title: Maximal amount which can be transferred out.
+          type: number
+        Currency:
+          title: Currency
+          pattern: '^[A-Z]{3}$'
+          type: string
+          x-type-name: CurrencyCode
+      additionalProperties: false
+    PartnerCashTransferLimit:
+      title: CashWithdrawalLimit
+      type: object
+      properties:
+        AccountKey:
+          title: AccountKey
+          minLength: 1
+          type: string
+          x-type-name: AccountKey
+        ClientKey:
+          title: ClientKey
+          minLength: 1
+          type: string
+          x-type-name: ClientKey
+        MaxAllowedWithdrawalAmount:
+          title: Max allowed withdrawal amount
+          type: number
+      additionalProperties: false
+    PartnerCashTransferLimitListResult:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PartnerCashTransferLimit'
+          description: The collection of entities for this feed.
+        MaxRows:
+          type: number
+          description: The maximum number of rows that can be returned (if applicable).
+        __count:
+          type: number
+          description: The total count of items in the feed.
+        __next:
+          type: string
+          description: The link for the next page of items in the feed.
+      additionalProperties: false
+    PartnerCashTransferRequest:
+      title: Transfer details needed for the partner cash transfer
+      required:
+        - FromAccountKey
+        - ToAccountKey
+        - Amount
+        - Currency
+      type: object
+      properties:
+        Amount:
+          title: The value that will be transacted.
+          type: number
+        Comment:
+          title: Comment to the transaction. The comment will be seen in the EOD files.
+          type: string
+        Currency:
+          title: "Currency in which the cash movement will be held in.\r\n            \r\n            This is essentially just an extra check! The currency entered here must be the same as that of the funding account and the clients trading account."
+          type: string
+        ExternalReference:
+          title: Caller may add this to identify the request.
+          type: string
+        FromAccountKey:
+          title: "Account from where the cash is moved from. For funding transactions, this field will hold the AccountKey of the funding account. For withdrawal transactions this field will hold the AccountKey of the clients trading account.\r\n            \r\n            Remember that the currency of the funding account and the clients trading account must be the same."
+          minLength: 1
+          type: string
+          x-type-name: AccountKey
+        FundingCheck:
+          title: "Specify this to specify if funding rules be checked and enforced.\r\n            \r\n            Default is \"Enforce\".\r\n            \r\n            Enforce: All margin and funding checks will be performed and enforced.The transaction will fail if margin and funding checks are not passed.\r\n            \r\n            Ignore: No margin or funding checks are performed.The operation will move the specified monies from the client account and you can ultimately place the clients accounts into negative.\r\n            \r\n            You can only specify FundingCheck:Ignore for a cash withdrawal from a clients trading account back to the WLC's funding account.\r\n            \r\n            If you specify FundingCheck:Ignore for a funding from the WLC's funding account to the clients trading account, the call will fail."
+          allOf:
+            - $ref: '#/components/schemas/FundingCheckNullable'
+        ToAccountKey:
+          title: "Account where the cash is moved to. For funding transactions, this field will hold the AccountKey of the clients trading account. For withdrawal transactions this field will hold the AccountKey of the WLCs funding account.\r\n            \r\n            Remember that the currency of the funding account and the clients trading account must be the same."
+          minLength: 1
+          type: string
+          x-type-name: AccountKey
+        ValueDate:
+          title: 'Value Date of settlement of cash transfer. Must be within the range [-90;90] days of current date.'
+          type: string
+          format: date-time
+          x-type-name: UtcDateTime
+      additionalProperties: false
+    PartnerCashTransferResponse:
+      title: Result of partner's initiated cash transfer.
+      type: object
+      properties:
+        FromAccountPositionId:
+          title: The id of the cash position created on the "from" account.
+          type: string
+        ToAccountPositionId:
+          title: The id of the cash position created on the "to" account.
+          type: string
+        TransactionId:
+          title: Id of the transaction done.
+          type: string
+      additionalProperties: false
+    PartnerPrebookFundDepositRequest:
+      title: Prebooked deposit details for the client account
+      required:
+        - ClientKey
+        - AccountKey
+        - ClientName
+        - Iban
+        - BIC
+        - Amount
+        - Currency
+        - RemitterAccount
+        - ExpectedValueDate
+        - ExternalReference
+      type: object
+      properties:
+        AccountKey:
+          title: Client account key in which fund will be deposited
+          minLength: 1
+          type: string
+          x-type-name: AccountKey
+        Amount:
+          title: Funding Amount
+          type: number
+        BIC:
+          title: BIC (Swift Code) code of sender bank
+          type: string
+        ClientKey:
+          title: ClientKey for which system will execute deposit
+          minLength: 1
+          type: string
+          x-type-name: ClientKey
+        ClientName:
+          title: Client Name for which system will execute deposit
+          type: string
+        Currency:
+          title: Funding currency
+          type: string
+        ExpectedValueDate:
+          title: Expected value date
+          type: string
+          format: date
+          x-type-name: Date
+        ExternalReference:
+          title: 'Reference number, if any'
+          type: string
+        Iban:
+          title: Client International Bank Account Number
+          type: string
+        RemitterAccount:
+          title: Remitter Account
+          type: string
+      additionalProperties: false
+    PaymentProvider:
+      title: Payment Provider
+      enum:
+        - Paytrail
+        - Trustly
+        - WeCollect
+        - WorldPay
+      type: string
+      x-enum-descriptions:
+        WorldPay: Worldpay payment provider
+        WeCollect: Wecollect payment provider
+        Paytrail: Paytrail payment provider
+        Trustly: Trustly payment provider
+    PaymentProviderNullable:
+      $ref: '#/components/schemas/PaymentProvider'
+    PreviewRequest:
+      title: 'Specifies parameters for a transaction request, so the service can return a preview of the associated charges'
+      required:
+        - CardDefinitionId
+        - PaymentId
+        - AccountKey
+        - Amount
+        - Currency
+        - IssuerCountryCode
+      type: object
+      properties:
+        AccountKey:
+          title: The account to transfer to.
+          minLength: 1
+          type: string
+          x-type-name: AccountKey
+        Amount:
+          title: The ammount to transfer
+          minimum: 0
+          type: number
+        CardDefinitionId:
+          title: The card definition id
+          type: string
+        Currency:
+          title: The currency to transfer the amount in.
+          maxLength: 3
+          minLength: 0
+          type: string
+        IsAutoTrading:
+          title: 'If the account is an AutoTrading account, this has to be set as true'
+          type: boolean
+        IssuerCountryCode:
+          title: The creditcard issuer country
+          type: string
+        PaymentId:
+          title: The payment id to use.
+          type: string
+        RegisteredCardId:
+          title: 'If using a existing card, this should be set.'
+          type: string
+      additionalProperties: false
+    PreviewResponse:
+      title: Contains a preview of what charges and deposits will take place if the client goes ahead with the transaction.
+      type: object
+      properties:
+        Amount:
+          title: The amount in FromCurrency to transfer
+          type: number
+        AmountToCharge:
+          title: 'The total amount to charge to the cards, in account currency.'
+          type: number
+        AmountToDeposit:
+          title: The amount to that will be deposited intor the account account after fee's are deducted.
+          type: number
+        DisplayFeeDisclaimer:
+          title: Display fee disclaimer or not.
+          type: boolean
+        ExchangeRate:
+          title: The exchange rate used for the transaction.
+          type: number
+        FromCurrency:
+          title: The currency of the card to transfer from
+          type: string
+        ToCurrency:
+          title: The currency of the account to transfer to
+          type: string
+        TransactionFee:
+          title: The transaction fee payed in ToCurrency
+          type: number
+        TransferredFromCardAmount:
+          title: Amount in CNY passed to WeCollect PSP. Other than china unionpay this value will be null.
+          type: number
+        TransferredFromCardCurrency:
+          title: "In case of china unionpay card type this value will be CNY as we pass\r\n            amount in CNY to WeCollect payment service provider."
+          type: string
+      additionalProperties: false
+    ProcessInfo:
+      title: Data contract for process status
+      type: object
+      properties:
+        HostName:
+          title: Name of computer process is running on
+          type: string
+        Id:
+          title: Process Id
+          type: integer
+          format: int32
+        PeakWorkingSet:
+          title: Maximum memory usage(in Bytes)
+          type: integer
+          format: int64
+        ProcessTimePercent:
+          title: Measurement of CPU Utilization Percentage based on .net process values
+          type: number
+        ProcessTimePercentPerformanceCounter:
+          title: Measurement of CPU Utilization Percentage based on performance counter
+          type: number
+        StartTime:
+          title: The time the process was started
+          type: string
+        Threads:
+          title: Number of operating system threads running in process
+          type: integer
+          format: int32
+        WorkingSet:
+          title: Current memory usage (in Bytes)
+          type: integer
+          format: int64
+      additionalProperties: false
+    RegulatedBroker:
+      title: Regulated Broker
+      type: object
+      properties:
+        AccountNumber:
+          title: Regulated broker account.
+          type: string
+        Name:
+          title: Regulated broker name
+          type: string
+      additionalProperties: false
+    ResponseFilterRegistration:
+      title: Response filter/contract type registration.
+      type: object
+      properties:
+        Contract:
+          title: Contract type for which a response filter was registered.
+          type: string
+        Processor:
+          title: ResponseFilterProcessor type handling contract.
+          type: string
+      additionalProperties: false
+    Security:
+      title: Details for one security to get transferred.
+      required:
+        - Price
+        - Quantity
+        - Uic
+      type: object
+      properties:
+        Currency:
+          title: Currency
+          type: string
+        Description:
+          title: Description
+          type: string
+        Exchange:
+          title: Exchange
+          type: string
+        ExchangeText:
+          title: ExchangeText
+          type: string
+        InstrumentSymbolCode:
+          title: InstrumentSymbolCode
+          type: string
+        IsinCode:
+          title: IsinCode
+          type: string
+        Price:
+          title: The price per security
+          type: number
+        PurchaseDate:
+          title: Purchase date of instrument
+          type: string
+          format: date
+          x-type-name: Date
+        Quantity:
+          title: Quantity of security to transfer
+          type: number
+        Uic:
+          title: Uic of the security
+          type: integer
+          format: int32
+      additionalProperties: false
+    ServerStatus:
+      title: Data contract for server status.
+      type: object
+      properties:
+        AppPoolId:
+          title: Gets the current app pool id.
+          type: string
+        ApplicationName:
+          title: Name of service group (host assembly)
+          type: string
+        ApplicationVersion:
+          title: Version of service group (host assembly)
+          type: string
+        BuildTime:
+          title: Gets the build time of the current assembly.
+          type: string
+        Created:
+          title: UtcDateTime stamp for when this object was created.
+          type: string
+          format: date-time
+          x-type-name: UtcDateTime
+        Customization:
+          title: Information about how the services has been customized primarily through OpenApiStartup settings.
+          allOf:
+            - $ref: '#/components/schemas/IServiceCustomization'
+        Dependencies:
+          title: Information about the service dependencies.
+          type: array
+          items:
+            $ref: '#/components/schemas/DependencyInfo'
+        DeployTime:
+          title: Gets the datetime of deployment (last modified).
+          type: string
+        DiskDrives:
+          title: DiskDrives (drive space in GB)
+          type: array
+          items:
+            $ref: '#/components/schemas/DiskDrive'
+        FrameworkVersion:
+          title: Version of OpenAI Framework in use
+          type: string
+        InternalInformation:
+          title: InternalInformation
+          type: array
+          items:
+            $ref: '#/components/schemas/StringStringKeyValuePair'
+        LeasePeriod:
+          title: The lease period (expiry) of the authentication token.
+          type: integer
+          format: int32
+        LoadedAssemblies:
+          title: 'Loaded assemblies, full'
+          type: array
+          items:
+            $ref: '#/components/schemas/FileVersionInfo'
+        LoadedAssembliesVersions:
+          title: Loaded assemblies and versions
+          type: array
+          items:
+            $ref: '#/components/schemas/StringStringKeyValuePair'
+        LogicalProcessors:
+          title: Information about number of logical processors on the box
+          type: integer
+          format: int32
+        MachineUptime:
+          title: Ticks since the machine was started.
+          type: integer
+          format: int64
+        MachineUptimeText:
+          title: Ticks since the machine was started in text.
+          type: string
+        NetFrameworkVersion:
+          title: Version of .NET Framework in use
+          type: string
+        OSVersion:
+          title: Version of server hosting Operating System.
+          type: string
+        PerformanceCounters:
+          title: Values of performance counters reported by the servicegroup
+          type: array
+          items:
+            $ref: '#/components/schemas/StringStringKeyValuePair'
+        Process:
+          title: Information about current process.
+          allOf:
+            - $ref: '#/components/schemas/ProcessInfo'
+        ResponseFilters:
+          title: Lists registered response filter/contract types.
+          type: array
+          items:
+            $ref: '#/components/schemas/ResponseFilterRegistration'
+        RouteTable:
+          title: Gets or the route table.
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiGroupInfo'
+        RunningIdentity:
+          title: Identity in which the application is running.
+          type: string
+        SystemEnvironment:
+          title: "SystemEnvironment is read from configuration and has to be one of the following:\r\n            \"Dev(elopment)\", \"Test\", \"Sim(ulation)\" or \"Live\"."
+          type: string
+        SystemUptime:
+          title: Ticks since the service group was started.
+          type: integer
+          format: int64
+        SystemUptimeText:
+          title: Ticks since the service group was started in text.
+          type: string
+        TimeSpentMs:
+          title: Time spent in ms to generate the status information.
+          type: number
+        ToolId:
+          title: System ToolId (hard coded as 40 for OpenApi). See Iit.FrontOffice.Trading.Public.ToolId enum for full definition.
+          type: integer
+          format: int32
+        WebAPIVersion:
+          title: Version of WebAPI in use
+          type: string
+      additionalProperties: false
+    SettlementInstruction:
+      title: Security Transfer Settlement Instructions
+      type: object
+      properties:
+        AccountAtClearingAgent:
+          title: The safekeeping / Security account at the custody of the client
+          type: string
+        AgentLocalAccount:
+          title: The agent local account
+          type: string
+        BuyerSellerCode:
+          title: The buyer seller code
+          type: string
+        BuyerSellerCodeType:
+          title: The BIC Code / Local Code of the custody of the client with their counterpart
+          allOf:
+            - $ref: '#/components/schemas/BuyerSellerCodeType'
+        ClearingAgentCode:
+          title: The clearing agent code
+          type: string
+        ClearingAgentCodeType:
+          title: The BIC / Local Code of the Exchange of the instrument. For example if client is trading in UK Share then the Clearing Agent would be the BIC / Local Code from UK
+          allOf:
+            - $ref: '#/components/schemas/ClearingAgentCodeType'
+        FreeText:
+          title: The information / remarks
+          type: string
+        SettlementAgentAccount:
+          title: The settlement agent account
+          type: string
+      additionalProperties: false
+    StoredCard:
+      title: Stored Card
+      type: object
+      properties:
+        CardDefinitionId:
+          title: The card definition id
+          type: string
+        CardNumber:
+          title: Card Number
+          type: string
+        IssuerCountry:
+          title: The creditcard issuer country
+          type: string
+        RegisteredCardId:
+          title: Registered Card Id
+          type: string
+      additionalProperties: false
+    StringStringKeyValuePair:
+      type: object
+      properties:
+        Key:
+          type: string
+        Value:
+          type: string
+      additionalProperties: false
+    SubscriptionInfoFilter:
+      title: Represents subscription filters for querying the subscription diagnostics endpoint.
+      type: object
+      properties:
+        ApplicationId:
+          title: Restricts the subscriptions to an application if specified.
+          minimum: 1
+          type: integer
+          format: int32
+          x-type-name: ApplicationId
+        ContextId:
+          title: Restricts the subscriptions to a streaming session if specified along with a session id.
+          type: string
+        Publisher:
+          title: Restricts the subscriptions to a publisher if specified.
+          type: string
+        SessionId:
+          title: Restricts the subscriptions to a session if specified.
+          pattern: '^[0-9a-fA-F]{32}$|^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+          type: string
+          x-type-name: SessionId
+        UserId:
+          title: Restricts the subscriptions to a MITS user if specified.
+          allOf:
+            - $ref: '#/components/schemas/UserIdNullable'
+      additionalProperties: false
+    TransactionOptions:
+      title: Transaction Options
+      type: object
+      properties:
+        CardDefinitions:
+          title: Card Definitions
+          type: array
+          items:
+            $ref: '#/components/schemas/CardDefinition'
+        Countries:
+          title: Countries
+          type: array
+          items:
+            $ref: '#/components/schemas/Country'
+        Currencies:
+          title: Currencies
+          type: array
+          items:
+            type: string
+        MaximumAllowedStoredCards:
+          title: Maximum Allowed Stored Cards
+          type: integer
+          format: int32
+        PaymentId:
+          title: Payment Id
+          type: string
+        RestrictedCardDefinitions:
+          title: Restricted Card Definitions
+          type: array
+          items:
+            $ref: '#/components/schemas/CardDefinition'
+        StoredCards:
+          title: Stored Cards
+          type: array
+          items:
+            $ref: '#/components/schemas/StoredCard'
+        SubsidiaryAddress:
+          title: Subsidiary Address
+          type: string
+      additionalProperties: false
+    TransactionResult:
+      title: Subset of all possible transaction results.
+      enum:
+        - AmountBelowLimit
+        - AmountExceedsLimit
+        - DeclinedByIssuer
+        - DuplicatedPayment
+        - OK
+        - SumOverPeriodExceedsLimit
+        - SystemError
+        - TransactionDeclined
+        - UnableToProcessTransaction
+      type: string
+      x-enum-descriptions:
+        OK: OK
+        UnableToProcessTransaction: We are unable to process your transaction.
+        AmountBelowLimit: The amount is below the per transaction limit. Please try a higher amount.
+        AmountExceedsLimit: The amount exceeds the per transaction limit. Please try a lower amount.
+        SumOverPeriodExceedsLimit: The running sum of deposits over the last period exceeds the allowed limit.
+        TransactionDeclined: 'The transaction was declined – please try another card, or contact Customer Service.'
+        DuplicatedPayment: This payment has already been submitted for processing – please await the payment result.
+        DeclinedByIssuer: The transaction was declined by your issuer. Please try another card or contact your issuer.
+        SystemError: CreditCard system error
+    TransactionSearchCriteria:
+      title: Criteria to search transactions
+      type: object
+      properties:
+        AccountKey:
+          title: 'If specified, will only return entries pertaining to the specified account.'
+          minLength: 1
+          type: string
+          x-type-name: AccountKey
+        ClientKey:
+          title: 'If specified, will only return entries pertaining to the specified client.'
+          minLength: 1
+          type: string
+          x-type-name: ClientKey
+        ExternalReference:
+          title: Include entries with the specified ExternalReference.
+          type: string
+        FromDateTime:
+          title: Only include entries with a TransferRequestedOn value greater than or equal to FromDateTime.
+          type: string
+        SkipToken:
+          title: Id token of entity to start taking elements from.
+          type: string
+        ToDateTime:
+          title: Only include entries with a TransferRequestedOn value lower than or equal to ToDateTime.
+          type: string
+        Top:
+          title: 'Number of elements to retrieve. (Default is 50, Max is 1000.)'
+          type: integer
+          format: int32
+      additionalProperties: false
+    TransactionStatusRequest:
+      title: Parameters needed to identify the status for a particular transaction.
+      required:
+        - RedirectUrl
+      type: object
+      properties:
+        MerchantData:
+          title: Merchant data sent by card issuer bank.
+          type: string
+        PageResponse:
+          title: Token as a page response sent by card issuer bank.
+          type: string
+        PaymentProvider:
+          title: Payment provider for payment service
+          allOf:
+            - $ref: '#/components/schemas/PaymentProviderNullable'
+        RedirectUrl:
+          title: "Redirect Url when user will be redirected from payment \r\n            service provider to Saxo environment."
+          type: string
+      additionalProperties: false
+    TransactionStatusResponse:
+      title: 'Status of transaction, whether completed, failed or in progress.'
+      type: object
+      properties:
+        Account:
+          title: The account transfered to.
+          type: string
+        AccountAmount:
+          title: 'The amount to be transfered, excluding fees in the account currency.'
+          type: number
+        Amount:
+          title: 'Amount to be transfered in the currency selected, excluding fees.'
+          type: number
+        AmountToTransfer:
+          title: TODO
+          type: number
+        CardDescription:
+          title: 'TODO: The card description'
+          type: string
+        ExchangeRate:
+          title: The exchange rate.
+          type: number
+        Fee:
+          title: The fee payed
+          type: number
+        FromCurrency:
+          title: The currency transfered from (card currency).
+          type: string
+        PaymentId:
+          title: The payment ID.
+          type: string
+        ToCurrency:
+          title: The currency transfered to (account currency).
+          type: string
+        TransactionResult:
+          title: Current or end result of the transaction
+          allOf:
+            - $ref: '#/components/schemas/TransactionResult'
+      additionalProperties: false
+    Transfer:
+      required:
+        - ClientAccountAtBroker
+        - Broker
+        - TransferDirection
+        - AssetType
+        - Securities
+      type: object
+      properties:
+        AccountId:
+          title: Account Id
+          type: string
+        AccountManager:
+          title: Account Manager
+          type: string
+        AssetType:
+          title: The asset type to be transferred
+          allOf:
+            - $ref: '#/components/schemas/TransferableAssetTypeNullable'
+        Broker:
+          title: The client's broker details
+          allOf:
+            - $ref: '#/components/schemas/Broker'
+        ClientAccountAtBroker:
+          title: Identifier of the client's account at the broker
+          type: string
+        Securities:
+          title: The securities details
+          type: array
+          items:
+            $ref: '#/components/schemas/Security'
+        SettlementDate:
+          title: The settlement date
+          type: string
+          format: date
+          x-type-name: Date
+        TradeDate:
+          title: The agreed trade date
+          type: string
+          format: date
+          x-type-name: Date
+        TransferDirection:
+          title: 'Transfer type, in or out of Bank'
+          allOf:
+            - $ref: '#/components/schemas/TransferDirection'
+        TransferId:
+          title: Transfer Id
+          type: string
+      additionalProperties: false
+    TransferDirection:
+      title: Which direction should the securites be transferred.
+      enum:
+        - TransferIn
+        - TransferOut
+      type: string
+      x-enum-descriptions:
+        TransferIn: Transfer securities from external broker to Saxo Bank
+        TransferOut: Transfer securities Saxo Bank to external broker
+    TransferListResult:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Transfer'
+          description: The collection of entities for this feed.
+        MaxRows:
+          type: number
+          description: The maximum number of rows that can be returned (if applicable).
+        __count:
+          type: number
+          description: The total count of items in the feed.
+        __next:
+          type: string
+          description: The link for the next page of items in the feed.
+      additionalProperties: false
+    TransferRequest:
+      required:
+        - ClientKey
+        - AccountKey
+        - ClientAccountAtBroker
+        - Broker
+        - TransferDirection
+        - AssetType
+        - Securities
+      type: object
+      properties:
+        AccountKey:
+          title: The account identifier in key format from which securities transfer is executed
+          minLength: 1
+          type: string
+          x-type-name: AccountKey
+        AssetType:
+          title: The asset type to be transferred
+          allOf:
+            - $ref: '#/components/schemas/TransferableAssetTypeNullable'
+        Broker:
+          title: The client's broker details
+          allOf:
+            - $ref: '#/components/schemas/Broker'
+        ClientAccountAtBroker:
+          title: Identifier of the client's account at the broker
+          type: string
+        ClientKey:
+          title: The client identifier in key format for which system will execute securities transfer
+          minLength: 1
+          type: string
+          x-type-name: ClientKey
+        Securities:
+          title: The securities details
+          type: array
+          items:
+            $ref: '#/components/schemas/Security'
+        SettlementDate:
+          title: The settlement date
+          type: string
+          format: date
+          x-type-name: Date
+        SettlementInstruction:
+          title: Settlement Instruction
+          allOf:
+            - $ref: '#/components/schemas/SettlementInstruction'
+        TradeDate:
+          title: The agreed trade date
+          type: string
+          format: date
+          x-type-name: Date
+        TransferDirection:
+          title: 'Transfer type, in or out of Bank'
+          allOf:
+            - $ref: '#/components/schemas/TransferDirection'
+      additionalProperties: false
+    TransferResponse:
+      title: Response for security transfer
+      type: object
+      properties:
+        TransferId:
+          title: Unique transaction id for the transfer
+          type: string
+      additionalProperties: false
+    TransferResult:
+      type: object
+      properties:
+        Amount:
+          title: Amount to be moved
+          type: number
+        Comment:
+          title: Comment specified in the request
+          type: string
+        Currency:
+          title: Currency specified in the request
+          type: string
+        ExternalReference:
+          title: External reference specified in the request
+          type: string
+        FromAccount:
+          title: Account where the cash is moved from.
+          minLength: 1
+          type: string
+          x-type-name: AccountKey
+        FromAccountPositionId:
+          title: The id of the cash position created on the "from" account.
+          type: string
+        FundingCheck:
+          title: Funding check action.
+          allOf:
+            - $ref: '#/components/schemas/FundingCheck'
+        ToAccount:
+          title: Account where the cash is moved to.
+          minLength: 1
+          type: string
+          x-type-name: AccountKey
+        ToAccountPositionId:
+          title: The id of the cash position created on the "to" account.
+          type: string
+        TransactionId:
+          title: Unique id for the cash transfer transaction.
+          type: string
+        TransferRequestedOn:
+          title: Time of the transaction was requested.
+          type: string
+          format: date-time
+          x-type-name: UtcDateTime
+        TransferStatus:
+          title: Status of the transaction.
+          allOf:
+            - $ref: '#/components/schemas/TransferStatus'
+        ValueDate:
+          title: Value Date of settlement of cash transfer.
+          type: string
+          format: date-time
+          x-type-name: UtcDateTime
+      additionalProperties: false
+    TransferResultListResult:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransferResult'
+          description: The collection of entities for this feed.
+        MaxRows:
+          type: number
+          description: The maximum number of rows that can be returned (if applicable).
+        __count:
+          type: number
+          description: The total count of items in the feed.
+        __next:
+          type: string
+          description: The link for the next page of items in the feed.
+      additionalProperties: false
+    TransferStatus:
+      enum:
+        - Failed
+        - Pending
+        - Successful
+      type: string
+    TransferableAssetType:
+      title: The possible AssetTypes for which you can transfer in or out.
+      enum:
+        - Bond
+        - CertificateBonus
+        - CertificateCappedBonus
+        - CertificateCappedCapitalProtected
+        - CertificateCappedOutperformance
+        - CertificateConstantLeverage
+        - CertificateDiscount
+        - CertificateExpress
+        - CertificateTracker
+        - CertificateUncappedCapitalProtection
+        - CertificateUncappedOutperformance
+        - CompanyWarrant
+        - Etc
+        - Etf
+        - Etn
+        - Fund
+        - MiniFuture
+        - Rights
+        - Stock
+        - Warrant
+        - WarrantDoubleKnockOut
+        - WarrantKnockOut
+        - WarrantOpenEndKnockOut
+        - WarrantSpread
+      type: string
+      x-enum-descriptions:
+        Stock: Stock
+        Bond: Bond
+        Etf: Exchange traded fund.
+        Etc: Etc
+        Etn: Etn
+        Fund: Fund
+        Rights: Rights
+        Warrant: Warrant
+        MiniFuture: MiniFuture
+        WarrantKnockOut: WarrantKnockOut
+        WarrantOpenEndKnockOut: WarrantOpenEndKnockOut
+        CertificateUncappedCapitalProtection: CertificateUncappedCapitalProtection
+        CertificateCappedCapitalProtected: CertificateCappedCapitalProtected
+        CertificateDiscount: CertificateDiscount
+        CertificateCappedOutperformance: CertificateCappedOutperformance
+        CertificateCappedBonus: CertificateCappedBonus
+        CertificateExpress: CertificateExpress
+        CertificateTracker: CertificateTracker
+        CertificateUncappedOutperformance: CertificateUncappedOutperformance
+        CertificateBonus: CertificateBonus
+        CertificateConstantLeverage: CertificateConstantLeverage
+        CompanyWarrant: 'Unlisted warrant issued by a corporation, often physically settled.'
+      x-enum-network-visibility:
+        Etf: internal
+        Etc: internal
+        Etn: internal
+        Fund: internal
+        Rights: internal
+        CompanyWarrant: internal
+    TransferableAssetTypeNullable:
+      $ref: '#/components/schemas/TransferableAssetType'
+    UserId:
+      minimum: 1
+      type: integer
+      format: int32
+    UserIdNullable:
+      $ref: '#/components/schemas/UserId'
+    WireTransferCurrency:
+      title: Currencies required for wire transfer
+      type: object
+      properties:
+        Currency:
+          title: Currency required for wire transfer.
+          type: string
+      additionalProperties: false
+    WireTransferCurrencyListResult:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WireTransferCurrency'
+          description: The collection of entities for this feed.
+        MaxRows:
+          type: number
+          description: The maximum number of rows that can be returned (if applicable).
+        __count:
+          type: number
+          description: The total count of items in the feed.
+        __next:
+          type: string
+          description: The link for the next page of items in the feed.
+      additionalProperties: false
+    WithdrawalRequest:
+      title: Cash Withdrawal Request
+      required:
+        - AccountKey
+        - BeneficiaryInstructionId
+        - Amount
+        - Currency
+      type: object
+      properties:
+        AccountKey:
+          title: The account identifier in key format from which to transfer money.
+          minLength: 1
+          type: string
+          x-type-name: AccountKey
+        Amount:
+          title: The amount to be withdrawn.
+          type: number
+        BeneficiaryInstructionId:
+          title: Id of the beneficiary instruction to be used for the withdrawal
+          type: string
+        Currency:
+          title: The currency the amount is in.
+          pattern: '^[A-Z]{3}$'
+          type: string
+          x-type-name: CurrencyCode
+        MessageToBeneficiary:
+          title: Comments by user that where he/she want money or any free text. Maximum 140 ASCII characters allowed
+          maxLength: 140
+          minLength: 0
+          type: string
+      additionalProperties: false
+    WithdrawalResponse:
+      title: Response to withdrawal request
+      type: object
+      properties:
+        CutExchangeRate:
+          title: Cut exchange rate.
+          type: number
+        WithdrawalRequestId:
+          title: Outgoing request Id created.
+          type: string
+      additionalProperties: false
+    WorldPayOrderInformation:
+      title: World Pay Order Information
+      type: object
+      properties:
+        Mac:
+          title: Mac
+          type: string
+        OrderKey:
+          title: Order Key
+          type: string
+        PaymentAmount:
+          title: Payment Amount
+          type: string
+        PaymentCurrency:
+          title: Payment Currency
+          type: string
+        PaymentStatus:
+          title: Payment Status
+          type: string
+      additionalProperties: false
+    WorldPayResponseOrder:
+      title: World Pay Response Order
+      type: object
+      properties:
+        OrderKey:
+          title: Order Key
+          type: string
+        WorldPayStatus:
+          title: World Pay Status
+          allOf:
+            - $ref: '#/components/schemas/WorldPayStatusTypes'
+      additionalProperties: false
+    WorldPayStatusTypes:
+      title: World Pay Status Types
+      enum:
+        - Cancelled_By_Shopper
+        - Error
+        - Exception
+        - Failure
+        - Pending
+        - SessionExpired
+        - Success
+      type: string
+      x-enum-descriptions:
+        Success: Success
+        Pending: Pending
+        Failure: Failure
+        Error: Error
+        Exception: Exception
+        Cancelled_By_Shopper: Cancelled_By_Shopper
+        SessionExpired: Session Expired
+    WorldPayTransactionInformations:
+      type: object
+      properties:
+        Error:
+          type: string
+        Order:
+          allOf:
+            - $ref: '#/components/schemas/WorldPayResponseOrder'
+        WorldPayOrderInformation:
+          allOf:
+            - $ref: '#/components/schemas/WorldPayOrderInformation'
+      additionalProperties: false
+  responses:
+    BadRequest:
+      description: One or more of the provided parameters are invalid.
+      content:
+        application/json:
+          schema:
+            required:
+              - ErrorCode
+              - Message
+            type: object
+            properties:
+              ErrorCode:
+                enum:
+                  - InvalidRequest
+                type: string
+                x-enum-descriptions:
+                  InvalidRequest: Default error code returned when it cannot be determined which part of the request is malformed.
+              Message:
+                type: string
+              ModelState:
+                $ref: '#/components/schemas/ModelStateDictionary'
+    ServiceUnavailable:
+      description: Service Unavailable.
+    TooManyRequests:
+      description: The request was rejected due to rate limit being exceeded.
+    Unauthorized:
+      description: Indicates that the request was rejected because the 'Authorization' header was missing in the request or contained an invalid security token.
+  parameters:
+    XInternalIP:
+      name: X-Internal-IP
+      in: header
+      description: Required header for access to network internal endpoints.
+      required: true
+      schema:
+        enum:
+          - '1'
+        type: string
+  securitySchemes:
+    OpenApiJWTSecurityScheme:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OpenApiOAuthSecurityScheme:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://idp.blue.sso.sys.dom/authorize
+          tokenUrl: https://idp.blue.sso.sys.dom/token
+          scopes: { }
+tags:
+  - name: Asset Transfer – CreditCard
+    description: This endpoint provides the functionality necessary to accept client funding via credit card.
+  - name: Cash Management - Account Summary
+    description: Account summary endpoints under CashManagement
+  - name: Cash Management - Beneficiary Instructions
+    description: This endpoint provides the functionality to manage beneficiary instructions
+  - name: CashManagement - Cash Withdrawal
+    description: This endpoint provides the functionality necessary to allow a client to withdraw money from his account
+  - name: CashManagement - Cash Withdrawal Limits
+    description: Provides endpoints for cash available for withdrawal.
+  - name: CashManagement - Wire Transfers
+    description: Get wire transfer instructions for specified client and account
+  - name: Partner - Cash Transfer
+    description: Provides AssetTransfers related endpoints.
+  - name: Partner - Cash Transfer Limits
+    description: Provides endpoints for cash available for transfer.
+  - name: Partner - Prefunding
+    description: IB can credit their client account on pre-advice
+  - name: Securities Transfers
+    description: Allows a user to provide a list of securities to be transfereed into or out of Saxo Bank
