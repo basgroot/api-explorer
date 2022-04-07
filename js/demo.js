@@ -10,8 +10,10 @@
     const messages = [];
     let userLoaded = false;
     let clientLoaded = false;
+    let streamerNotificationTimer;
 
     function messageCallback(message) {
+        const tabElement = document.getElementById("idBtnStreamingData");
         let messageList = "";
         messages.unshift({
             "dt": new Date(),
@@ -26,6 +28,14 @@
             messageList += "Message #" + messageObject.messageId + " @ " + messageObject.dt.toLocaleString() + " with reference " + messageObject.referenceId + ":\n" + messageObject.payload + "\n\n";
         })
         document.getElementById("idStreamingData").innerText = messageList;
+        // Give a notification that the tab has aan update, when hidden
+        if (!tabElement.classList.contains("active")) {
+            window.clearTimeout(streamerNotificationTimer);
+            tabElement.style.color = "red";
+            streamerNotificationTimer = window.setTimeout(function () {
+                tabElement.style.color = "black";
+            }, 300);
+        }
     }
 
     function displayTab(evt, tabName) {
@@ -175,9 +185,13 @@
         fetch(url + queryParameters, fetchData).then(function (response) {
             const correlationInfo = "X-Correlation header (for troubleshooting with Saxo): " + response.headers.get("X-Correlation");
             if (response.ok) {
-                response.json().then(function (responseJson) {
-                    showResponse(JSON.stringify(responseJson, null, 4), true);
-                });
+                if (method === "DELETE" || method === "PUT") {
+                    showResponse("Response successful status " + response.status + " " + response.statusText, true);
+                } else {
+                    response.json().then(function (responseJson) {
+                        showResponse(JSON.stringify(responseJson, null, 4), true);
+                    });
+                }
             } else {
                 response.json().then(function (responseJson) {
                     showResponse(JSON.stringify(responseJson, null, 4) + "\n\n" + correlationInfo, false);
@@ -191,6 +205,11 @@
     }
 
     function setupEvents() {
+        if ("onhashchange" in window) {
+            window.onhashchange = function () {
+                yamlUtils.loadYamlEndpoint(populateScreen);
+            };
+        }
         document.getElementById("idBtnRequest").addEventListener("click", function (evt) {
             displayTab(evt, "idTabRequest");
         });
@@ -222,13 +241,15 @@
 
         function populateTextArea(id, value) {
             const textArea = document.getElementById(id);
+            textArea.value = value;
             if (value === "") {
                 textArea.style.display = "none";
             } else {
-                textArea.value = value;
+                textArea.style.display = "";
             }
         }
 
+        yamlUtils.init();  // Reset cache
         const httpMethod = yamlUtils.getHttpMethod();
         const endpoint = yamlUtils.getEndpoint();
         // Get method from the URL:

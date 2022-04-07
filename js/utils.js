@@ -7,7 +7,11 @@ function getQueryParameter(queryParameter, defaultValue) {
     let urlParams;
     let value;
     if (window.URLSearchParams) {
-        urlParams = new window.URLSearchParams(window.location.search);
+        urlParams = new window.URLSearchParams(
+            window.location.hash === ""
+            ? window.location.search
+            : window.location.hash.replace("#", "?")
+        );
         value = urlParams.get(queryParameter);
         if (value) {
             return value;
