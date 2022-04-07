@@ -54,18 +54,18 @@ pre.error {
 
 .collapsible {
   background-color: #fff;
-  color: #444;
+  color: #88909A;
   cursor: pointer;
   padding: 18px;
   width: 100%;
   border: none;
   text-align: left;
   outline: none;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .active, .collapsible:hover {
-  background-color: #ccc;
+  background-color: #fff;
 }
 
 .content {
