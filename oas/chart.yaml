@@ -1,0 +1,3781 @@
+openapi: 3.0.1
+info:
+  title: Services.Chart
+  description: Services for getting chart data for instruments.
+  version: 3.1.308+304e996db6
+  x-framework-version: 23.0.14+cfe5d7a0d9
+  x-machine: DEVOAWEB11-DK1
+servers:
+  - url: https://blue.openapi.sys.dom/openapi
+paths:
+  '/chart/v3/charts/subscriptions/{ContextId}/{ReferenceId}':
+    delete:
+      tags:
+        - Charts
+      summary: Remove subscription
+      description: 'Removes subscriptions for the given reference id on this resource, and frees resources on the server.'
+      operationId: ChartsV3DeleteSubscription
+      parameters:
+        - name: ContextId
+          in: path
+          description: Unique streaming context ID part of the streaming session.
+          required: true
+          schema:
+            type: string
+          example: 20160204125301453
+        - name: ReferenceId
+          in: path
+          description: The reference id that identifies the subscription (within a streaming session).
+          required: true
+          schema:
+            type: string
+          example: 20160204125301444
+      responses:
+        '204':
+          description: No Content
+        '202':
+          description: Subscription delete request will be processed eventually.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-application-visibility: saxo-only
+  '/chart/v3/charts/subscriptions/{ContextId}':
+    delete:
+      tags:
+        - Charts
+      summary: Remove multiple subscriptions
+      description: 'Removes all subscriptions for the current session on this resource, and frees all resources on the server.'
+      operationId: ChartsV3DeleteSubscriptions
+      parameters:
+        - name: ContextId
+          in: path
+          description: Unique streaming context ID part of the streaming session.
+          required: true
+          schema:
+            type: string
+          example: 20160204125301453
+        - name: Tag
+          in: query
+          description: Tag that subscriptions are marked with.
+          schema:
+            type: string
+          example: TAB9
+      responses:
+        '204':
+          description: No Content
+        '202':
+          description: Subscription delete request will be processed eventually.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-application-visibility: saxo-only
+  /chart/v3/charts/subscriptions:
+    post:
+      tags:
+        - Charts
+      summary: Create a subscription on chart data
+      description: "Sets up a subscription and returns an initial snapshot of most recently completed samples specified by the parameters in the request.\r\n            \r\n\r\n            Subsequent samples are delivered over the streaming channel. Most often a single new sample or sample update is delivered at a time, \r\n            but when a sample closes, you will typically get two samples: The now closed bar, and the bar just opening.\r\n            \r\n\r\n\r\n            Two events may require that a client application must close the current subscription and resubscribe:\r\n            \r\n\r\n\r\n*   The chart has been revised, either due to a correction or a corporate action.\r\n*   The data stream has shifted from real-time to delayed prices or visa versa.\r\n*   The data stream can directly be consumed as chart response object\r\n*   Support for Protocol buffers\r\n\r\n            In both cases the client application will receive a _resetsubscriptions instruction over the streaming channel."
+      operationId: ChartsV3AddSubscriptionAsync
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Domain.v3.ChartStreamingRequest'
+            example: {
+  "Arguments": {
+    "AccountKey": "3f042f70-a016-4a81-a331-87e52fb56f34",
+    "AssetType": "FxKnockInOption",
+    "ChartSampleFieldSet": "BidAsk",
+    "Count": 180,
+    "DataCurrency": "DataCurrency7721adfa-a0d4-45c3-9eb1-806d1adf5bde",
+    "DataSeriesType": "Price",
+    "FieldGroups": [
+      "ChartInfo"
+    ],
+    "Horizon": 178,
+    "Uic": 30
+  },
+  "ContextId": "-",
+  "Format": "Format99e2a80f-f60d-4bb4-baca-8d73a61892eb",
+  "KnownSchemas": [
+    "a5c6e7fc-8654-4a03-b5ad-da43cd2e8ac5"
+  ],
+  "ReferenceId": "-",
+  "RefreshRate": 86,
+  "ReplaceReferenceId": "-",
+  "Tag": "Tagda702e30-ab95-4e87-95a2-e6de22b34c02"
+}
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Domain.v3.ChartStreamingResponse'
+              example: {
+  "ContextId": "ContextId126f0185-8369-460d-a6ae-a829ac65cd0a",
+  "Format": "Format80a5a64b-4219-4cfc-a6e7-d8a363efea09",
+  "InactivityTimeout": 93,
+  "ReferenceId": "ReferenceId45393dab-5167-45b2-b994-b6ec69df5b2f",
+  "RefreshRate": 91,
+  "Schema": "Schemaf1767ae1-7ee2-4375-8e97-f6c0031948c3",
+  "SchemaName": "SchemaNameab51d9fb-2dbc-4dec-99e9-f62d23a1a7a5",
+  "Snapshot": {
+    "ChartInfo": {
+      "DelayedByMinutes": 15,
+      "ExchangeId": "SBFX",
+      "FirstSampleTime": "2015-02-02T01:02:03Z",
+      "Horizon": 1
+    },
+    "Data": [
+      {
+        "CloseAsk": 1.3475,
+        "CloseBid": 1.3473,
+        "HighAsk": 1.4003,
+        "HighBid": 1.4001,
+        "LowAsk": 1.2804,
+        "LowBid": 1.2802,
+        "OpenAsk": 1.3478,
+        "OpenBid": 1.3476,
+        "Time": "2015-02-01T11:45:00Z"
+      },
+      {
+        "CloseAsk": 1.3475,
+        "CloseBid": 1.3473,
+        "HighAsk": 1.4003,
+        "HighBid": 1.4001,
+        "LowAsk": 1.2804,
+        "LowBid": 1.2802,
+        "OpenAsk": 1.3478,
+        "OpenBid": 1.3476,
+        "Time": "2015-02-01T11:46:00Z"
+      }
+    ],
+    "DataVersion": 52,
+    "DisplayAndFormat": {
+      "Currency": "USD",
+      "Decimals": 4,
+      "Description": "Euro/US Dollar",
+      "Format": "AllowDecimalPips",
+      "Symbol": "EURUSD"
+    }
+  },
+  "State": "Active",
+  "Tag": "Tagd456ad0f-23a6-43bc-afea-447c6c147fa4"
+}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - InvalidModelState
+                      - UnsupportedSubscriptionFormat
+                    type: string
+                    x-enum-descriptions:
+                      InvalidModelState: Error code returned when model state is invalid.
+                      UnsupportedSubscriptionFormat: Error code returned when a subscription format that isn't supported by the publisher is requested.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - SubscriptionLimitExceeded
+                    type: string
+                    x-enum-descriptions:
+                      SubscriptionLimitExceeded: 'Error code returned when more than the maximum allowed number of subscriptions for a specified type, is exceeded.'
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-application-visibility: saxo-only
+      x-streaming-type: '#/components/schemas/Domain.v3.ChartResponseDomainEvent'
+  /chart/v3/charts/datapoints:
+    get:
+      tags:
+        - Charts
+      summary: Get number of data points
+      description: Returns the number of data points as specified by the request parameters.
+      operationId: ChartsV3GetNumberOfDatapointsAsync
+      parameters:
+        - name: AssetType
+          in: query
+          description: Asset type of the instrument
+          required: true
+          schema:
+            title: Asset type of the instrument
+            allOf:
+              - $ref: '#/components/schemas/AssetType'
+          example: "FxSpot"
+        - name: ChartSampleFieldSet
+          in: query
+          description: 'Optionally select which set of fields are returned in the Data array. Currently only applicable for asset types (Warrants, MiniFutures and Certificates).'
+          schema:
+            title: 'Optionally select which set of fields are returned in the Data array. Currently only applicable for asset types (Warrants, MiniFutures and Certificates).'
+            allOf:
+              - $ref: '#/components/schemas/ChartSampleFieldSetNullable'
+          example: "Default"
+        - name: FromTime
+          in: query
+          description: Specifies the time from where to begin counting the returned number of data points.
+          required: true
+          schema:
+            title: Specifies the time from where to begin counting the returned number of data points.
+            allOf:
+              - type: string
+                format: date-time
+                x-type-name: UtcDateTime
+          example: "2022-08-02T09:33:08.688138Z"
+        - name: Horizon
+          in: query
+          description: 'The horizon to get samples from. Values are interpreted in minutes: 1, 2, 3, 5, 10, 15, 30, 60, 120, 180, 240, 300, 360, 480, 1440, 10080, 43200, 129600, 518400.'
+          required: true
+          schema:
+            title: 'The horizon to get samples from. Values are interpreted in minutes: 1, 2, 3, 5, 10, 15, 30, 60, 120, 180, 240, 300, 360, 480, 1440, 10080, 43200, 129600, 518400.'
+            type: integer
+            format: int32
+          example: 123
+        - name: ToTime
+          in: query
+          description: Specifies the time from where to end counting the returned number of data points.
+          required: true
+          schema:
+            title: Specifies the time from where to end counting the returned number of data points.
+            allOf:
+              - type: string
+                format: date-time
+                x-type-name: UtcDateTime
+          example: "2022-08-02T09:33:08.688138Z"
+        - name: Uic
+          in: query
+          description: Uic of the instrument.
+          required: true
+          schema:
+            title: Uic of the instrument.
+            type: integer
+            format: int32
+          example: 123
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChartNumberOfDataPointsResponse'
+              example: {
+  "NumberOfDataPoints": 110
+}
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-application-visibility: saxo-only
+  /chart/v3/charts:
+    get:
+      tags:
+        - Charts
+      summary: Get chart data
+      description: "Returns chart data as specified by the request parameters. Which data samples are returned, is specified by a combination of time, mode and count. \r\n            \r\n\r\n*   If neither time, mode or count are specified, the endpoint returns the most recent 1200 samples.\r\n*   If count is specified, the endpoint returns max of (count, 1200) samples.\r\n*   If Mode==\"Upto\" the endpoint returns a number of samples upto and including the specified Time.\r\n*   If Mode==\"From\" the endpoint returns a number of samples starting from  the specified Time"
+      operationId: ChartsV3GetChartDataAsync
+      parameters:
+        - name: AccountKey
+          in: query
+          description: Optional
+          schema:
+            title: Optional
+            allOf:
+              - minLength: 1
+                type: string
+                x-type-name: AccountKey
+          example: "2301d9fa-b949-46b9-838a-bd916b03e98f"
+        - name: AssetType
+          in: query
+          description: Asset type of the instrument
+          required: true
+          schema:
+            title: Asset type of the instrument
+            allOf:
+              - $ref: '#/components/schemas/AssetType'
+          example: "FxSpot"
+        - name: ChartSampleFieldSet
+          in: query
+          description: 'Optionally select which set of fields are returned in the Data array. Currently only applicable for asset types (Warrants, MiniFutures and Certificates).'
+          schema:
+            title: 'Optionally select which set of fields are returned in the Data array. Currently only applicable for asset types (Warrants, MiniFutures and Certificates).'
+            allOf:
+              - $ref: '#/components/schemas/ChartSampleFieldSetNullable'
+          example: "Default"
+        - name: Count
+          in: query
+          description: 'Optionally specifies maximum number of samples to return, max 1200, default 1200.'
+          schema:
+            title: 'Optionally specifies maximum number of samples to return, max 1200, default 1200.'
+            allOf:
+              - type: integer
+                format: int32
+          example: 53
+        - name: FieldGroups
+          in: query
+          description: 'Specifies which data to return. Default is [Data]'
+          schema:
+            title: 'Specifies which data to return. Default is [Data]'
+            type: array
+            items:
+              $ref: '#/components/schemas/Domain.v3.ChartFieldGroupSpec'
+          example: [
+  "BlockInfo"
+]
+        - name: Horizon
+          in: query
+          description: 'The horizon to get samples from. Values are interpreted in minutes: 1, 2, 3, 5, 10, 15, 30, 60, 120, 180, 240, 300, 360, 480, 1440, 10080, 43200, 129600, 518400.'
+          required: true
+          schema:
+            title: 'The horizon to get samples from. Values are interpreted in minutes: 1, 2, 3, 5, 10, 15, 30, 60, 120, 180, 240, 300, 360, 480, 1440, 10080, 43200, 129600, 518400.'
+            type: integer
+            format: int32
+          example: 123
+        - name: Mode
+          in: query
+          description: 'If Time is supplied, mode specifies if the endpoint should returns samples "UpTo" (and including) or "From" (and including) the specified time.'
+          schema:
+            title: 'If Time is supplied, mode specifies if the endpoint should returns samples "UpTo" (and including) or "From" (and including) the specified time.'
+            allOf:
+              - $ref: '#/components/schemas/ChartRequestModeNullable'
+          example: "From"
+        - name: Time
+          in: query
+          description: 'Specifies the time of a sample, which must either be the first (If Mode=="From") or the last (if Mode=="UpTo") in the returned data.'
+          schema:
+            title: 'Specifies the time of a sample, which must either be the first (If Mode=="From") or the last (if Mode=="UpTo") in the returned data.'
+            allOf:
+              - type: string
+                format: date-time
+                x-type-name: UtcDateTime
+          example: "2022-08-02T09:33:08.688138Z"
+        - name: Uic
+          in: query
+          description: Uic of the instrument.
+          required: true
+          schema:
+            title: Uic of the instrument.
+            type: integer
+            format: int32
+          example: 123
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Domain.v3.ChartResponse'
+              example: {
+  "ChartInfo": {
+    "DelayedByMinutes": 15,
+    "ExchangeId": "SBFX",
+    "FirstSampleTime": "2015-02-02T01:02:03Z",
+    "Horizon": 1
+  },
+  "Data": [
+    {
+      "CloseAsk": 1.3475,
+      "CloseBid": 1.3473,
+      "HighAsk": 1.4003,
+      "HighBid": 1.4001,
+      "LowAsk": 1.2804,
+      "LowBid": 1.2802,
+      "OpenAsk": 1.3478,
+      "OpenBid": 1.3476,
+      "Time": "2015-02-01T11:45:00Z"
+    },
+    {
+      "CloseAsk": 1.3475,
+      "CloseBid": 1.3473,
+      "HighAsk": 1.4003,
+      "HighBid": 1.4001,
+      "LowAsk": 1.2804,
+      "LowBid": 1.2802,
+      "OpenAsk": 1.3478,
+      "OpenBid": 1.3476,
+      "Time": "2015-02-01T11:46:00Z"
+    }
+  ],
+  "DataVersion": 214,
+  "DisplayAndFormat": {
+    "Currency": "USD",
+    "Decimals": 4,
+    "Description": "Euro/US Dollar",
+    "Format": "AllowDecimalPips",
+    "Symbol": "EURUSD"
+  }
+}
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-application-visibility: saxo-only
+  /chart/diagnostics/users:
+    get:
+      description: Get information about unique users served by the publishers and other performance related information.
+      operationId: chart_users
+      parameters:
+        - $ref: '#/components/parameters/XInternalIP'
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      x-network-visibility: internal
+  /chart/diagnostics/subscriptions:
+    get:
+      description: "Gets information about subscriptions in the publishers.\r\n\r\nIf no filter is specified all subscriptions from all publishers are returned."
+      operationId: chart_subscriptions
+      parameters:
+        - $ref: '#/components/parameters/XInternalIP'
+        - name: ApplicationId
+          in: query
+          description: Restricts the subscriptions to an application if specified.
+          schema:
+            title: Restricts the subscriptions to an application if specified.
+            allOf:
+              - minimum: 1
+                type: integer
+                format: int32
+                x-type-name: ApplicationId
+          example: "136"
+        - name: ContextId
+          in: query
+          description: Restricts the subscriptions to a streaming session if specified along with a session id.
+          schema:
+            title: Restricts the subscriptions to a streaming session if specified along with a session id.
+            type: string
+          example: "4891475a-ba52-4785-b24a-66a5a9fb9e2f"
+        - name: Publisher
+          in: query
+          description: Restricts the subscriptions to a publisher if specified.
+          schema:
+            title: Restricts the subscriptions to a publisher if specified.
+            type: string
+          example: "4891475a-ba52-4785-b24a-66a5a9fb9e2f"
+        - name: SessionId
+          in: query
+          description: Restricts the subscriptions to a session if specified.
+          schema:
+            title: Restricts the subscriptions to a session if specified.
+            allOf:
+              - pattern: '^[0-9a-fA-F]{32}$|^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+                type: string
+                x-type-name: SessionId
+          example: "444085b1-64db-4f3a-96c2-f4d7ff4407e8"
+        - name: UserId
+          in: query
+          description: Restricts the subscriptions to a MITS user if specified.
+          schema:
+            title: Restricts the subscriptions to a MITS user if specified.
+            allOf:
+              - $ref: '#/components/schemas/UserIdNullable'
+          example: 662428078
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      x-network-visibility: internal
+  /chart/diagnostics/publishers:
+    get:
+      description: Returns the list of publisher names.
+      operationId: chart_publishers
+      parameters:
+        - $ref: '#/components/parameters/XInternalIP'
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      x-network-visibility: internal
+  /chart/v2/charts/Sparkline:
+    get:
+      tags:
+        - Charts
+      summary: Get sparkline data
+      description: "Returns sparkline data as specified in request parameters.\r\n            \r\n\r\n*   Instruments should not ask for more than 30 instruments in a request\r\n*   Duration \"Day\" means recent samples are presented in horizon of 1 hour and count of 24\r\n*   Duration \"Month\" means recent samples are presented in horizon of 1 day and count of 30\r\n*   Duration \"Year\" means recent samples are presented in horizon of 1 day and count of 365\r\n*   If no field group is sent, endpoint will only return data\r\n*   Presence of \"ErrorInfo\" in any response, means something went wrong, read ErrorInfo \"Message\""
+      operationId: Chartsv2GetSparklineDataAsync
+      parameters:
+        - name: Duration
+          in: query
+          description: 'Duration of sparkline data. Example: Duration=Day,Month'
+          required: true
+          schema:
+            title: 'Duration of sparkline data. Example: Duration=Day,Month'
+            type: array
+            items:
+              $ref: '#/components/schemas/SparklineDuration'
+          example: [
+  "Day"
+]
+        - name: FieldGroups
+          in: query
+          description: 'Fields to be returned other than data. Example: FieldGroups=DisplayAndFormat'
+          schema:
+            title: 'Fields to be returned other than data. Example: FieldGroups=DisplayAndFormat'
+            type: array
+            items:
+              $ref: '#/components/schemas/SparklineFieldGroup'
+          example: [
+  "DisplayAndFormat"
+]
+        - name: Instruments
+          in: query
+          description: "Uic of the instruments separated by comma(,) followed by their assettype using ':'. Example: Instruments=1,5,21:FxSpot,211,15611:Stock. \r\n            Supported asset types: FxSpot,ContractFutures,Stock,MutualFund,CfdOnStock,CfdOnIndex,CfdOnFutures,StockIndex.\r\n            Maximum 30 instruments supported."
+          required: true
+          schema:
+            title: "Uic of the instruments separated by comma(,) followed by their assettype using ':'. Example: Instruments=1,5,21:FxSpot,211,15611:Stock. \r\n            Supported asset types: FxSpot,ContractFutures,Stock,MutualFund,CfdOnStock,CfdOnIndex,CfdOnFutures,StockIndex.\r\n            Maximum 30 instruments supported."
+            type: string
+          example: "4891475a-ba52-4785-b24a-66a5a9fb9e2f"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChartSparklineResponse'
+              example: [
+  {
+    "AssetType": "FxSpot",
+    "DisplayAndFormat": {
+      "Currency": "USD",
+      "Decimals": 4,
+      "Description": "Euro/US Dollar",
+      "Format": "AllowDecimalPips",
+      "Symbol": "EURUSD"
+    },
+    "TimeSeries": [
+      {
+        "Duration": "Day",
+        "SparklineData": [
+          {
+            "TimeWeightedValue": 0.0,
+            "UtcDateTime": "2018-03-03T01:02:03Z",
+            "Value": 1.17197
+          },
+          {
+            "TimeWeightedValue": 0.00011,
+            "UtcDateTime": "2018-03-03T02:02:03Z",
+            "Value": 1.17184
+          },
+          {
+            "TimeWeightedValue": 0.00045,
+            "UtcDateTime": "2018-03-03T03:02:03Z",
+            "Value": 1.17131
+          },
+          {
+            "TimeWeightedValue": 0.00178,
+            "UtcDateTime": "2018-03-03T04:02:03Z",
+            "Value": 1.1734
+          }
+        ]
+      },
+      {
+        "Duration": "Month",
+        "SparklineData": [
+          {
+            "TimeWeightedValue": 0.0,
+            "UtcDateTime": "2018-03-03T01:02:03Z",
+            "Value": 1.17197
+          },
+          {
+            "TimeWeightedValue": 0.00011,
+            "UtcDateTime": "2018-03-03T02:02:03Z",
+            "Value": 1.17184
+          },
+          {
+            "TimeWeightedValue": 0.00045,
+            "UtcDateTime": "2018-03-03T03:02:03Z",
+            "Value": 1.17131
+          },
+          {
+            "TimeWeightedValue": 0.00178,
+            "UtcDateTime": "2018-03-03T04:02:03Z",
+            "Value": 1.1734
+          }
+        ]
+      }
+    ],
+    "Uic": 21
+  },
+  {
+    "AssetType": "FxSpot",
+    "DisplayAndFormat": {
+      "Currency": "USD",
+      "Decimals": 4,
+      "Description": "Euro/US Dollar",
+      "Format": "AllowDecimalPips",
+      "Symbol": "EURUSD"
+    },
+    "TimeSeries": [
+      {
+        "Duration": "Day",
+        "SparklineData": [
+          {
+            "TimeWeightedValue": 0.0,
+            "UtcDateTime": "2018-03-03T01:02:03Z",
+            "Value": 1.17197
+          },
+          {
+            "TimeWeightedValue": 0.00011,
+            "UtcDateTime": "2018-03-03T02:02:03Z",
+            "Value": 1.17184
+          },
+          {
+            "TimeWeightedValue": 0.00045,
+            "UtcDateTime": "2018-03-03T03:02:03Z",
+            "Value": 1.17131
+          },
+          {
+            "TimeWeightedValue": 0.00178,
+            "UtcDateTime": "2018-03-03T04:02:03Z",
+            "Value": 1.1734
+          }
+        ]
+      },
+      {
+        "Duration": "Month",
+        "SparklineData": [
+          {
+            "TimeWeightedValue": 0.0,
+            "UtcDateTime": "2018-03-03T01:02:03Z",
+            "Value": 1.17197
+          },
+          {
+            "TimeWeightedValue": 0.00011,
+            "UtcDateTime": "2018-03-03T02:02:03Z",
+            "Value": 1.17184
+          },
+          {
+            "TimeWeightedValue": 0.00045,
+            "UtcDateTime": "2018-03-03T03:02:03Z",
+            "Value": 1.17131
+          },
+          {
+            "TimeWeightedValue": 0.00178,
+            "UtcDateTime": "2018-03-03T04:02:03Z",
+            "Value": 1.1734
+          }
+        ]
+      }
+    ],
+    "Uic": 1
+  },
+  {
+    "AssetType": "Stock",
+    "DisplayAndFormat": {
+      "Currency": "USD",
+      "Decimals": 4,
+      "Description": "Euro/US Dollar",
+      "Format": "AllowDecimalPips",
+      "Symbol": "EURUSD"
+    },
+    "TimeSeries": [
+      {
+        "Duration": "Day",
+        "SparklineData": [
+          {
+            "TimeWeightedValue": 0.0,
+            "UtcDateTime": "2018-03-03T01:02:03Z",
+            "Value": 1.17197
+          },
+          {
+            "TimeWeightedValue": 0.00011,
+            "UtcDateTime": "2018-03-03T02:02:03Z",
+            "Value": 1.17184
+          },
+          {
+            "TimeWeightedValue": 0.00045,
+            "UtcDateTime": "2018-03-03T03:02:03Z",
+            "Value": 1.17131
+          },
+          {
+            "TimeWeightedValue": 0.00178,
+            "UtcDateTime": "2018-03-03T04:02:03Z",
+            "Value": 1.1734
+          }
+        ]
+      },
+      {
+        "Duration": "Month",
+        "SparklineData": [
+          {
+            "TimeWeightedValue": 0.0,
+            "UtcDateTime": "2018-03-03T01:02:03Z",
+            "Value": 1.17197
+          },
+          {
+            "TimeWeightedValue": 0.00011,
+            "UtcDateTime": "2018-03-03T02:02:03Z",
+            "Value": 1.17184
+          },
+          {
+            "TimeWeightedValue": 0.00045,
+            "UtcDateTime": "2018-03-03T03:02:03Z",
+            "Value": 1.17131
+          },
+          {
+            "TimeWeightedValue": 0.00178,
+            "UtcDateTime": "2018-03-03T04:02:03Z",
+            "Value": 1.1734
+          }
+        ]
+      }
+    ],
+    "Uic": 211
+  }
+]
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-application-visibility: saxo-only
+  '/chart/v2/charts/subscriptions/{ContextId}/{ReferenceId}':
+    delete:
+      tags:
+        - Charts
+      summary: Remove subscription
+      description: 'Removes subscriptions for the given reference id on this resource, and frees resources on the server.'
+      operationId: Chartsv2DeleteSubscription
+      parameters:
+        - name: ContextId
+          in: path
+          description: Unique streaming context ID part of the streaming session.
+          required: true
+          schema:
+            type: string
+          example: 20160204125301453
+        - name: ReferenceId
+          in: path
+          description: The reference id that identifies the subscription (within a streaming session).
+          required: true
+          schema:
+            type: string
+          example: 20160204125301444
+      responses:
+        '204':
+          description: No Content
+        '202':
+          description: Subscription delete request will be processed eventually.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-application-visibility: saxo-only
+  '/chart/v2/charts/subscriptions/{ContextId}':
+    delete:
+      tags:
+        - Charts
+      summary: Remove multiple subscriptions
+      description: 'Removes all subscriptions for the current session on this resource, and frees all resources on the server.'
+      operationId: Chartsv2DeleteSubscriptions
+      parameters:
+        - name: ContextId
+          in: path
+          description: Unique streaming context ID part of the streaming session.
+          required: true
+          schema:
+            type: string
+          example: 20160204125301453
+        - name: Tag
+          in: query
+          description: Tag that subscriptions are marked with.
+          schema:
+            type: string
+          example: TAB9
+      responses:
+        '204':
+          description: No Content
+        '202':
+          description: Subscription delete request will be processed eventually.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-application-visibility: saxo-only
+  /chart/v2/charts/subscriptions:
+    post:
+      tags:
+        - Charts
+      summary: Create a subscription on chart data
+      description: "Sets up a subscription and returns an initial snapshot of most recently completed samples specified by the parameters in the request.\r\n            \r\n\r\n            Subsequent samples are delivered over the streaming channel. Most often a single new sample or sample update is delivered at a time, \r\n            but when a sample closes, you will typcially get two samples: The now closed bar, and the bar just opening.\r\n            \r\n\r\n\r\n            Two events may require that a client application must close the current subscribtion and resubscribe:\r\n            \r\n\r\n\r\n*   The chart has been revised, either due to a correction or a corporate action.\r\n*   The data stream has shifted from real-time to delayed prices or visa versa.\r\n*   The data stream can directly be consumed as chart response object\r\n*   Support for Protocol buffers\r\n\r\n            In both cases the client application will receive a _resetsubscriptions instruction over the streaming channel."
+      operationId: Chartsv2AddSubscriptionAsync
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Domain.ChartStreamingRequest'
+            example: {
+  "Arguments": {
+    "AssetType": "FxSpot",
+    "Count": 2,
+    "FieldGroups": [
+      "ChartInfo",
+      "Data",
+      "DisplayAndFormat"
+    ],
+    "Horizon": 1,
+    "Uic": 21
+  },
+  "ContextId": "20220406092639117",
+  "Format": "application/json",
+  "ReferenceId": "CH53034",
+  "RefreshRate": 1000
+}
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Domain.ChartStreamingResponse'
+              example: {
+  "ContextId": "20220406092639131",
+  "Format": "application/json",
+  "InactivityTimeout": 0,
+  "ReferenceId": "CH56151",
+  "RefreshRate": 1000,
+  "Snapshot": {
+    "ChartInfo": {
+      "DelayedByMinutes": 15,
+      "ExchangeId": "SBFX",
+      "FirstSampleTime": "2015-02-02T01:02:03Z",
+      "Horizon": 1
+    },
+    "Data": [
+      {
+        "CloseAsk": 1.3475,
+        "CloseBid": 1.3473,
+        "HighAsk": 1.4003,
+        "HighBid": 1.4001,
+        "LowAsk": 1.2804,
+        "LowBid": 1.2802,
+        "OpenAsk": 1.3478,
+        "OpenBid": 1.3476,
+        "Time": "2015-02-01T11:45:00Z"
+      },
+      {
+        "CloseAsk": 1.3475,
+        "CloseBid": 1.3473,
+        "HighAsk": 1.4003,
+        "HighBid": 1.4001,
+        "LowAsk": 1.2804,
+        "LowBid": 1.2802,
+        "OpenAsk": 1.3478,
+        "OpenBid": 1.3476,
+        "Time": "2015-02-01T11:46:00Z"
+      }
+    ],
+    "DataVersion": 1892739,
+    "DisplayAndFormat": {
+      "Currency": "USD",
+      "Decimals": 4,
+      "Description": "Euro/US Dollar",
+      "Format": "AllowDecimalPips",
+      "Symbol": "EURUSD"
+    }
+  },
+  "State": "Active",
+  "Tag": "Tag01"
+}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - InvalidModelState
+                      - UnsupportedSubscriptionFormat
+                    type: string
+                    x-enum-descriptions:
+                      InvalidModelState: Error code returned when model state is invalid.
+                      UnsupportedSubscriptionFormat: Error code returned when a subscription format that isn't supported by the publisher is requested.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - SubscriptionLimitExceeded
+                    type: string
+                    x-enum-descriptions:
+                      SubscriptionLimitExceeded: 'Error code returned when more than the maximum allowed number of subscriptions for a specified type, is exceeded.'
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-application-visibility: saxo-only
+      x-streaming-type: '#/components/schemas/Domain.ChartResponseDomainEvent'
+  /chart/online:
+    post:
+      description: Attempts to take the application online
+      operationId: chart_online
+      parameters:
+        - $ref: '#/components/parameters/XInternalIP'
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      x-application-visibility: saxo-only
+      x-network-visibility: internal
+  /chart/chart/ChartStatus:
+    get:
+      tags:
+        - Charts
+      summary: OBSOLETE Get the ChartFeed specific status information
+      description: "Returns chart-feed specific status information.\r\n                Including:\r\n                Current chartfeed version\r\n                Start\\compile time\r\n                List of active traces\r\n                Configuration information\r\n                Statistics"
+      operationId: ChartChartStatus
+      parameters:
+        - $ref: '#/components/parameters/XInternalIP'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusData'
+              example: {
+  "CacheStatistics": [
+    {
+      "InstrumentStatistics": [
+        {
+          "HorizonStatistics": [
+            {
+              "Horizon": 58,
+              "SegmentCount": 32,
+              "SegmentStatistics": [
+                {
+                  "End": 2,
+                  "Size": 160,
+                  "Start": 35
+                }
+              ]
+            }
+          ],
+          "UIC": 234
+        }
+      ],
+      "Name": "Name422feecd-1b75-42fd-8195-9112aae71be7",
+      "TotalSampleCount": 213,
+      "TotalSegmentCount": 60
+    }
+  ],
+  "CompileTime": "CompileTime753fc1de-9c2c-481e-a4ce-d324ea3c0176",
+  "Databases": {
+    "BOND": {
+      "Database": "Databaseffd53244-5d30-460c-8439-972026a9557f",
+      "FailoverServer": "FailoverServer082cf26e-9c84-4f8a-ac2b-a63e5c1ae84b",
+      "Server": "Server1865874b-931b-4745-9a0c-a7c8abdff056"
+    },
+    "CFD": {
+      "Database": "Database36cec9bd-168c-488c-b5f3-b6db4243ab1d",
+      "FailoverServer": "FailoverServere7609c38-a792-43aa-aa86-755a86460998",
+      "Server": "Servere8774fe1-b30d-4c2c-bf8f-ce153222005e"
+    },
+    "FX": {
+      "Database": "Databaseeb4e9670-084f-42d3-8986-ec82666253b4",
+      "FailoverServer": "FailoverServer28d28232-55d8-4759-b542-2ca1df38c7e5",
+      "Server": "Server41680e35-89a6-4281-93ef-8ef9bce1ef53"
+    },
+    "MF": {
+      "Database": "Database20e4365e-132d-47b5-907a-ba92f583bb15",
+      "FailoverServer": "FailoverServer6a5853bc-68f6-4ddc-9c8b-6bd1f8f05e83",
+      "Server": "Server9800143c-c80c-4b24-a5d5-a2df92fdd095"
+    },
+    "MITS": {
+      "Database": "Database50eb174e-1f7c-4cf6-95e0-427a6b5a9e2f",
+      "FailoverServer": "FailoverServer00f92739-0c31-43dc-b736-15e2ac155f25",
+      "Server": "Servercab089a8-3d07-4380-9e26-84a7f496c659"
+    },
+    "STOCK": {
+      "Database": "Database0562fe1b-f8f0-4bbf-948e-ab5f9e4e4655",
+      "FailoverServer": "FailoverServerf13332a8-ebbd-4ac5-acdc-fd753719bf2d",
+      "Server": "Server334df8d7-5194-41ff-bd25-37f10255cb1b"
+    }
+  },
+  "EnabledTraces": [
+    {
+      "Horizon": 119,
+      "UIC": 16
+    }
+  ],
+  "StartupTime": "StartupTime27245d9e-2b10-4b41-b5ae-16b43b07f32f",
+  "SubscriptionsData": "SubscriptionsDatace185ec0-cec4-40a7-9582-791f662afd70",
+  "Version": "Version0d4c0fec-f7e7-420a-9d2a-3ec0754d0c3f"
+}
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      x-network-visibility: internal
+  /chart/chart/SetTraceStatus:
+    get:
+      tags:
+        - Charts
+      summary: OBSOLETE Enable/disable tracing of a particular instrument
+      description: "Controls the tracing status.\r\n                Tracing will write all sample trafic from database and samplers to a log on the server"
+      operationId: ChartSetTraceStatus
+      parameters:
+        - $ref: '#/components/parameters/XInternalIP'
+        - name: Horizon
+          in: query
+          schema:
+            allOf:
+              - type: integer
+                format: int32
+        - name: Status
+          in: query
+          required: true
+          schema:
+            type: boolean
+        - name: Symbol
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      x-network-visibility: internal
+  /chart/chart/FlushTopic:
+    get:
+      tags:
+        - Charts
+      summary: OBSOLETE Flush all instruments of a particular topic
+      description: "All instruments of a particular topic will be flushed.\r\n                Flushing an instrument will remove all cached data"
+      operationId: ChartFlushTopic
+      parameters:
+        - $ref: '#/components/parameters/XInternalIP'
+        - name: Topic
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      x-network-visibility: internal
+  /chart/chart/FlushInstrument:
+    get:
+      tags:
+        - Charts
+      summary: OBSOLETE Flush an instrument
+      description: "Flushing an instrument will remove all cached data\r\n                A version id will also be updated to force all clients to re-read their data"
+      operationId: ChartFlushInstrument
+      parameters:
+        - $ref: '#/components/parameters/XInternalIP'
+        - name: Symbol
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      x-network-visibility: internal
+  /chart/chart/ClientConfig:
+    get:
+      tags:
+        - Charts
+      summary: OBSOLETE Get the chart client configuration
+      description: "Returns configuration data for the chart client.\r\n                Including:\r\n                Maximum/minimum amount of samples to request\r\n                Request frequency\r\n                Timeout values"
+      operationId: ChartGetClientConfig
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientConfigData'
+              example: {
+  "CONFIGRATE": 129,
+  "ERRORREPEAT": 24,
+  "ERRORTIMEOUT": 242,
+  "MAXFETCH": 3,
+  "MINFETCH": 174,
+  "REQUESTTIMEOUT": 244,
+  "UPDATERATE": 230,
+  "WAITREPEAT": 145,
+  "WAITTIMEOUT": 47
+}
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  '/chart/chart/{Symbol}':
+    get:
+      tags:
+        - Charts
+      summary: OBSOLETE Get chart data for an instrument.
+      description: Responsible for getting chart data for an instrument from the back end domain.
+      operationId: ChartGetChartData
+      parameters:
+        - name: Count
+          in: query
+          description: 'Optional number of samples. Max. is 1200, default is 0.'
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: Horizon
+          in: query
+          description: "The horizon to get samples from. Values are interpreted in minutes: 1, 5, 10, 15, 30, 60, 120,\r\n                240, 360, 480, 1440, 10080, 43200."
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: Mode
+          in: query
+          description: "Defines how to get the data from the chart feed server. Following options are available: START,\r\n                FROM, UPTO"
+          required: true
+          schema:
+            type: string
+        - name: Seq
+          in: query
+          description: "Optional sequence id that is repeated in the response to help clients correlate responses with\r\n                requests. Must be an integer"
+          schema:
+            allOf:
+              - type: integer
+                format: int32
+        - name: Symbol
+          in: path
+          description: The symbol of the instrument to retreive data for. NB! Symbol is case sensitive.
+          required: true
+          schema:
+            type: string
+        - name: Time
+          in: query
+          description: "Optional UTC time of the first/last sample. This depends on the MODE parameter. (MODE=FROM => time\r\n                equals first sample, MODE=UPTO => time equals last sample)."
+          schema:
+            allOf:
+              - type: integer
+                format: int32
+        - name: Tz
+          in: query
+          description: "Optional time zone to get UTC-offsets for. Must be a zone name from the tz-database\r\n                (http://www.iana.org/time-zones). Example: Australia/Hobart"
+          schema:
+            type: string
+        - name: Version
+          in: query
+          description: Optional protocol version. If not specified the default version 105 will be used.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  /chart/offline:
+    post:
+      description: Attempts to take the application offline
+      operationId: chart_offline
+      parameters:
+        - $ref: '#/components/parameters/XInternalIP'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+            example: "00:00:00.0000190"
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      x-application-visibility: saxo-only
+      x-network-visibility: internal
+  '/chart/v1/charts/cache/status/{Uic}':
+    get:
+      tags:
+        - Charts
+      summary: Get cache status
+      description: Returns the cache status for a given
+      operationId: ChartsGetChacheStatus
+      parameters:
+        - name: Uic
+          in: path
+          description: The UIC of the instrument whose cache status is to be retrieved
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: UIC was flushed successfully
+        '404':
+          description: UIC was not found
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-application-visibility: saxo-only
+  '/chart/v1/charts/cache/flush/asset/{AssetType}':
+    put:
+      tags:
+        - Charts
+      summary: Flush cache for a assettype
+      description: Flushes a given  in the chart cache
+      operationId: ChartsFlushTopic
+      parameters:
+        - name: AssetType
+          in: path
+          description: The chart instrument type to be flushed from the chart cache
+          required: true
+          schema:
+            $ref: '#/components/schemas/ChartInstrumentType'
+      responses:
+        '204':
+          description: No Content
+        '200':
+          description: Chart instrument type was flushed successfully
+        '404':
+          description: Chart instrument type was not found
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-application-visibility: saxo-only
+  '/chart/v1/charts/cache/flush/uic/{Uic}':
+    put:
+      tags:
+        - Charts
+      description: Flushes a given  in the chart cache
+      operationId: ChartsFlushUIC
+      parameters:
+        - name: Uic
+          in: path
+          description: The UIC to be flushed from the chart cache
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: No Content
+        '200':
+          description: UIC was flushed successfully
+        '404':
+          description: UIC was not found
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-application-visibility: saxo-only
+  '/chart/v1/charts/cache/flush/instrument/{Symbol}':
+    put:
+      tags:
+        - Charts
+      description: Flushes a given  in the chart cache
+      operationId: ChartsFlushInstrument
+      parameters:
+        - name: Symbol
+          in: path
+          description: The symbol to be flushed from the chart cache
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+        '200':
+          description: Instrument was flushed successfully
+        '404':
+          description: Instrument was not found
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-application-visibility: saxo-only
+  '/chart/v1/charts/subscriptions/{ContextId}/{ReferenceId}':
+    delete:
+      tags:
+        - Charts
+      summary: Remove subscription
+      description: 'Removes subscriptions for the given reference id on this resource, and frees resources on the server.'
+      operationId: ChartsDeleteSubscription
+      parameters:
+        - name: ContextId
+          in: path
+          description: Unique streaming context ID part of the streaming session.
+          required: true
+          schema:
+            type: string
+          example: 20160204125301453
+        - name: ReferenceId
+          in: path
+          description: The reference id that identifies the subscription (within a streaming session).
+          required: true
+          schema:
+            type: string
+          example: 20160204125301444
+      responses:
+        '204':
+          description: No Content
+        '202':
+          description: Subscription delete request will be processed eventually.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  '/chart/v1/charts/subscriptions/{ContextId}':
+    delete:
+      tags:
+        - Charts
+      summary: Remove multiple subscriptions
+      description: 'Removes all subscriptions for the current session on this resource, and frees all resources on the server.'
+      operationId: ChartsDeleteSubscriptions
+      parameters:
+        - name: ContextId
+          in: path
+          description: Unique streaming context ID part of the streaming session.
+          required: true
+          schema:
+            type: string
+          example: 20160204125301453
+        - name: Tag
+          in: query
+          description: Tag that subscriptions are marked with.
+          schema:
+            type: string
+          example: TAB9
+      responses:
+        '204':
+          description: No Content
+        '202':
+          description: Subscription delete request will be processed eventually.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  /chart/v1/charts/subscriptions:
+    post:
+      tags:
+        - Charts
+      summary: Create a subscription on chart data
+      description: "Sets up a subscription and returns an initial snapshot of most recently completed samples specified by the parameters in the request.\r\n            \r\n\r\n            Subsequent samples are delivered over the streaming channel. Most often a single new sample or sample update is delivered at a time, \r\n            but when a sample closes, you will typcially get two samples: The now closed bar, and the bar just opening.\r\n            \r\n\r\n\r\n            Two events may require that a client application must close the current subscribtion and resubscribe:\r\n            \r\n\r\n\r\n*   The chart has been revised, either due to a correction or a corporate action.\r\n*   The data stream has shifted from real-time to delayed prices or visa versa.\r\n\r\n            In both cases the client application will receive a _resetsubscriptions instruction over the streaming channel."
+      operationId: ChartsAddSubscriptionAsync
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChartStreamingRequest'
+            example: {
+  "Arguments": {
+    "AssetType": "FxSpot",
+    "Count": 2,
+    "FieldGroups": [
+      "ChartInfo",
+      "Data",
+      "DisplayAndFormat"
+    ],
+    "Horizon": 1,
+    "Uic": 21
+  },
+  "ContextId": "20220406092638963",
+  "Format": "application/json",
+  "ReferenceId": "CH91800",
+  "RefreshRate": 1000
+}
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChartStreamingResponse'
+              example: {
+  "ContextId": "20220406092638980",
+  "Format": "application/json",
+  "InactivityTimeout": 0,
+  "ReferenceId": "CH76258",
+  "RefreshRate": 1000,
+  "Snapshot": {
+    "ChartInfo": {
+      "DelayedByMinutes": 15,
+      "ExchangeId": "SBFX",
+      "FirstSampleTime": "2015-02-02T01:02:03Z",
+      "Horizon": 1
+    },
+    "Data": [
+      {
+        "CloseAsk": 1.3475,
+        "CloseBid": 1.3473,
+        "HighAsk": 1.4003,
+        "HighBid": 1.4001,
+        "LowAsk": 1.2804,
+        "LowBid": 1.2802,
+        "OpenAsk": 1.3478,
+        "OpenBid": 1.3476,
+        "Time": "2015-02-01T11:45:00Z"
+      },
+      {
+        "CloseAsk": 1.3475,
+        "CloseBid": 1.3473,
+        "HighAsk": 1.4003,
+        "HighBid": 1.4001,
+        "LowAsk": 1.2804,
+        "LowBid": 1.2802,
+        "OpenAsk": 1.3478,
+        "OpenBid": 1.3476,
+        "Time": "2015-02-01T11:46:00Z"
+      }
+    ],
+    "DataVersion": 1892739,
+    "DisplayAndFormat": {
+      "Currency": "USD",
+      "Decimals": 4,
+      "Description": "Euro/US Dollar",
+      "Format": "AllowDecimalPips",
+      "Symbol": "EURUSD"
+    }
+  },
+  "State": "Active",
+  "Tag": "Tag01"
+}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - InvalidModelState
+                      - UnsupportedSubscriptionFormat
+                    type: string
+                    x-enum-descriptions:
+                      InvalidModelState: Error code returned when model state is invalid.
+                      UnsupportedSubscriptionFormat: Error code returned when a subscription format that isn't supported by the publisher is requested.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - SubscriptionLimitExceeded
+                    type: string
+                    x-enum-descriptions:
+                      SubscriptionLimitExceeded: 'Error code returned when more than the maximum allowed number of subscriptions for a specified type, is exceeded.'
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-streaming-type: '#/components/schemas/ChartResponseDomainEvent'
+  /chart/v1/charts/subscriptions/active:
+    post:
+      tags:
+        - Charts
+      summary: Obsolete Create a subscription on chart data
+      description: "Sets up a subscription and returns an initial snapshot of most recently completed samples specified by the parameters in the request.\r\n            \r\n\r\n            Subsequent samples are delivered over the streaming channel. Most often a single new sample or sample update is delivered at a time, \r\n            but when a sample closes, you will typcially get two samples: The now closed bar, and the bar just opening.\r\n            \r\n\r\n\r\n            Two events may require that a client application must close the current subscribtion and resubscribe:\r\n            \r\n\r\n\r\n*   The chart has been revised, either due to a correction or a corporate action.\r\n*   The data stream has shifted from real-time to delayed prices or visa versa.\r\n\r\n            In both cases the client application will receive a _resetsubscriptions instruction over the streaming channel."
+      operationId: ChartsAddSubscriptionActiveAsync
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChartStreamingRequest'
+            example: {
+  "Arguments": {
+    "AssetType": "FxSpot",
+    "Count": 2,
+    "FieldGroups": [
+      "ChartInfo",
+      "Data",
+      "DisplayAndFormat"
+    ],
+    "Horizon": 1,
+    "Uic": 21
+  },
+  "ContextId": "20220406092638963",
+  "Format": "application/json",
+  "ReferenceId": "CH91800",
+  "RefreshRate": 1000
+}
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChartStreamingResponse'
+              example: {
+  "ContextId": "20220406092638980",
+  "Format": "application/json",
+  "InactivityTimeout": 0,
+  "ReferenceId": "CH76258",
+  "RefreshRate": 1000,
+  "Snapshot": {
+    "ChartInfo": {
+      "DelayedByMinutes": 15,
+      "ExchangeId": "SBFX",
+      "FirstSampleTime": "2015-02-02T01:02:03Z",
+      "Horizon": 1
+    },
+    "Data": [
+      {
+        "CloseAsk": 1.3475,
+        "CloseBid": 1.3473,
+        "HighAsk": 1.4003,
+        "HighBid": 1.4001,
+        "LowAsk": 1.2804,
+        "LowBid": 1.2802,
+        "OpenAsk": 1.3478,
+        "OpenBid": 1.3476,
+        "Time": "2015-02-01T11:45:00Z"
+      },
+      {
+        "CloseAsk": 1.3475,
+        "CloseBid": 1.3473,
+        "HighAsk": 1.4003,
+        "HighBid": 1.4001,
+        "LowAsk": 1.2804,
+        "LowBid": 1.2802,
+        "OpenAsk": 1.3478,
+        "OpenBid": 1.3476,
+        "Time": "2015-02-01T11:46:00Z"
+      }
+    ],
+    "DataVersion": 1892739,
+    "DisplayAndFormat": {
+      "Currency": "USD",
+      "Decimals": 4,
+      "Description": "Euro/US Dollar",
+      "Format": "AllowDecimalPips",
+      "Symbol": "EURUSD"
+    }
+  },
+  "State": "Active",
+  "Tag": "Tag01"
+}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - InvalidModelState
+                      - UnsupportedSubscriptionFormat
+                    type: string
+                    x-enum-descriptions:
+                      InvalidModelState: Error code returned when model state is invalid.
+                      UnsupportedSubscriptionFormat: Error code returned when a subscription format that isn't supported by the publisher is requested.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - SubscriptionLimitExceeded
+                    type: string
+                    x-enum-descriptions:
+                      SubscriptionLimitExceeded: 'Error code returned when more than the maximum allowed number of subscriptions for a specified type, is exceeded.'
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      deprecated: true
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-streaming-type: '#/components/schemas/ChartResponseDomainEvent'
+  /chart/v1/charts:
+    get:
+      tags:
+        - Charts
+      summary: Get chart data
+      description: "Returns chart data as specified by the request parameters. Which data samples are returned, is specified by a combination of time, mode and count. \r\n            \r\n\r\n*   If neither time, mode or count are specified, the endpoint returns the most recent 1200 samples.\r\n*   If count is specified, the endpoint returns max of (count, 1200) samples.\r\n*   If Mode==\"Upto\" the endpoint returns a number of samples upto and including the specified Time.\r\n*   If Mode==\"From\" the endpoint returns a number of samples starting from  the specified Time"
+      operationId: ChartsGetChartDataAsync
+      parameters:
+        - name: AssetType
+          in: query
+          description: Assettype of the instrument
+          required: true
+          schema:
+            title: Assettype of the instrument
+            allOf:
+              - $ref: '#/components/schemas/AssetType'
+          example: "FxSpot"
+        - name: Count
+          in: query
+          description: 'Optionally specifies maximum number of samples to return, max 1200, default 1200.'
+          schema:
+            title: 'Optionally specifies maximum number of samples to return, max 1200, default 1200.'
+            allOf:
+              - type: integer
+                format: int32
+          example: 53
+        - name: FieldGroups
+          in: query
+          description: 'Specifies which data to return. Default is [Data]'
+          schema:
+            title: 'Specifies which data to return. Default is [Data]'
+            type: array
+            items:
+              $ref: '#/components/schemas/ChartFieldGroupSpec'
+          example: [
+  "BlockInfo"
+]
+        - name: Horizon
+          in: query
+          description: 'The horizon to get samples from. Values are interpreted in minutes: 1, 5, 10, 15, 30, 60, 120, 240, 360, 480, 1440, 10080, 43200.'
+          required: true
+          schema:
+            title: 'The horizon to get samples from. Values are interpreted in minutes: 1, 5, 10, 15, 30, 60, 120, 240, 360, 480, 1440, 10080, 43200.'
+            type: integer
+            format: int32
+          example: 123
+        - name: Mode
+          in: query
+          description: 'If Time is supplied, mode specifies if the endpoint should returns samples "UpTo" (and including) or "From" (and including) the specified time.'
+          schema:
+            title: 'If Time is supplied, mode specifies if the endpoint should returns samples "UpTo" (and including) or "From" (and including) the specified time.'
+            allOf:
+              - $ref: '#/components/schemas/ChartRequestModeNullable'
+          example: "From"
+        - name: Time
+          in: query
+          description: 'Specifies the time of a sample, which must either be the first (If Mode=="From") or the last (if Mode=="UpTo") in the returned data.'
+          schema:
+            title: 'Specifies the time of a sample, which must either be the first (If Mode=="From") or the last (if Mode=="UpTo") in the returned data.'
+            allOf:
+              - type: string
+                format: date-time
+                x-type-name: UtcDateTime
+          example: "2022-08-02T09:33:08.688138Z"
+        - name: Uic
+          in: query
+          description: Uic of the instrument.
+          required: true
+          schema:
+            title: Uic of the instrument.
+            type: integer
+            format: int32
+          example: 123
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChartResponse'
+              example: {
+  "ChartInfo": {
+    "DelayedByMinutes": 15,
+    "ExchangeId": "SBFX",
+    "FirstSampleTime": "2015-02-02T01:02:03Z",
+    "Horizon": 1
+  },
+  "Data": [
+    {
+      "CloseAsk": 1.3475,
+      "CloseBid": 1.3473,
+      "HighAsk": 1.4003,
+      "HighBid": 1.4001,
+      "LowAsk": 1.2804,
+      "LowBid": 1.2802,
+      "OpenAsk": 1.3478,
+      "OpenBid": 1.3476,
+      "Time": "2015-02-01T11:45:00Z"
+    },
+    {
+      "CloseAsk": 1.3475,
+      "CloseBid": 1.3473,
+      "HighAsk": 1.4003,
+      "HighBid": 1.4001,
+      "LowAsk": 1.2804,
+      "LowBid": 1.2802,
+      "OpenAsk": 1.3478,
+      "OpenBid": 1.3476,
+      "Time": "2015-02-01T11:46:00Z"
+    }
+  ],
+  "DataVersion": 1892739,
+  "DisplayAndFormat": {
+    "Currency": "USD",
+    "Decimals": 4,
+    "Description": "Euro/US Dollar",
+    "Format": "AllowDecimalPips",
+    "Symbol": "EURUSD"
+  }
+}
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  /chart/api/oas3:
+    get:
+      summary: Get Open API Specification 3.0 documentation for the service group.
+      description: Returns the OAS 3 document for the service group.
+      operationId: OasGetOas3
+      parameters:
+        - $ref: '#/components/parameters/XInternalIP'
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      x-network-visibility: internal
+  /chart/apistatus:
+    get:
+      description: Returns default server status information
+      operationId: chart_apistatus
+      parameters:
+        - $ref: '#/components/parameters/XInternalIP'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerStatus'
+              example: {
+  "Created": "0001-01-01T00:00:00Z",
+  "LeasePeriod": 0,
+  "LogicalProcessors": 0,
+  "MachineUptime": 0,
+  "SystemUptime": 0,
+  "TimeSpentMs": 38.57,
+  "ToolId": 0
+}
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      x-network-visibility: internal
+  /chart/isalive:
+    get:
+      description: Determines whether this service-group instance is alive.
+      operationId: chart_isalive
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+              example: "4891475a-ba52-4785-b24a-66a5a9fb9e2f"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+components:
+  schemas:
+    ApiGroupInfo:
+      title: Infor for an Api Group.
+      type: object
+      properties:
+        Controller:
+          title: Gets the Api Controller name.
+          type: string
+        Routes:
+          title: Gets the routes for the ApiGroup.
+          type: array
+          items:
+            type: string
+      additionalProperties: false
+    AssetType:
+      title: The possible AssetTypes for which you can get a quote or place an order or a trade.
+      enum:
+        - Bond
+        - Cash
+        - CertificateBonus
+        - CertificateCappedBonus
+        - CertificateCappedCapitalProtected
+        - CertificateCappedOutperformance
+        - CertificateConstantLeverage
+        - CertificateDiscount
+        - CertificateExpress
+        - CertificateTracker
+        - CertificateUncappedCapitalProtection
+        - CertificateUncappedOutperformance
+        - CfdFutureOption
+        - CfdIndexOption
+        - CfdOnCompanyWarrant
+        - CfdOnEtc
+        - CfdOnEtf
+        - CfdOnEtn
+        - CfdOnFund
+        - CfdOnFutures
+        - CfdOnIndex
+        - CfdOnRights
+        - CfdOnStock
+        - CfdStockOption
+        - CompanyWarrant
+        - ContractFutures
+        - Etc
+        - Etf
+        - Etn
+        - Fund
+        - FuturesOption
+        - FuturesOtc
+        - FuturesStrategy
+        - FxBinaryOption
+        - FxForwards
+        - FxKnockInOption
+        - FxKnockOutOption
+        - FxNoTouchOption
+        - FxOneTouchOption
+        - FxSpot
+        - FxSwap
+        - FxVanillaOption
+        - GuaranteeNote
+        - IpoOnStock
+        - ManagedFund
+        - MiniFuture
+        - MutualFund
+        - PortfolioNote
+        - Rights
+        - SrdOnEtf
+        - SrdOnStock
+        - Stock
+        - StockIndex
+        - StockIndexOption
+        - StockOption
+        - Warrant
+        - WarrantDoubleKnockOut
+        - WarrantKnockOut
+        - WarrantOpenEndKnockOut
+        - WarrantSpread
+      type: string
+      x-enum-descriptions:
+        FxSpot: Forex Spot.
+        FxForwards: Forex Forward.
+        FxVanillaOption: Forex Vanilla Option.
+        FxKnockInOption: Forex Knock In Option.
+        FxKnockOutOption: Forex Knock Out Option.
+        FxBinaryOption: Forex Binary Option.
+        FxOneTouchOption: Forex One Touch Option.
+        FxNoTouchOption: Forex No Touch Option.
+        ContractFutures: Contract Futures.
+        FuturesStrategy: Futures Strategy.
+        Stock: Stock.
+        StockOption: Stock Option.
+        Bond: Bond.
+        FuturesOption: Futures Option.
+        StockIndexOption: Stock Index Option.
+        ManagedFund: 'Obsolete: Managed Fund.'
+        Cash: Cash. Not tradeable!
+        CfdOnStock: Cfd on Stock.
+        CfdOnIndex: Cfd on Stock Index.
+        CfdOnFutures: Cfd on Futures.
+        StockIndex: Stock Index.
+        MutualFund: Mutual Fund.
+        CfdIndexOption: Cfd Index Option.
+        CfdOnEtf: Cfd on Etf
+        CfdOnEtc: Cfd on Etc
+        CfdOnEtn: Cfd on Etn
+        CfdOnFund: Cfd on Fund
+        CfdOnRights: Cfd on Rights
+        CfdStockOption: Cfd Stock Option
+        CfdOnCompanyWarrant: Cfd on unlisted warrant issued by a corporation.
+        Etf: Exchange traded fund.
+        Etc: Etc
+        Etn: Etn
+        Fund: Fund
+        FxSwap: Forex Swap.
+        Rights: Rights
+        Warrant: Warrant
+        CfdFutureOption: Cfd Future Option.
+        MiniFuture: MiniFuture.
+        WarrantSpread: Warrant with built-in spread.
+        WarrantKnockOut: Warrant with a knock-out barrier.
+        WarrantOpenEndKnockOut: Knock-out Warrant with no expiry.
+        WarrantDoubleKnockOut: Warrant with two knock-out barriers.
+        CertificateUncappedCapitalProtection: Guarantees a percentage increase of the underlying asset's value above the issue price at expiry/maturity. Max loss is the amount invested multiplied by the CapitalProtection percentage.
+        CertificateCappedCapitalProtected: Guarantees a capped percentage increase of the underlying asset's value above the issue price at expiry/maturity. Max loss is the amount invested multiplied by the CapitalProtection percentage.
+        CertificateDiscount: 'Yields a capped return if the underlying asset''s value is above the specified cap level at expiry. If the underlying''s value is below the strike at expiry, the investor received the underlying or equivalent value. Offers direct exposure in underlying at a lower price (discount) with a capped potential profit and limited loss.'
+        CertificateCappedOutperformance: Capped Outperformance Certificate.
+        CertificateCappedBonus: Certificate Capped Bonus.
+        CertificateExpress: Certificate Express kick out.
+        CertificateTracker: A certificate that mirrors the price movement of the underlying instrument. Often used to trade movements in indicies. Movements can be a fixed ratio of the underlying and can be inverted for bearish/short speculation. Risk is equivalent to owning the underlying.
+        CertificateUncappedOutperformance: 'Provides leveraged returns when the underlying price exceeds the threshold strike price. The amount leverage is defined by the Participation %. When the underlying is below the strike price, the certificate mirrors the underlying price 1:1.'
+        CertificateBonus: 'Mirrors the price movement of the underlying only if and when the underlying price exceeds the defined barrier. If the certificate expires below the barrier, it offers partial protection/return of investment.'
+        CertificateConstantLeverage: Certificate Constant Leverage.
+        SrdOnStock: SRD. (Service de Règlement Différé) on Stock.
+        SrdOnEtf: SRD. (Service de Règlement Différé) on Etf.
+        IpoOnStock: IPO on Stock
+        CompanyWarrant: 'Unlisted warrant issued by a corporation, often physically settled.'
+        PortfolioNote: Danish pooled investment scheme (“Pulje”). Not online tradeable.
+        GuaranteeNote: Danish investment scheme (“Grantbevis”). Not online tradeable.
+        FuturesOtc: Future Otc.
+      x-enum-network-visibility:
+        CfdStockOption: internal
+        FxSwap: internal
+        CfdFutureOption: internal
+    CacheStatisticsData:
+      type: object
+      properties:
+        InstrumentStatistics:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstrumentStatisticsData'
+        Name:
+          type: string
+        TotalSampleCount:
+          type: integer
+          format: int32
+        TotalSegmentCount:
+          type: integer
+          format: int32
+      additionalProperties: false
+    ChartFieldGroupSpec:
+      title: Specify which sections of the response you would like to get returned
+      enum:
+        - BlockInfo
+        - ChartInfo
+        - Data
+        - DisplayAndFormat
+      type: string
+      x-enum-descriptions:
+        BlockInfo: Return information about previous blocks
+        ChartInfo: Return information about the time series
+        Data: Return the chart data samples
+        DisplayAndFormat: Return information about the instrument
+    ChartInfo:
+      title: Holds basic information about this chart time series
+      type: object
+      properties:
+        DelayedByMinutes:
+          title: 'If the pricefeed is delayed, this field will be returned indicating the delay in minutes.'
+          type: integer
+          format: int32
+        ExchangeId:
+          title: Id of the Exchange. Go to the ReferenceData/Exhanges endpoint to get exchange session info.
+          type: string
+        FirstSampleTime:
+          title: The time of the first (oldest) available sample available for this instrument. Useful for the client when calculating the size of the horizontal slider.
+          allOf:
+            - type: string
+              format: date-time
+              x-type-name: UtcDateTime
+        Horizon:
+          title: Horizon in minutes.
+          type: integer
+          format: int32
+      additionalProperties: false
+    ChartInfoRetained:
+      $ref: '#/components/schemas/ChartInfo'
+    ChartInstrumentType:
+      enum:
+        - BasisOffset
+        - BondTrade
+        - CFD
+        - CFDFuture
+        - CFDIndex
+        - ClientSpread
+        - Forex
+        - Future
+        - MutualFund
+        - Stock
+        - StockIndex
+        - Unknown
+      type: string
+    ChartNumberOfDataPointsRequest:
+      title: Specifies which chart data to request
+      required:
+        - AssetType
+        - Horizon
+        - FromTime
+        - ToTime
+        - Uic
+      type: object
+      properties:
+        AssetType:
+          title: Asset type of the instrument
+          allOf:
+            - $ref: '#/components/schemas/AssetType'
+        ChartSampleFieldSet:
+          title: 'Optionally select which set of fields are returned in the Data array. Currently only applicable for asset types (Warrants, MiniFutures and Certificates).'
+          allOf:
+            - $ref: '#/components/schemas/ChartSampleFieldSetNullable'
+        FromTime:
+          title: Specifies the time from where to begin counting the returned number of data points.
+          allOf:
+            - type: string
+              format: date-time
+              x-type-name: UtcDateTime
+        Horizon:
+          title: 'The horizon to get samples from. Values are interpreted in minutes: 1, 2, 3, 5, 10, 15, 30, 60, 120, 180, 240, 300, 360, 480, 1440, 10080, 43200, 129600, 518400.'
+          type: integer
+          format: int32
+        ToTime:
+          title: Specifies the time from where to end counting the returned number of data points.
+          allOf:
+            - type: string
+              format: date-time
+              x-type-name: UtcDateTime
+        Uic:
+          title: Uic of the instrument.
+          type: integer
+          format: int32
+      additionalProperties: false
+    ChartNumberOfDataPointsResponse:
+      title: The response to a number of data points within a defined time span request.
+      type: object
+      properties:
+        NumberOfDataPoints:
+          title: Number of data points.
+          type: integer
+          format: int32
+      additionalProperties: false
+    ChartRequest:
+      title: Specifies which chart data to request
+      required:
+        - AssetType
+        - Horizon
+        - Uic
+      type: object
+      properties:
+        AssetType:
+          title: Assettype of the instrument
+          allOf:
+            - $ref: '#/components/schemas/AssetType'
+        Count:
+          title: 'Optionally specifies maximum number of samples to return, max 1200, default 1200.'
+          allOf:
+            - type: integer
+              format: int32
+        FieldGroups:
+          title: 'Specifies which data to return. Default is [Data]'
+          type: array
+          items:
+            $ref: '#/components/schemas/ChartFieldGroupSpec'
+        Horizon:
+          title: 'The horizon to get samples from. Values are interpreted in minutes: 1, 5, 10, 15, 30, 60, 120, 240, 360, 480, 1440, 10080, 43200.'
+          type: integer
+          format: int32
+        Mode:
+          title: 'If Time is supplied, mode specifies if the endpoint should returns samples "UpTo" (and including) or "From" (and including) the specified time.'
+          allOf:
+            - $ref: '#/components/schemas/ChartRequestModeNullable'
+        Time:
+          title: 'Specifies the time of a sample, which must either be the first (If Mode=="From") or the last (if Mode=="UpTo") in the returned data.'
+          allOf:
+            - type: string
+              format: date-time
+              x-type-name: UtcDateTime
+        Uic:
+          title: Uic of the instrument.
+          type: integer
+          format: int32
+      additionalProperties: false
+    ChartRequestMode:
+      title: Denotes in what mode chart data is requested.
+      enum:
+        - From
+        - UpTo
+      type: string
+      x-enum-descriptions:
+        From: From
+        UpTo: Up to
+    ChartRequestModeNullable:
+      allOf:
+        - $ref: '#/components/schemas/ChartRequestMode'
+    ChartResponse:
+      title: The response to a subscription request. Should contain a snapshot of the data matching the subscription request.
+      type: object
+      properties:
+        ChartInfo:
+          title: Chart info.
+          allOf:
+            - $ref: '#/components/schemas/ChartInfo'
+        Data:
+          title: The response to a chart subscription.
+          type: array
+          items:
+            $ref: '#/components/schemas/ChartSample'
+        DataVersion:
+          title: Version info.
+          type: integer
+          format: int32
+        DisplayAndFormat:
+          title: Display info.
+          allOf:
+            - $ref: '#/components/schemas/DisplayAndFormat'
+      additionalProperties: false
+    ChartResponseDomainEvent:
+      type: object
+      properties:
+        Data:
+          title: 'The type of data transported by the DomainEvent instance (e.g. price update, position list update etc.).'
+          allOf:
+            - $ref: '#/components/schemas/ChartResponse'
+        PartitionNumber:
+          title: The partition number if this DomainEvent is a partition.
+          allOf:
+            - type: integer
+              format: int32
+        ReferenceId:
+          title: 'Client specified id, which is sent back to the client with every data update.'
+          type: string
+        Timestamp:
+          title: The UTC date and time of the event.
+          type: string
+          format: date-time
+          x-type-name: UtcDateTime
+        TotalPartitions:
+          title: The total number of partitions if this DomainEvent is a partition.
+          allOf:
+            - type: integer
+              format: int32
+      additionalProperties: false
+    ChartSample:
+      title: Information pertaining to a specific chart sample interval.
+      type: object
+      properties:
+        Close:
+          title: Close
+          allOf:
+            - type: number
+        CloseAsk:
+          title: CloseAsk
+          allOf:
+            - type: number
+        CloseBid:
+          title: CloseBid
+          allOf:
+            - type: number
+        Growth:
+          title: Growth
+          allOf:
+            - type: number
+        High:
+          title: High
+          allOf:
+            - type: number
+        HighAsk:
+          title: HighAsk
+          allOf:
+            - type: number
+        HighBid:
+          title: HighBid
+          allOf:
+            - type: number
+        Interest:
+          title: Interest
+          allOf:
+            - type: number
+        Low:
+          title: Low
+          allOf:
+            - type: number
+        LowAsk:
+          title: LowAsk
+          allOf:
+            - type: number
+        LowBid:
+          title: LowBid
+          allOf:
+            - type: number
+        Open:
+          title: Open
+          allOf:
+            - type: number
+        OpenAsk:
+          title: OpenAsk
+          allOf:
+            - type: number
+        OpenBid:
+          title: OpenBid
+          allOf:
+            - type: number
+        Time:
+          title: Time
+          type: string
+          format: date-time
+          x-type-name: UtcDateTime
+        Volume:
+          title: Volume
+          allOf:
+            - type: number
+      additionalProperties: false
+    ChartSampleFieldSet:
+      title: Specifies which values to be returned in the data array.
+      enum:
+        - BidAsk
+        - Default
+        - LastTraded
+      type: string
+      x-enum-descriptions:
+        Default: 'Return the default set of fields for the specified asset type, please see the learn section for details.'
+        LastTraded: 'Return the Open, High, Low, Close values along with Interest and Volume.'
+        BidAsk: 'Return the OpenBid/Ask, HighBid/Ask, LowBid/Ask and CloseBid/Ask values.'
+    ChartSampleFieldSetNullable:
+      allOf:
+        - $ref: '#/components/schemas/ChartSampleFieldSet'
+    ChartSparklineRequest:
+      title: Chart sparkline request specification
+      required:
+        - Instruments
+        - Duration
+      type: object
+      properties:
+        Duration:
+          title: 'Duration of sparkline data. Example: Duration=Day,Month'
+          type: array
+          items:
+            $ref: '#/components/schemas/SparklineDuration'
+        FieldGroups:
+          title: 'Fields to be returned other than data. Example: FieldGroups=DisplayAndFormat'
+          type: array
+          items:
+            $ref: '#/components/schemas/SparklineFieldGroup'
+        Instruments:
+          title: "Uic of the instruments separated by comma(,) followed by their assettype using ':'. Example: Instruments=1,5,21:FxSpot,211,15611:Stock. \r\n            Supported asset types: FxSpot,ContractFutures,Stock,MutualFund,CfdOnStock,CfdOnIndex,CfdOnFutures,StockIndex.\r\n            Maximum 30 instruments supported."
+          type: string
+      additionalProperties: false
+    ChartSparklineResponse:
+      title: Sparkline data for a given instrument
+      type: object
+      properties:
+        AssetType:
+          title: Asset type of the instrument
+          allOf:
+            - $ref: '#/components/schemas/AssetType'
+        DisplayAndFormat:
+          title: Display and format for instrument
+          allOf:
+            - $ref: '#/components/schemas/DisplayAndFormat'
+        ErrorInfo:
+          title: Present if any error occured while fetching information / data
+          allOf:
+            - $ref: '#/components/schemas/SparklineErrorInfo'
+        TimeSeries:
+          title: Time series is combination of duration and data
+          type: array
+          items:
+            $ref: '#/components/schemas/SparklineTimeSeries'
+        Uic:
+          title: Uic of instrument
+          type: integer
+          format: int32
+      additionalProperties: false
+    ChartStreamingRequest:
+      title: Public contract for setting up a subscription to chart data.
+      required:
+        - ContextId
+        - ReferenceId
+      type: object
+      properties:
+        ContextId:
+          title: "The streaming context id that this request is associated with.\r\n            This parameter must only contain letters (a-z) and numbers (0-9) as well as - (dash) and _ (underscore). It is case insensitive. Max length is 50 characters."
+          pattern: '^[a-zA-Z0-9_-]{1,50}$'
+          type: string
+          x-display-order: 1
+        ReferenceId:
+          title: "Mandatory client specified reference id for the subscription.\r\n            This parameter must only contain alphanumberic characters as well as - (dash) and _ (underscore). Cannot start with _. It is case insensitive. Max length is 50 characters."
+          pattern: '^[a-zA-Z0-9-][a-zA-Z0-9_-]{0,49}$'
+          type: string
+          x-display-order: 2
+        Arguments:
+          title: Arguments for the subscription request.
+          allOf:
+            - $ref: '#/components/schemas/ChartSubscriptionRequest'
+        Format:
+          title: "Optional Media type (RFC 2046) of the serialized data updates that are streamed to the client.\r\n            Currently only application/json and application/x-protobuf is supported.\r\n            If an unrecognized format is specified, the subscription end point will return HTTP status code 400 - Bad format."
+          type: string
+        KnownSchemas:
+          title: "SAXO INTERNAL Optional list of known schemas for the specified . \r\n            If a schema is specified in this list it will not be returned in the  property."
+          type: array
+          items:
+            type: string
+          x-network-visibility: internal
+        RefreshRate:
+          title: "Optional custom refresh rate, measured in milliseconds, between each data update.\r\n            Note that it is not possible to get a refresh rate lower than the rate specified in the\r\n            customer service level agreement (SLA)."
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          format: int32
+        ReplaceReferenceId:
+          title: Reference id of the subscription that should be replaced.
+          pattern: '^[a-zA-Z0-9-][a-zA-Z0-9_-]{0,49}$'
+          type: string
+        Tag:
+          title: Optional client specified tag used for grouping subscriptions.
+          type: string
+      additionalProperties: false
+    ChartStreamingResponse:
+      title: Subscription response.
+      type: object
+      properties:
+        ContextId:
+          title: The streaming context id that this response is associated with.
+          type: string
+          deprecated: true
+          x-deprecated-date: '2022-11-01'
+          x-display-order: 1
+        ReferenceId:
+          title: The reference id that (along with streaming context id and session id) identifies the subscription (within the context of a specific service/subscription type)
+          type: string
+          deprecated: true
+          x-deprecated-date: '2022-11-01'
+          x-display-order: 2
+        Format:
+          title: 'The media type (RFC 2046), of the serialized data updates that are streamed to the client.'
+          type: string
+        InactivityTimeout:
+          title: The time (in seconds) that the client should accept the subscription to be inactive before considering it invalid.
+          type: integer
+          format: int32
+        RefreshRate:
+          title: Actual refresh rate assigned to the subscription according to the customers SLA.
+          type: integer
+          format: int32
+        Schema:
+          title: 'SAXO INTERNAL Optional schema that describes the message format, as in the requested media format. If this name is included in the  property on the  request then the  and  properties will be omitted from the response. Currently this will not return anything for application/json.'
+          type: string
+          x-network-visibility: internal
+        SchemaName:
+          title: SAXO INTERNAL Optional schema that names the schema requested. If this name is included in the  property on the  request then the  and  properties will be omitted from the response.
+          type: string
+          x-network-visibility: internal
+        Snapshot:
+          title: 'Snapshot of the current data on hand, when subscription was created.'
+          allOf:
+            - $ref: '#/components/schemas/ChartResponse'
+        State:
+          title: The value "Active".
+          type: string
+          description: This property is kept for backwards compatibility.
+          deprecated: true
+          x-deprecated-date: '2022-11-01'
+        Tag:
+          title: 'Client specified tag assigned to the subscription, if specified in the request.'
+          type: string
+      additionalProperties: false
+    ChartSubscriptionRequest:
+      title: Specifies which chart data to subscribe to.
+      required:
+        - AssetType
+        - Horizon
+        - Uic
+      type: object
+      properties:
+        AssetType:
+          title: Assettype of the instrument
+          allOf:
+            - $ref: '#/components/schemas/AssetType'
+        Count:
+          title: 'Optionally specifies maximum number of samples to return, max 1200, default 1200.'
+          allOf:
+            - type: integer
+              format: int32
+        FieldGroups:
+          title: 'Specifies which data to return. Default is [Data]'
+          type: array
+          items:
+            $ref: '#/components/schemas/ChartFieldGroupSpec'
+        Horizon:
+          title: 'The horizon to get samples from. Values are interpreted in minutes: 1, 5, 10, 15, 30, 60, 120, 240, 360, 480, 1440, 10080, 43200.'
+          type: integer
+          format: int32
+        Uic:
+          title: Uic of the instrument.
+          type: integer
+          format: int32
+      additionalProperties: false
+    ClientConfigData:
+      type: object
+      properties:
+        ConfigRate:
+          type: integer
+          format: int32
+        ErrorRepeat:
+          type: integer
+          format: int32
+        ErrorTimeout:
+          type: integer
+          format: int32
+        MaxFetch:
+          type: integer
+          format: int32
+        MinFetch:
+          type: integer
+          format: int32
+        RequestTimeout:
+          type: integer
+          format: int32
+        UpdateRate:
+          type: integer
+          format: int32
+        WaitRepeat:
+          type: integer
+          format: int32
+        WaitTimeout:
+          type: integer
+          format: int32
+      additionalProperties: false
+    DataSeriesType:
+      title: "Price field is used to get prices (default)\r\n            Growth field is used to get growth series"
+      enum:
+        - Growth
+        - Price
+      type: string
+    DataSeriesTypeNullable:
+      allOf:
+        - $ref: '#/components/schemas/DataSeriesType'
+    DatabaseData:
+      type: object
+      properties:
+        Database:
+          type: string
+        FailoverServer:
+          type: string
+        Server:
+          type: string
+      additionalProperties: false
+    DatabasesData:
+      type: object
+      properties:
+        BOND:
+          allOf:
+            - $ref: '#/components/schemas/DatabaseData'
+        CFD:
+          allOf:
+            - $ref: '#/components/schemas/DatabaseData'
+        FX:
+          allOf:
+            - $ref: '#/components/schemas/DatabaseData'
+        MF:
+          allOf:
+            - $ref: '#/components/schemas/DatabaseData'
+        MITS:
+          allOf:
+            - $ref: '#/components/schemas/DatabaseData'
+        STOCK:
+          allOf:
+            - $ref: '#/components/schemas/DatabaseData'
+      additionalProperties: false
+    DependencyInfo:
+      title: 'Represents information about named dependency, component, or subsystem.'
+      type: object
+      properties:
+        Events:
+          title: The events related to the dependency.
+          type: array
+          items:
+            $ref: '#/components/schemas/DependencyStatusEvent'
+        Name:
+          title: The unique name of the dependency.
+          type: string
+      additionalProperties: false
+    DependencyStatusEvent:
+      type: object
+      properties:
+        Message:
+          title: A free-text message describing the event.
+          type: string
+          description: 'The message can indicate the type of failure, an exception message, or likewise.'
+        Status:
+          title: The dependency status after the event.
+          allOf:
+            - $ref: '#/components/schemas/DependencyStatusKind'
+        Timestamp:
+          type: string
+          format: date-time
+          x-type-name: UtcDateTime
+      additionalProperties: false
+    DependencyStatusKind:
+      title: Represents different dependency statuses.
+      enum:
+        - Failed
+        - Initializing
+        - None
+        - Ready
+      type: string
+      x-enum-descriptions:
+        None: Indicates that no status has been set for a dependency.
+        Initializing: Indicates a dependency is initializing.
+        Ready: Indicates that a dependency has operational status.
+        Failed: Indicates that a dependency is not operational.
+    DiskDrive:
+      title: 'Data contract for logical disk drives, including Total and Free disk space'
+      type: object
+      properties:
+        DriveSize:
+          title: DriveSize (in GB)
+          type: integer
+          format: int64
+        FreeSpace:
+          title: FreeSpace (in GB)
+          type: integer
+          format: int64
+        LogicalDrive:
+          title: LogicalDrive (e.g. C or D)
+          type: string
+        PercentUsed:
+          title: PercentUsed
+          type: integer
+          format: int32
+      additionalProperties: false
+    DisplayAndFormat:
+      title: Display information for chart data.
+      type: object
+      properties:
+        Currency:
+          title: The currency in which the data is displayed.
+          type: string
+        Decimals:
+          title: The number of decimals in the chart data.
+          type: integer
+          format: int32
+        Description:
+          title: Description of the data.
+          type: string
+        Format:
+          title: The format in which data is delivered.
+          allOf:
+            - $ref: '#/components/schemas/PriceDisplayFormatType'
+        NumeratorDecimals:
+          title: Provided when format is either fractions or ModernFractions. Indicates how many decimals are shown in the numerator value in a fraction.
+          allOf:
+            - type: integer
+              format: int32
+        Symbol:
+          title: The symbol of the instrument.
+          type: string
+      additionalProperties: false
+    DisplayAndFormatRetained:
+      $ref: '#/components/schemas/DisplayAndFormat'
+    Domain.ChartFieldGroupSpec:
+      title: Specify which sections of the response you would like to get returned
+      enum:
+        - ChartInfo
+        - Data
+        - DisplayAndFormat
+      type: string
+      x-enum-descriptions:
+        ChartInfo: Return information about the time series
+        Data: Return the chart data samples
+        DisplayAndFormat: Return information about the instrument
+    Domain.ChartRequest:
+      title: Specifies which chart data to request
+      required:
+        - AssetType
+        - Horizon
+        - Uic
+      type: object
+      properties:
+        AccountKey:
+          title: Optional
+          allOf:
+            - minLength: 1
+              type: string
+              x-type-name: AccountKey
+        AssetType:
+          title: Asset type of the instrument
+          allOf:
+            - $ref: '#/components/schemas/AssetType'
+        ChartSampleFieldSet:
+          title: 'Optionally select which set of fields are returned in the Data array. Currently only applicable for asset types (Warrants, MiniFutures and Certificates).'
+          allOf:
+            - $ref: '#/components/schemas/ChartSampleFieldSetNullable'
+        Count:
+          title: 'Optionally specifies maximum number of samples to return, max 1200, default 1200.'
+          allOf:
+            - type: integer
+              format: int32
+        FieldGroups:
+          title: 'Specifies which data to return. Default is [Data]'
+          type: array
+          items:
+            $ref: '#/components/schemas/Domain.v3.ChartFieldGroupSpec'
+        Horizon:
+          title: 'The horizon to get samples from. Values are interpreted in minutes: 1, 2, 3, 5, 10, 15, 30, 60, 120, 180, 240, 300, 360, 480, 1440, 10080, 43200, 129600, 518400.'
+          type: integer
+          format: int32
+        Mode:
+          title: 'If Time is supplied, mode specifies if the endpoint should returns samples "UpTo" (and including) or "From" (and including) the specified time.'
+          allOf:
+            - $ref: '#/components/schemas/ChartRequestModeNullable'
+        Time:
+          title: 'Specifies the time of a sample, which must either be the first (If Mode=="From") or the last (if Mode=="UpTo") in the returned data.'
+          allOf:
+            - type: string
+              format: date-time
+              x-type-name: UtcDateTime
+        Uic:
+          title: Uic of the instrument.
+          type: integer
+          format: int32
+      additionalProperties: false
+    Domain.ChartResponse:
+      title: The response to a subscription request. Should contain a snapshot of the data matching the subscription request.
+      type: object
+      properties:
+        ChartInfo:
+          title: Chart info.
+          allOf:
+            - $ref: '#/components/schemas/ChartInfoRetained'
+        Data:
+          title: The response to a chart subscription.
+          type: array
+          items:
+            $ref: '#/components/schemas/ChartSample'
+        DataVersion:
+          title: Version info.
+          type: integer
+          format: int32
+        DisplayAndFormat:
+          title: Display info.
+          allOf:
+            - $ref: '#/components/schemas/DisplayAndFormatRetained'
+      additionalProperties: false
+    Domain.ChartResponseDomainEvent:
+      type: object
+      properties:
+        Data:
+          title: 'The type of data transported by the DomainEvent instance (e.g. price update, position list update etc.).'
+          allOf:
+            - $ref: '#/components/schemas/Domain.ChartResponse'
+        PartitionNumber:
+          title: The partition number if this DomainEvent is a partition.
+          allOf:
+            - type: integer
+              format: int32
+        ReferenceId:
+          title: 'Client specified id, which is sent back to the client with every data update.'
+          type: string
+        Timestamp:
+          title: The UTC date and time of the event.
+          type: string
+          format: date-time
+          x-type-name: UtcDateTime
+        TotalPartitions:
+          title: The total number of partitions if this DomainEvent is a partition.
+          allOf:
+            - type: integer
+              format: int32
+      additionalProperties: false
+    Domain.ChartStreamingRequest:
+      title: Public contract for setting up a subscription to chart data.
+      required:
+        - ContextId
+        - ReferenceId
+      type: object
+      properties:
+        ContextId:
+          title: "The streaming context id that this request is associated with.\r\n            This parameter must only contain letters (a-z) and numbers (0-9) as well as - (dash) and _ (underscore). It is case insensitive. Max length is 50 characters."
+          pattern: '^[a-zA-Z0-9_-]{1,50}$'
+          type: string
+          x-display-order: 1
+        ReferenceId:
+          title: "Mandatory client specified reference id for the subscription.\r\n            This parameter must only contain alphanumberic characters as well as - (dash) and _ (underscore). Cannot start with _. It is case insensitive. Max length is 50 characters."
+          pattern: '^[a-zA-Z0-9-][a-zA-Z0-9_-]{0,49}$'
+          type: string
+          x-display-order: 2
+        Arguments:
+          title: Arguments for the subscription request.
+          allOf:
+            - $ref: '#/components/schemas/Domain.ChartSubscriptionRequest'
+        Format:
+          title: "Optional Media type (RFC 2046) of the serialized data updates that are streamed to the client.\r\n            Currently only application/json and application/x-protobuf is supported.\r\n            If an unrecognized format is specified, the subscription end point will return HTTP status code 400 - Bad format."
+          type: string
+        KnownSchemas:
+          title: "SAXO INTERNAL Optional list of known schemas for the specified . \r\n            If a schema is specified in this list it will not be returned in the  property."
+          type: array
+          items:
+            type: string
+          x-network-visibility: internal
+        RefreshRate:
+          title: "Optional custom refresh rate, measured in milliseconds, between each data update.\r\n            Note that it is not possible to get a refresh rate lower than the rate specified in the\r\n            customer service level agreement (SLA)."
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          format: int32
+        ReplaceReferenceId:
+          title: Reference id of the subscription that should be replaced.
+          pattern: '^[a-zA-Z0-9-][a-zA-Z0-9_-]{0,49}$'
+          type: string
+        Tag:
+          title: Optional client specified tag used for grouping subscriptions.
+          type: string
+      additionalProperties: false
+    Domain.ChartStreamingResponse:
+      title: Subscription response.
+      type: object
+      properties:
+        ContextId:
+          title: The streaming context id that this response is associated with.
+          type: string
+          deprecated: true
+          x-deprecated-date: '2022-11-01'
+          x-display-order: 1
+        ReferenceId:
+          title: The reference id that (along with streaming context id and session id) identifies the subscription (within the context of a specific service/subscription type)
+          type: string
+          deprecated: true
+          x-deprecated-date: '2022-11-01'
+          x-display-order: 2
+        Format:
+          title: 'The media type (RFC 2046), of the serialized data updates that are streamed to the client.'
+          type: string
+        InactivityTimeout:
+          title: The time (in seconds) that the client should accept the subscription to be inactive before considering it invalid.
+          type: integer
+          format: int32
+        RefreshRate:
+          title: Actual refresh rate assigned to the subscription according to the customers SLA.
+          type: integer
+          format: int32
+        Schema:
+          title: 'SAXO INTERNAL Optional schema that describes the message format, as in the requested media format. If this name is included in the  property on the  request then the  and  properties will be omitted from the response. Currently this will not return anything for application/json.'
+          type: string
+          x-network-visibility: internal
+        SchemaName:
+          title: SAXO INTERNAL Optional schema that names the schema requested. If this name is included in the  property on the  request then the  and  properties will be omitted from the response.
+          type: string
+          x-network-visibility: internal
+        Snapshot:
+          title: 'Snapshot of the current data on hand, when subscription was created.'
+          allOf:
+            - $ref: '#/components/schemas/Domain.ChartResponse'
+        State:
+          title: The value "Active".
+          type: string
+          description: This property is kept for backwards compatibility.
+          deprecated: true
+          x-deprecated-date: '2022-11-01'
+        Tag:
+          title: 'Client specified tag assigned to the subscription, if specified in the request.'
+          type: string
+      additionalProperties: false
+    Domain.ChartSubscriptionRequest:
+      title: Specifies which chart data to subscribe to.
+      required:
+        - AssetType
+        - Horizon
+        - Uic
+      type: object
+      properties:
+        AssetType:
+          title: Assettype of the instrument
+          allOf:
+            - $ref: '#/components/schemas/AssetType'
+        Count:
+          title: 'Optionally specifies maximum number of samples to return, max 1200, default 1200.'
+          allOf:
+            - type: integer
+              format: int32
+        DataCurrency:
+          title: Currency conversion in which data is expected in growth
+          type: string
+        DataSeriesType:
+          title: Growth or Price | Growth in case of mutual funds and Price in case of other asset classes like Fx
+          allOf:
+            - $ref: '#/components/schemas/DataSeriesTypeNullable'
+        FieldGroups:
+          title: 'Specifies which data to return. Default is [Data]'
+          type: array
+          items:
+            $ref: '#/components/schemas/Domain.ChartFieldGroupSpec'
+        Horizon:
+          title: 'The horizon to get samples from. Values are interpreted in minutes: 1, 5, 10, 15, 30, 60, 120, 240, 360, 480, 1440, 10080, 43200.'
+          type: integer
+          format: int32
+        Uic:
+          title: Uic of the instrument.
+          type: integer
+          format: int32
+      additionalProperties: false
+    Domain.DataSeriesType:
+      title: "Price field is used to get prices (default)\r\n              Growth field is used to get growth series"
+      enum:
+        - Growth
+        - Price
+      type: string
+    Domain.DataSeriesTypeNullable:
+      allOf:
+        - $ref: '#/components/schemas/Domain.DataSeriesType'
+    Domain.v3.ChartFieldGroupSpec:
+      title: Specify which sections of the response you would like to get returned
+      enum:
+        - BlockInfo
+        - ChartInfo
+        - Data
+        - DisplayAndFormat
+      type: string
+      x-enum-descriptions:
+        BlockInfo: Return information about previous blocks
+        ChartInfo: Return information about the time series
+        Data: Return the chart data samples
+        DisplayAndFormat: Return information about the instrument
+    Domain.v3.ChartResponse:
+      title: The response to a subscription request. Should contain a snapshot of the data matching the subscription request.
+      type: object
+      properties:
+        ChartInfo:
+          title: Chart info.
+          allOf:
+            - $ref: '#/components/schemas/ChartInfo'
+        Data:
+          title: The response to a chart subscription.
+          type: array
+          items:
+            $ref: '#/components/schemas/ChartSample'
+        DataVersion:
+          title: Data Version information of a given request.
+          type: integer
+          format: int32
+        DisplayAndFormat:
+          title: Display info.
+          allOf:
+            - $ref: '#/components/schemas/DisplayAndFormat'
+      additionalProperties: false
+    Domain.v3.ChartResponseDomainEvent:
+      type: object
+      properties:
+        Data:
+          title: 'The type of data transported by the DomainEvent instance (e.g. price update, position list update etc.).'
+          allOf:
+            - $ref: '#/components/schemas/Domain.v3.ChartResponse'
+        PartitionNumber:
+          title: The partition number if this DomainEvent is a partition.
+          allOf:
+            - type: integer
+              format: int32
+        ReferenceId:
+          title: 'Client specified id, which is sent back to the client with every data update.'
+          type: string
+        Timestamp:
+          title: The UTC date and time of the event.
+          type: string
+          format: date-time
+          x-type-name: UtcDateTime
+        TotalPartitions:
+          title: The total number of partitions if this DomainEvent is a partition.
+          allOf:
+            - type: integer
+              format: int32
+      additionalProperties: false
+    Domain.v3.ChartStreamingRequest:
+      title: Public contract for setting up a subscription to chart data.
+      required:
+        - ContextId
+        - ReferenceId
+      type: object
+      properties:
+        ContextId:
+          title: "The streaming context id that this request is associated with.\r\n            This parameter must only contain letters (a-z) and numbers (0-9) as well as - (dash) and _ (underscore). It is case insensitive. Max length is 50 characters."
+          pattern: '^[a-zA-Z0-9_-]{1,50}$'
+          type: string
+          x-display-order: 1
+        ReferenceId:
+          title: "Mandatory client specified reference id for the subscription.\r\n            This parameter must only contain alphanumberic characters as well as - (dash) and _ (underscore). Cannot start with _. It is case insensitive. Max length is 50 characters."
+          pattern: '^[a-zA-Z0-9-][a-zA-Z0-9_-]{0,49}$'
+          type: string
+          x-display-order: 2
+        Arguments:
+          title: Arguments for the subscription request.
+          allOf:
+            - $ref: '#/components/schemas/Domain.v3.ChartSubscriptionRequest'
+        Format:
+          title: "Optional Media type (RFC 2046) of the serialized data updates that are streamed to the client.\r\n            Currently only application/json and application/x-protobuf is supported.\r\n            If an unrecognized format is specified, the subscription end point will return HTTP status code 400 - Bad format."
+          type: string
+        KnownSchemas:
+          title: "SAXO INTERNAL Optional list of known schemas for the specified . \r\n            If a schema is specified in this list it will not be returned in the  property."
+          type: array
+          items:
+            type: string
+          x-network-visibility: internal
+        RefreshRate:
+          title: "Optional custom refresh rate, measured in milliseconds, between each data update.\r\n            Note that it is not possible to get a refresh rate lower than the rate specified in the\r\n            customer service level agreement (SLA)."
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          format: int32
+        ReplaceReferenceId:
+          title: Reference id of the subscription that should be replaced.
+          pattern: '^[a-zA-Z0-9-][a-zA-Z0-9_-]{0,49}$'
+          type: string
+        Tag:
+          title: Optional client specified tag used for grouping subscriptions.
+          type: string
+      additionalProperties: false
+    Domain.v3.ChartStreamingResponse:
+      title: Subscription response.
+      type: object
+      properties:
+        ContextId:
+          title: The streaming context id that this response is associated with.
+          type: string
+          deprecated: true
+          x-deprecated-date: '2022-11-01'
+          x-display-order: 1
+        ReferenceId:
+          title: The reference id that (along with streaming context id and session id) identifies the subscription (within the context of a specific service/subscription type)
+          type: string
+          deprecated: true
+          x-deprecated-date: '2022-11-01'
+          x-display-order: 2
+        Format:
+          title: 'The media type (RFC 2046), of the serialized data updates that are streamed to the client.'
+          type: string
+        InactivityTimeout:
+          title: The time (in seconds) that the client should accept the subscription to be inactive before considering it invalid.
+          type: integer
+          format: int32
+        RefreshRate:
+          title: Actual refresh rate assigned to the subscription according to the customers SLA.
+          type: integer
+          format: int32
+        Schema:
+          title: 'SAXO INTERNAL Optional schema that describes the message format, as in the requested media format. If this name is included in the  property on the  request then the  and  properties will be omitted from the response. Currently this will not return anything for application/json.'
+          type: string
+          x-network-visibility: internal
+        SchemaName:
+          title: SAXO INTERNAL Optional schema that names the schema requested. If this name is included in the  property on the  request then the  and  properties will be omitted from the response.
+          type: string
+          x-network-visibility: internal
+        Snapshot:
+          title: 'Snapshot of the current data on hand, when subscription was created.'
+          allOf:
+            - $ref: '#/components/schemas/Domain.v3.ChartResponse'
+        State:
+          title: The value "Active".
+          type: string
+          description: This property is kept for backwards compatibility.
+          deprecated: true
+          x-deprecated-date: '2022-11-01'
+        Tag:
+          title: 'Client specified tag assigned to the subscription, if specified in the request.'
+          type: string
+      additionalProperties: false
+    Domain.v3.ChartSubscriptionRequest:
+      title: Specifies which chart data to subscribe to.
+      required:
+        - AssetType
+        - Horizon
+        - Uic
+      type: object
+      properties:
+        AccountKey:
+          title: Optional
+          allOf:
+            - minLength: 1
+              type: string
+              x-type-name: AccountKey
+        AssetType:
+          title: Assettype of the instrument
+          allOf:
+            - $ref: '#/components/schemas/AssetType'
+        ChartSampleFieldSet:
+          title: 'Optionally select which set of fields are returned in the Data array. Currently only applicable for asset types (Warrants, MiniFutures and Certificates).'
+          allOf:
+            - $ref: '#/components/schemas/ChartSampleFieldSetNullable'
+        Count:
+          title: 'Optionally specifies maximum number of samples to return, max 1200, default 1200.'
+          allOf:
+            - type: integer
+              format: int32
+        DataCurrency:
+          title: Currency conversion in which data is expected in growth
+          type: string
+        DataSeriesType:
+          title: Growth or Price | Growth in case of mutual funds and Price in case of other asset classes like Fx
+          allOf:
+            - $ref: '#/components/schemas/Domain.DataSeriesTypeNullable'
+        FieldGroups:
+          title: 'Specifies which data to return. Default is [Data]'
+          type: array
+          items:
+            $ref: '#/components/schemas/Domain.v3.ChartFieldGroupSpec'
+        Horizon:
+          title: 'The horizon to get samples from. Values are interpreted in minutes: 1, 2, 3, 5, 10, 15, 30, 60, 120, 180, 240, 300, 360, 480, 1440, 10080, 43200, 129600, 518400.'
+          type: integer
+          format: int32
+        Uic:
+          title: Uic of the instrument.
+          type: integer
+          format: int32
+      additionalProperties: false
+    FileVersionInfo:
+      type: object
+      properties:
+        Comments:
+          type: string
+        CompanyName:
+          type: string
+        FileBuildPart:
+          type: integer
+          format: int32
+        FileDescription:
+          type: string
+        FileMajorPart:
+          type: integer
+          format: int32
+        FileMinorPart:
+          type: integer
+          format: int32
+        FileName:
+          type: string
+        FilePrivatePart:
+          type: integer
+          format: int32
+        FileVersion:
+          type: string
+        InternalName:
+          type: string
+        IsDebug:
+          type: boolean
+        IsPatched:
+          type: boolean
+        IsPreRelease:
+          type: boolean
+        IsPrivateBuild:
+          type: boolean
+        IsSpecialBuild:
+          type: boolean
+        Language:
+          type: string
+        LegalCopyright:
+          type: string
+        LegalTrademarks:
+          type: string
+        OriginalFilename:
+          type: string
+        PrivateBuild:
+          type: string
+        ProductBuildPart:
+          type: integer
+          format: int32
+        ProductMajorPart:
+          type: integer
+          format: int32
+        ProductMinorPart:
+          type: integer
+          format: int32
+        ProductName:
+          type: string
+        ProductPrivatePart:
+          type: integer
+          format: int32
+        ProductVersion:
+          type: string
+        SpecialBuild:
+          type: string
+      additionalProperties: false
+    HorizonStatisticsData:
+      type: object
+      properties:
+        Horizon:
+          type: integer
+          format: int32
+        SegmentCount:
+          type: integer
+          format: int32
+        SegmentStatistics:
+          type: array
+          items:
+            $ref: '#/components/schemas/SegmentStatisticsData'
+      additionalProperties: false
+    IServiceCustomization:
+      title: Information about how the services has been customized primarily through OpenApiStartup settings.
+      type: object
+      properties:
+        Customizations:
+          title: Gets the customizations.
+          type: array
+          items:
+            $ref: '#/components/schemas/StringStringKeyValuePair'
+      additionalProperties: false
+    InstrumentStatisticsData:
+      type: object
+      properties:
+        HorizonStatistics:
+          type: array
+          items:
+            $ref: '#/components/schemas/HorizonStatisticsData'
+        UIC:
+          type: integer
+          format: int32
+      additionalProperties: false
+    ModelStateDictionary:
+      type: object
+      additionalProperties:
+        type: array
+        items:
+          type: string
+    PriceDisplayFormatType:
+      title: The format modifiers in which a price must be displayed and possibly edited.
+      enum:
+        - AllowDecimalPips
+        - Fractions
+        - ModernFractions
+        - Normal
+        - Percentage
+      type: string
+      x-enum-descriptions:
+        Normal: Standard decimal formatting is used with the Decimals field indicating the number of decimals.
+        Fractions: "Display as regular fraction i.e. 3 1/4 The Decimals field indicates the fraction demoninator as 1/(2^x).\r\n            So if Decimals is 2, the value should represent the number of 1/4'ths."
+        ModernFractions: "Display as modern faction, e.g. 1’07.5. The Decimals field indicates the fraction demoninator as 1/(2^x).\r\n            So if Decimals is 5, the value should represent the number of 1/32'ths"
+        AllowDecimalPips: "Display the last digit as a smaller than the rest of the numbers. Note that this digit is not included in the number of decimals,\r\n            effectively increasing the number of decimals by one. E.g. 12.345 when Decimals is 2 and DisplayFormat is AllowDecimalPips."
+        Percentage: 'Display as percentage, e.g. 12.34%. The Decimals field indicates the number of decimals to show.'
+    ProcessInfo:
+      title: Data contract for process status
+      type: object
+      properties:
+        HostName:
+          title: Name of computer process is running on
+          type: string
+        Id:
+          title: Process Id
+          type: integer
+          format: int32
+        PeakWorkingSet:
+          title: Maximum memory usage(in Bytes)
+          type: integer
+          format: int64
+        ProcessTimePercent:
+          title: Measurement of CPU Utilization Percentage based on .net process values
+          type: number
+        ProcessTimePercentPerformanceCounter:
+          title: Measurement of CPU Utilization Percentage based on performance counter
+          type: number
+        StartTime:
+          title: The time the process was started
+          type: string
+        Threads:
+          title: Number of operating system threads running in process
+          type: integer
+          format: int32
+        WorkingSet:
+          title: Current memory usage (in Bytes)
+          type: integer
+          format: int64
+      additionalProperties: false
+    ResponseFilterRegistration:
+      title: Response filter/contract type registration.
+      type: object
+      properties:
+        Contract:
+          title: Contract type for which a response filter was registered.
+          type: string
+        Processor:
+          title: ResponseFilterProcessor type handling contract.
+          type: string
+      additionalProperties: false
+    SegmentStatisticsData:
+      type: object
+      properties:
+        End:
+          type: integer
+          format: int32
+        Size:
+          type: integer
+          format: int32
+        Start:
+          type: integer
+          format: int32
+      additionalProperties: false
+    ServerStatus:
+      title: Data contract for server status.
+      type: object
+      properties:
+        AppPoolId:
+          title: Gets the current app pool id.
+          type: string
+        ApplicationName:
+          title: Name of service group (host assembly)
+          type: string
+        ApplicationVersion:
+          title: Version of service group (host assembly)
+          type: string
+        BuildTime:
+          title: Gets the build time of the current assembly.
+          type: string
+        Created:
+          title: UtcDateTime stamp for when this object was created.
+          type: string
+          format: date-time
+          x-type-name: UtcDateTime
+        Customization:
+          title: Information about how the services has been customized primarily through OpenApiStartup settings.
+          allOf:
+            - $ref: '#/components/schemas/IServiceCustomization'
+        Dependencies:
+          title: Information about the service dependencies.
+          type: array
+          items:
+            $ref: '#/components/schemas/DependencyInfo'
+        DeployTime:
+          title: Gets the datetime of deployment (last modified).
+          type: string
+        DiskDrives:
+          title: DiskDrives (drive space in GB)
+          type: array
+          items:
+            $ref: '#/components/schemas/DiskDrive'
+        FrameworkVersion:
+          title: Version of OpenAI Framework in use
+          type: string
+        InternalInformation:
+          title: InternalInformation
+          type: array
+          items:
+            $ref: '#/components/schemas/StringStringKeyValuePair'
+        LeasePeriod:
+          title: The lease period (expiry) of the authentication token.
+          type: integer
+          format: int32
+        LoadedAssemblies:
+          title: 'Loaded assemblies, full'
+          type: array
+          items:
+            $ref: '#/components/schemas/FileVersionInfo'
+        LoadedAssembliesVersions:
+          title: Loaded assemblies and versions
+          type: array
+          items:
+            $ref: '#/components/schemas/StringStringKeyValuePair'
+        LogicalProcessors:
+          title: Information about number of logical processors on the box
+          type: integer
+          format: int32
+        MachineUptime:
+          title: Ticks since the machine was started.
+          type: integer
+          format: int64
+        MachineUptimeText:
+          title: Ticks since the machine was started in text.
+          type: string
+        NetFrameworkVersion:
+          title: Version of .NET Framework in use
+          type: string
+        OSVersion:
+          title: Version of server hosting Operating System.
+          type: string
+        PerformanceCounters:
+          title: Values of performance counters reported by the servicegroup
+          type: array
+          items:
+            $ref: '#/components/schemas/StringStringKeyValuePair'
+        Process:
+          title: Information about current process.
+          allOf:
+            - $ref: '#/components/schemas/ProcessInfo'
+        ResponseFilters:
+          title: Lists registered response filter/contract types.
+          type: array
+          items:
+            $ref: '#/components/schemas/ResponseFilterRegistration'
+        RouteTable:
+          title: Gets or the route table.
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiGroupInfo'
+        RunningIdentity:
+          title: Identity in which the application is running.
+          type: string
+        SystemEnvironment:
+          title: "SystemEnvironment is read from configuration and has to be one of the following:\r\n            \"Dev(elopment)\", \"Test\", \"Sim(ulation)\" or \"Live\"."
+          type: string
+        SystemUptime:
+          title: Ticks since the service group was started.
+          type: integer
+          format: int64
+        SystemUptimeText:
+          title: Ticks since the service group was started in text.
+          type: string
+        TimeSpentMs:
+          title: Time spent in ms to generate the status information.
+          type: number
+        ToolId:
+          title: System ToolId (hard coded as 40 for OpenApi). See Iit.FrontOffice.Trading.Public.ToolId enum for full definition.
+          type: integer
+          format: int32
+        WebAPIVersion:
+          title: Version of WebAPI in use
+          type: string
+      additionalProperties: false
+    SparklineData:
+      type: object
+      properties:
+        TimeWeightedValue:
+          title: "Time weighted data point value at specified time. (Current close value / Previous close Value) - 1\r\n            for 1st data point this will be \"0\""
+          allOf:
+            - type: number
+        UtcDateTime:
+          title: Time in Utc for data points
+          type: string
+          format: date-time
+          x-type-name: UtcDateTime
+        Value:
+          title: Actual data point value at specified time.
+          allOf:
+            - type: number
+      additionalProperties: false
+    SparklineDuration:
+      title: Sparkline duration
+      enum:
+        - Day
+        - LastMarketSession
+        - Month
+        - Year
+      type: string
+      x-enum-descriptions:
+        Day: Request day data on hourly basis
+        Month: Request month data on daily basis
+        Year: Request year data on daily basis
+        LastMarketSession: Request last market session data of 24 hours
+    SparklineErrorCodes:
+      enum:
+        - DataError
+        - DisplayFormatInfoError
+        - MultipleErrors
+      type: string
+      x-enum-descriptions:
+        DataError: Some error occured while fetching data
+        DisplayFormatInfoError: Some error occured while fetching display and format information
+        MultipleErrors: Error occured at data and field group information retrieval
+    SparklineErrorInfo:
+      title: Present when some/any error occured while fetching data or field group information
+      type: object
+      properties:
+        ErrorCode:
+          title: Error code
+          allOf:
+            - $ref: '#/components/schemas/SparklineErrorCodes'
+        Message:
+          title: Error message
+          type: string
+      additionalProperties: false
+    SparklineFieldGroup:
+      title: Specify fields that will be included in response
+      enum:
+        - DisplayAndFormat
+      type: string
+      x-enum-descriptions:
+        DisplayAndFormat: Include display and format information
+    SparklineTimeSeries:
+      type: object
+      properties:
+        Duration:
+          title: Duration for which data is presented
+          allOf:
+            - $ref: '#/components/schemas/SparklineDuration'
+        SparklineData:
+          title: Data for given duration
+          type: array
+          items:
+            $ref: '#/components/schemas/SparklineData'
+      additionalProperties: false
+    StatusData:
+      type: object
+      properties:
+        CacheStatistics:
+          type: array
+          items:
+            $ref: '#/components/schemas/CacheStatisticsData'
+        CompileTime:
+          type: string
+        Databases:
+          allOf:
+            - $ref: '#/components/schemas/DatabasesData'
+        EnabledTraces:
+          type: array
+          items:
+            $ref: '#/components/schemas/TraceData'
+        StartupTime:
+          type: string
+        SubscriptionsData:
+          type: string
+        Version:
+          type: string
+      additionalProperties: false
+    StringStringKeyValuePair:
+      type: object
+      properties:
+        Key:
+          type: string
+        Value:
+          type: string
+      additionalProperties: false
+    SubscriptionInfoFilter:
+      title: Represents subscription filters for querying the subscription diagnostics endpoint.
+      type: object
+      properties:
+        ApplicationId:
+          title: Restricts the subscriptions to an application if specified.
+          allOf:
+            - minimum: 1
+              type: integer
+              format: int32
+              x-type-name: ApplicationId
+        ContextId:
+          title: Restricts the subscriptions to a streaming session if specified along with a session id.
+          type: string
+        Publisher:
+          title: Restricts the subscriptions to a publisher if specified.
+          type: string
+        SessionId:
+          title: Restricts the subscriptions to a session if specified.
+          allOf:
+            - pattern: '^[0-9a-fA-F]{32}$|^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+              type: string
+              x-type-name: SessionId
+        UserId:
+          title: Restricts the subscriptions to a MITS user if specified.
+          allOf:
+            - $ref: '#/components/schemas/UserIdNullable'
+      additionalProperties: false
+    TraceData:
+      type: object
+      properties:
+        Horizon:
+          type: integer
+          format: int32
+        UIC:
+          type: integer
+          format: int32
+      additionalProperties: false
+    UserId:
+      minimum: 1
+      type: integer
+      format: int32
+    UserIdNullable:
+      allOf:
+        - $ref: '#/components/schemas/UserId'
+  responses:
+    BadRequest:
+      description: One or more of the provided parameters are invalid.
+      content:
+        application/json:
+          schema:
+            required:
+              - ErrorCode
+              - Message
+            type: object
+            properties:
+              ErrorCode:
+                enum:
+                  - InvalidRequest
+                type: string
+                x-enum-descriptions:
+                  InvalidRequest: Default error code returned when it cannot be determined which part of the request is malformed.
+              Message:
+                type: string
+              ModelState:
+                $ref: '#/components/schemas/ModelStateDictionary'
+    ServiceUnavailable:
+      description: Service Unavailable.
+    TooManyRequests:
+      description: The request was rejected due to rate limit being exceeded.
+    Unauthorized:
+      description: Indicates that the request was rejected because the 'Authorization' header was missing in the request or contained an invalid security token.
+  parameters:
+    XInternalIP:
+      name: X-Internal-IP
+      in: header
+      description: Required header for access to network internal endpoints.
+      required: true
+      schema:
+        enum:
+          - '1'
+        type: string
+  securitySchemes:
+    OpenApiJWTSecurityScheme:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OpenApiOAuthSecurityScheme:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://idp.blue.sso.sys.dom/authorize
+          tokenUrl: https://idp.blue.sso.sys.dom/token
+          scopes: { }
+tags:
+  - name: Charts
+    description: Allows you to set up subscriptions for streamed charts data.
