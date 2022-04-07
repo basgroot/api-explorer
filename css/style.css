@@ -49,6 +49,10 @@ button.sendRequest {
   float: right
 }
 
+.input-fields {
+  padding: 20px 40px 60px 20px;
+}
+
 
 
 /* Go from zero to full opacity */
