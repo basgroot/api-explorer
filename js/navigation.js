@@ -14,24 +14,33 @@ function getLinkWrapper() {
 
 function createLink(title, target) {
   let l = document.createElement('a');
-  l.target = target;
-  l.title = title;
+  l.href = target;
+  l.text = title;
   return l;
+}
+
+function getLineBreak() {
+  let b = document.createElement('br');
+  return b;
 }
 
 fetch("https://basgroot.github.io/api-explorer/config/navigation.json").then(r => r.json()).then(navigation => {
   let d = document.getElementById("left-nav-content");
   for (let tagName in navigation) {
-    var tag = createTag(tagName)
-    var links = getLinkWrapper();
-    for (let title in navigation[tagName]) {
-      let url = navigation[tagName][title]
-      let link = createLink(title, url)
-      links.appendChild(link);
-    }
-    d.appendChild(tag);
-    d.appendChild(links)
+    if (tagName != "Tag") {
+      var tag = createTag(tagName)
+      var links = getLinkWrapper();
+      for (let title in navigation[tagName]) {
+        let url = navigation[tagName][title]
+        let link = createLink(title, url)
+        links.appendChild(link);
+        links.appendChild(getLineBreak());
+      }
+      d.appendChild(tag);
+      d.appendChild(links)
   }
+    }
+    
   var coll = document.getElementsByClassName("collapsible");
   var i;
 
@@ -39,11 +48,12 @@ fetch("https://basgroot.github.io/api-explorer/config/navigation.json").then(r =
     coll[i].addEventListener("click", function() {
       this.classList.toggle("active");
       var content = this.nextElementSibling;
-      if (content.style.display === "block") {
-        content.style.display = "none";
+      console.log(content);
+      if (content.style.maxHeight){
+        content.style.maxHeight = null;
       } else {
-        content.style.display = "block";
-      }
+        content.style.maxHeight = content.scrollHeight + "px";
+      } 
     });
   }
 })

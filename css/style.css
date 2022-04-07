@@ -70,8 +70,9 @@ pre.error {
 /* Style the collapsible content. Note: hidden by default */
 .content {
   padding: 0 18px;
-  display: none;
+  max-height: 0;
   overflow: hidden;
+  transition: max-height 0.2s ease-out;
   background-color: #f1f1f1;
 }
 
