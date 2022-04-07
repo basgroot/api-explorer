@@ -24,14 +24,22 @@ function getLineBreak() {
   return b;
 }
 
-fetch("https://basgroot.github.io/api-explorer/config/navigation.json").then(r => r.json()).then(navigation => {
+function getUrl(method, endpoint) {
+  let url = "index.html?method=" + method + "&endpoint=" + encodeURIComponent(endpoint);
+  return url;
+}
+
+fetch("https://basgroot.github.io/api-explorer/config/navigation_new.json").then(r => r.json()).then(navigation => {
   let d = document.getElementById("left-nav-content");
   for (let tagName in navigation) {
     if (tagName != "Tag") {
       var tag = createTag(tagName)
       var links = getLinkWrapper();
-      for (let title in navigation[tagName]) {
-        let url = navigation[tagName][title]
+      for (let i in navigation[tagName]) {
+        let title = navigation[tagName][i].title;
+        let method =  navigation[tagName][i].method;
+        let endpoint =  navigation[tagName][i].endpoint;
+        let url = getUrl(method, endpoint);
         let link = createLink(title, url)
         links.appendChild(link);
         links.appendChild(getLineBreak());
