@@ -328,14 +328,64 @@ function yaml() {
         return value;
     }
 
-    function getRequiredParameters() {
+    function getParameterDocs(startLine, isOnlyRequired) {
+
+        function addParam(parameterName, description, isRequired) {
+            if (isOnlyRequired !== isRequired) {
+                return "";
+            }
+            return "<strong>" + parameterName + "</strong><br />" + description;
+        }
+
+        let i;
+        let line;
+        let value;
+        let parameterName = "";
+        let description;
+        let isRequired = false;
+        let result = "";
+        let isParametersActive = false;
+        for (i = startLine; i < properties.file.length; i += 1) {
+            line = properties.file[i];
+            if (line === "      parameters:") {
+                isParametersActive = true;
+            } else if (isParametersActive) {
+                if (line.charAt(6) !== " ") {
+                    result += addParam(parameterName, description, isRequired);
+                    break;
+                }
+                value = getValue(line, "name");
+                if (value !== "") {
+                    if (parameterName !== "") {
+                        // This is the next param. Add previous to the list.
+                        result += addParam(parameterName, description, isRequired);
+                        isRequired = false;
+                    }
+                    parameterName = value;
+                } else {
+                    value = getValue(line, "description");
+                    if (value !== "") {
+                        description = value;
+                    } else {
+                        value = getValue(line, "required");
+                        if (value !== "") {
+                            isRequired = value === "true";
+                        }
+                    }
+                }
+            }
+        }
+        alert(result);
+        return result;
     }
 
     function getRefDoc(endpoint, httpMethod) {
         const startLine = findEndpointInYaml(endpoint, httpMethod);
         let result = "<h1>" + getEndpointSummary(startLine, "summary") + "</h1>" + getEndpointSummary(startLine, "description");
         result += "<h2>Required parameters</h2>";
-        result += getRequiredParameters(startLine);
+        result += getParameterDocs(startLine, true);
+        result += "<h2>Optional parameters</h2>";
+        result += getParameterDocs(startLine, false);
         return result;
     }
 
