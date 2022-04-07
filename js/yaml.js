@@ -334,7 +334,7 @@ function yaml() {
             if (isOnlyRequired !== isRequired) {
                 return "";
             }
-            return "<strong>" + parameterName + "</strong><br />" + description;
+            return "<p><strong>" + parameterName + "</strong><br />" + description + "</p>";
         }
 
         let i;
@@ -375,7 +375,6 @@ function yaml() {
                 }
             }
         }
-        alert(result);
         return result;
     }
 
