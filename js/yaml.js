@@ -35,7 +35,9 @@ function yaml() {
     }
 
     function loadYamlEndpoint(callback) {
-        const url = "https://basgroot.github.io/api-explorer/oas/" + getQueryParameter("service", "trade") + ".yaml";
+        const endpoint = getQueryParameter("endpoint", "/trade/v1/infoprices/subscriptions");
+        const service = endpoint.substring(1, endpoint.indexOf("/", 1));
+        const url = "https://basgroot.github.io/api-explorer/oas/" + service + ".yaml";
         fetch(
             url,
             {
@@ -325,7 +327,7 @@ function yaml() {
                 break;
             }
         }
-        return value;
+        return removeSurroundingQuotes(value.replace(/\\r\\n/g, "<br />"));
     }
 
     function getParameterDocs(startLine, isOnlyRequired) {
