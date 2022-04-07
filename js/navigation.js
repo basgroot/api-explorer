@@ -1,5 +1,3 @@
-var coll = document.getElementsByClassName("left-nav-collapsible");
-var i;
 
 function createTag(name) {
   let b = document.createElement('button');
@@ -8,51 +6,41 @@ function createTag(name) {
   return b;
 }
 
-function createLink(title, url) {
+function getLinkWrapper() {
   let d = document.createElement('div');
-  d.className = "content"
-
-  d.innerHTML = "<p>x</p>"
-
+  d.className = "nav-content";
   return d;
 }
 
+function createLink(title, target) {
+  let l = document.createElement('a');
+  l.target = target;
+  l.title = title;
+  return l;
+}
+
 fetch("https://basgroot.github.io/api-explorer/config/navigation.json").then(r => r.json()).then(navigation => {
-  //console.log(navigation);
-
   let d = document.getElementById("left-nav-content");
-  
   for (let tagName in navigation) {
-    //console.log(tagName)
-
     var tag = createTag(tagName)
-
+    var linkWrapper = getLinkWrapper();
     for (let title in navigation[tagName]) {
-      //console.log(title)
       let url = navigation[tagName][title]
-      //console.log(endpoint)
-
       let link = createLink(title, url)
-      tag.appendChild(link);
+      linkWrapper.appendChild(link);
     }
+    tag.appendChild(linkWrapper)
+    d.appendChild(tag);
   }
-
-  d.appendChild(tag);
-
-
+  var coll = document.getElementsByClassName("left-nav-collapsible");
+  var i;
+  for (i = 0; i < coll.length; i++) {
+    coll[i].addEventListener("click", function() {
+      this.classList.toggle("active");
+      var content = this.nextElementSibling.children[0];
+      console.log(content.children[0]);
+    });
+  }
 })
 
-console.log("test test test");
 
-for (i = 0; i < coll.length; i++) {
-  coll[i].addEventListener("click", function() {
-    console.log("click lick");
-    this.classList.toggle("active");
-    var content = this.nextElementSibling;
-    if (content.style.maxHeight){
-      content.style.maxHeight = null;
-    } else {
-      content.style.maxHeight = content.scrollHeight + "px";
-    } 
-  });
-}

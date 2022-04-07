@@ -65,9 +65,9 @@ pre.error {
   background-color: #555;
 }
 
-.content {
+.nav-content {
   padding: 0 18px;
-  max-height: 0;
+  max-height: 10;
   overflow: hidden;
   transition: max-height 0.2s ease-out;
   background-color: #f1f1f1;
