@@ -242,6 +242,8 @@
         populateTextArea("idQueryParameters", yamlUtils.getParameters(endpoint, httpMethod, "query"));
         // Get the request object from the yaml file:
         populateTextArea("idRequestBody", yamlUtils.getRequestBody(endpoint, httpMethod));
+        // Get the reference documentation from yaml:
+        document.getElementById("idRefDoc").innerHTML = yamlUtils.getRefDoc(endpoint, httpMethod);
     }
 
     setupEvents();

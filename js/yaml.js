@@ -5,7 +5,8 @@ function yaml() {
     const properties = {
         "file": "",
         "method": "",
-        "endpoint": ""
+        "endpoint": "",
+        "lineNumber": 0
     };
     const defaultFieldValues = {
       "AssetType": "FxSpot",
@@ -70,9 +71,12 @@ function yaml() {
     function findEndpointInYaml(endpoint, httpMethod) {
         let isPathsSegmentActive = false;
         let isEndpointActive = false;
-        let lineNumber = 0;
         let i;
         let line;
+        if (properties.lineNumber > 0) {
+            // Already searched for this endpoint..
+            return properties.lineNumber;
+        }
         for (i = 0; i < properties.file.length; i += 1) {
             line = properties.file[i];
             // Start looking for the paths segment:
@@ -89,16 +93,16 @@ function yaml() {
                 } else if (isEndpointActive) {
                     // Endpoint found. Start looking for the method:
                     if (line === "    " + httpMethod + ":") {
-                        lineNumber = i + 1;
+                        properties.lineNumber = i + 1;
                         break;
                     }
                 }
             }
         }
-        if (lineNumber === 0) {
+        if (properties.lineNumber === 0) {
             console.error("Endpoint " + endpoint + " not found with method " + httpMethod);
         }
-        return lineNumber;
+        return properties.lineNumber;
     }
 
     function getArrayItem(startLine) {
@@ -310,12 +314,38 @@ function yaml() {
         return result;
     }
 
+    function getEndpointSummary(startLine, key) {
+        let i;
+        let line;
+        let value;
+        for (i = startLine; i < properties.file.length; i += 1) {
+            line = properties.file[i];
+            value = getValue(line, key);
+            if (value !== "") {
+                break;
+            }
+        }
+        return value;
+    }
+
+    function getRequiredParameters() {
+    }
+
+    function getRefDoc(endpoint, httpMethod) {
+        const startLine = findEndpointInYaml(endpoint, httpMethod);
+        let result = "<h1>" + getEndpointSummary(startLine, "summary") + "</h1>" + getEndpointSummary(startLine, "description");
+        result += "<h2>Required parameters</h2>";
+        result += getRequiredParameters(startLine);
+        return result;
+    }
+
     function setupYaml() {
         return Object.freeze({
             getHttpMethod,
             getEndpoint,
             getParameters,
             getRequestBody,
+            getRefDoc,
             loadYamlEndpoint,
             defaultFieldValues,
             properties,
