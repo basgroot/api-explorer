@@ -90,6 +90,15 @@
 
     function sendRequest() {
 
+        function getPostBody() {
+            try {
+                return JSON.parse(document.getElementById("idRequestBody").value);
+            } catch (error) {
+                console.error(error);
+                return {};
+            }
+        }
+
         function showResponse(response, isResponseOk) {
             const responseElement = document.getElementById("idResponse");
             responseElement.innerText = response;
@@ -103,15 +112,11 @@
         }
 
         function setupStreamer() {
-            try {
-                const postBody = JSON.parse(document.getElementById("idRequestBody").value);
-                if (postBody.ContextId !== undefined) {
-                    console.log("Requesting streaming connection.");
-                    streamerUtils.createConnection(tokenObject.access_token, postBody.ContextId);
-                    streamerUtils.startListener();
-                }
-            } catch (error) {
-                console.error(error);
+            const postBody = getPostBody();
+            if (postBody.ContextId !== undefined) {
+                console.log("Requesting streaming connection.");
+                streamerUtils.createConnection(tokenObject.access_token, postBody.ContextId);
+                streamerUtils.startListener();
             }
         }
 
@@ -123,8 +128,11 @@
                 "Authorization": "Bearer " + tokenObject.access_token
             }
         };
+        let postBody;
         if (method === "POST" || method === "PATCH") {
-            fetchData.body = document.getElementById("idRequestBody").value;
+            postBody = getPostBody(postBody);
+            yamlUtils.removeEmptyValues(postBody);
+            fetchData.body = JSON.stringify(postBody);
             fetchData.headers["Content-Type"] = "application/json; charset=utf-8";
             if (yamlUtils.properties.endpoint.slice(-14) === "/subscriptions") {
                 setupStreamer();
@@ -183,8 +191,13 @@
         document.getElementById("idHttpMethod").innerText = httpMethod.toUpperCase();
         // Get endpoint from the URL:
         document.getElementById("idEndpoint").innerText = endpoint;
+
+        // Get the path parameters from the yaml file:
+        document.getElementById("idPathParameters").value = yamlUtils.getPathParameters(endpoint, httpMethod);
+        // Get the query parameters from the yaml file:
+        document.getElementById("idQueryParameters").value = yamlUtils.getQueryParameters(endpoint, httpMethod);
         // Get the request object from the yaml file:
-        document.getElementById("idRequestBody").value = yamlUtils.getYamlRequestBody(endpoint, httpMethod);
+        document.getElementById("idRequestBody").value = yamlUtils.getRequestBody(endpoint, httpMethod);
     }
 
     setupEvents();

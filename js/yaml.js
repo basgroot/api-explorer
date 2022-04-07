@@ -13,7 +13,8 @@ function yaml() {
       "Uics": "21, 22",
       "Format": "application/json",
       "ContextId": "MyAppContext_" + Date.now(),  // Some unique value
-      "ReferenceId": "MyReferenceId"
+      "ReferenceId": "MyReferenceId",
+      "RefreshRate": 200
     };
 
     function getValue(line, key) {
@@ -238,7 +239,18 @@ function yaml() {
         }
     }
 
-    function getYamlRequestBody(endpoint, httpMethod) {
+    function removeEmptyValues(resultObject) {
+        for (const key in resultObject) {
+            const value = resultObject[key];
+            if (typeof resultObject[key] === "object") {
+                removeEmptyValues(resultObject[key]);
+            } else if ((typeof value === "string" && value === "") || (typeof value === "number" && value === 0)) {
+                delete resultObject[key];
+            }
+        }
+    }
+
+    function getRequestBody(endpoint, httpMethod) {
         let resultObject;
         let result = "";
         let i;
@@ -258,14 +270,40 @@ function yaml() {
         return result;
     }
 
+    function getPathParameters(endpoint, httpMethod) {
+        let result = "";
+        let i;
+        let line;
+        for (i = findEndpointInYaml(endpoint, httpMethod); i < properties.file.length; i += 1) {
+            line = properties.file[i];
+            if (line === "      parameters:") {
+                //populateDefaultValues(resultObject);
+                result = JSON.stringify(resultObject, null, 4);
+                break;
+            }
+            if (line.charAt(4) !== " ") {
+                break;
+            }
+        }
+        return result;
+    }
+
+    function getQueryParameters(endpoint, httpMethod) {
+        let result = "";
+        return result;
+    }
+
     function setupYaml() {
         return Object.freeze({
             getHttpMethod,
             getEndpoint,
-            getYamlRequestBody,
+            getPathParameters,
+            getQueryParameters,
+            getRequestBody,
             loadYamlEndpoint,
             defaultFieldValues,
-            properties
+            properties,
+            removeEmptyValues
         });
     }
 
