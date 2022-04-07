@@ -112,6 +112,17 @@
             return result;
         }
 
+        function processPathParameters(url, parameters) {
+            parameters.forEach(function (parameter) {
+                const pos = parameter.indexOf("=");
+                const key = "{" + parameter.substring(0, pos) + "}";
+                const regExp = new RegExp(key, "gi");
+                const value = parameter.substring(pos + 1);
+                url = url.replace(regExp, encodeURIComponent(value));
+            });
+            return url;
+        }
+
         function getPostBody() {
             try {
                 return JSON.parse(document.getElementById("idRequestBody").value);
@@ -142,7 +153,7 @@
             }
         }
 
-        const url = urlPrefix + yamlUtils.properties.endpoint;
+        const url = processPathParameters(urlPrefix + yamlUtils.properties.endpoint, getParameters("idPathParameters"));
         const method = yamlUtils.properties.method.toUpperCase();
         const fetchData = {
             "method": method,
@@ -150,7 +161,6 @@
                 "Authorization": "Bearer " + tokenObject.access_token
             }
         };
-        const pathParameters = getParameters("idPathParameters");
         let postBody;
         let queryParameters = getQueryParameters(getParameters("idQueryParameters"));
         if (method === "POST" || method === "PATCH") {
