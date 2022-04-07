@@ -50,7 +50,7 @@ pre.error {
 }
 
 /* Style the button that is used to open and close the collapsible content */
-.nav-collapsible {
+.collapsible {
   background-color: #eee;
   color: #444;
   cursor: pointer;
@@ -68,9 +68,76 @@ pre.error {
 }
 
 /* Style the collapsible content. Note: hidden by default */
-.nav-content {
+.content {
   padding: 0 18px;
   display: none;
   overflow: hidden;
   background-color: #f1f1f1;
 }
+
+
+.main_container{
+  width: 100%;
+  height: 100vh;
+  background-color: #fff;
+  }
+  
+  
+  
+  .header{
+  width: 100%;
+  height: 62px;
+  background-color: #F0F0F7;
+  }
+  
+  
+  
+  .content_container{
+  display: flex; /* establish flex container */
+  flex-direction: row; /* default value; can be omitted */
+  flex-wrap: nowrap; /* default value; can be omitted */
+  justify-content: space-between; /* switched from default (flex-start, see below) */
+  background-color: lightyellow;
+  }
+  
+  
+  
+  .left{
+  width: 20%;
+  height: 100vh;
+  background-color: #7f7f7f;
+  }
+  
+  
+  
+  .center{
+  width: 60%;
+  height: 100vh;
+  background-color: #9f9f9f;
+  }
+  
+  
+  
+  .topic_title{}
+  
+  
+  
+  .tiles{}
+  
+  
+  
+  .right{
+  width: 20%;
+  height: 100vh;
+  background-color: #5f5f5f;
+  }
+  
+  
+  
+  #explorer{}
+  
+  
+  
+  .p{
+  
+  }

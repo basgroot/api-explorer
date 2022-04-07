@@ -90,6 +90,39 @@
 
     function sendRequest() {
 
+        function getParameters(id) {
+            const value = document.getElementById(id).value;
+            return value.trim().replace(/\r/g, "").split(/\n/g);
+        }
+
+        function getQueryParameters(parameters) {
+            let result = "";
+            parameters.forEach(function (parameter) {
+                const pos = parameter.indexOf("=");
+                const key = parameter.substring(0, pos);
+                const value = parameter.substring(pos + 1);
+                if (value !== "" && value !== "0") {
+                    result += (
+                        result === ""
+                        ? "?"
+                        : "&"
+                    ) + key + "=" + encodeURIComponent(value);
+                }
+            });
+            return result;
+        }
+
+        function processPathParameters(url, parameters) {
+            parameters.forEach(function (parameter) {
+                const pos = parameter.indexOf("=");
+                const key = "{" + parameter.substring(0, pos) + "}";
+                const regExp = new RegExp(key, "gi");
+                const value = parameter.substring(pos + 1);
+                url = url.replace(regExp, encodeURIComponent(value));
+            });
+            return url;
+        }
+
         function getPostBody() {
             try {
                 return JSON.parse(document.getElementById("idRequestBody").value);
@@ -120,7 +153,7 @@
             }
         }
 
-        const url = urlPrefix + yamlUtils.properties.endpoint;
+        const url = processPathParameters(urlPrefix + yamlUtils.properties.endpoint, getParameters("idPathParameters"));
         const method = yamlUtils.properties.method.toUpperCase();
         const fetchData = {
             "method": method,
@@ -129,6 +162,7 @@
             }
         };
         let postBody;
+        let queryParameters = getQueryParameters(getParameters("idQueryParameters"));
         if (method === "POST" || method === "PATCH") {
             postBody = getPostBody(postBody);
             yamlUtils.removeEmptyValues(postBody);
@@ -138,7 +172,7 @@
                 setupStreamer();
             }
         }
-        fetch(url, fetchData).then(function (response) {
+        fetch(url + queryParameters, fetchData).then(function (response) {
             const correlationInfo = "X-Correlation header (for troubleshooting with Saxo): " + response.headers.get("X-Correlation");
             if (response.ok) {
                 response.json().then(function (responseJson) {
@@ -185,6 +219,16 @@
     }
 
     function populateScreen() {
+
+        function populateTextArea(id, value) {
+            const textArea = document.getElementById(id);
+            if (value === "") {
+                textArea.style.display = "none";
+            } else {
+                textArea.value = value;
+            }
+        }
+
         const httpMethod = yamlUtils.getHttpMethod();
         const endpoint = yamlUtils.getEndpoint();
         // Get method from the URL:
@@ -193,11 +237,11 @@
         document.getElementById("idEndpoint").innerText = endpoint;
 
         // Get the path parameters from the yaml file:
-        document.getElementById("idPathParameters").value = yamlUtils.getPathParameters(endpoint, httpMethod);
+        populateTextArea("idPathParameters", yamlUtils.getParameters(endpoint, httpMethod, "path"));
         // Get the query parameters from the yaml file:
-        document.getElementById("idQueryParameters").value = yamlUtils.getQueryParameters(endpoint, httpMethod);
+        populateTextArea("idQueryParameters", yamlUtils.getParameters(endpoint, httpMethod, "query"));
         // Get the request object from the yaml file:
-        document.getElementById("idRequestBody").value = yamlUtils.getRequestBody(endpoint, httpMethod);
+        populateTextArea("idRequestBody", yamlUtils.getRequestBody(endpoint, httpMethod));
     }
 
     setupEvents();

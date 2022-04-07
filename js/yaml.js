@@ -159,7 +159,7 @@ function yaml() {
         }
     }
 
-    function getObjectType(startLine) {
+    function getObjectType(prefix, startLine) {
         let i;
         let line;
         let value;
@@ -169,7 +169,7 @@ function yaml() {
             if (value !== "") {
                 return returnType(value, i + 1, "");
             }
-            if (line === "          allOf:") {
+            if (line === prefix + "allOf:") {
                 return parseAllOf(i + 1);
             }
         }
@@ -200,11 +200,18 @@ function yaml() {
                 state = "enums";
             } else if (line === "      properties:") {
                 state = "properties";
+            } else if (line === "      allOf:") {
+                state = "allOf";
             } else if (state === "enums") {
                 defaultStringValue = line.slice(10);
             } else if (state === "properties") {
                 if (line.charAt(9) !== " ") {
-                    result[line.slice(0, -1).trim()] = getObjectType(i + 1);
+                    result[line.slice(0, -1).trim()] = getObjectType("          ", i + 1);
+                }
+            } else if (state === "allOf") {
+                value = getValue(line, "$ref");
+                if (value !== "") {
+                    mainType = parseReference(removeSurroundingQuotes(value));
                 }
             }
         }
@@ -230,7 +237,8 @@ function yaml() {
     }
 
     function populateDefaultValues(resultObject) {
-        for (const key in resultObject) {
+        let key;
+        for (key in resultObject) {
             if (typeof resultObject[key] === "object") {
                 populateDefaultValues(resultObject[key]);
             } else if (defaultFieldValues[key] !== undefined) {
@@ -240,7 +248,8 @@ function yaml() {
     }
 
     function removeEmptyValues(resultObject) {
-        for (const key in resultObject) {
+        let key;
+        for (key in resultObject) {
             const value = resultObject[key];
             if (typeof resultObject[key] === "object") {
                 removeEmptyValues(resultObject[key]);
@@ -270,26 +279,34 @@ function yaml() {
         return result;
     }
 
-    function getPathParameters(endpoint, httpMethod) {
+    function getParameters(endpoint, httpMethod, parameterType) {
+        let isParametersActive = false;
         let result = "";
         let i;
         let line;
+        let paramName;
+        let paramValue;
         for (i = findEndpointInYaml(endpoint, httpMethod); i < properties.file.length; i += 1) {
             line = properties.file[i];
             if (line === "      parameters:") {
-                //populateDefaultValues(resultObject);
-                result = JSON.stringify(resultObject, null, 4);
+                isParametersActive = true;
+            } else if (line.charAt(4) !== " ") {
                 break;
-            }
-            if (line.charAt(4) !== " ") {
+            } else if (isParametersActive && line.charAt(6) !== " ") {
                 break;
+            } else if (isParametersActive) {
+                paramName = getValue(line, "name");
+                if (paramName !== "" && getValue(properties.file[i + 1], "in") === parameterType) {
+                    if (defaultFieldValues[paramName] === undefined) {
+                        // No default - get type:
+                        paramValue = getObjectType("            ", i + 2);
+                    } else {
+                        paramValue = defaultFieldValues[paramName];
+                    }
+                    result += paramName + "=" + paramValue + "\n";
+                }
             }
         }
-        return result;
-    }
-
-    function getQueryParameters(endpoint, httpMethod) {
-        let result = "";
         return result;
     }
 
@@ -297,8 +314,7 @@ function yaml() {
         return Object.freeze({
             getHttpMethod,
             getEndpoint,
-            getPathParameters,
-            getQueryParameters,
+            getParameters,
             getRequestBody,
             loadYamlEndpoint,
             defaultFieldValues,
