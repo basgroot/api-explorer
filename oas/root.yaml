@@ -2,107 +2,12 @@ openapi: 3.0.1
 info:
   title: Services.Root
   description: The root service group provides endpoints for central subscription management and session capabilities.
-  version: 2.3.162+a208b9bf9a
-  x-framework-version: 25.0.16+2fd05647a7
-  x-machine: DEVOAWEB11-DK1
+  version: 2.3.151+9196d3ab0a
+  x-framework-version: 23.0.7+00747832fc
+  x-machine: SATOAWEB19-DK2
 servers:
-  - url: https://blue.openapi.sys.dom/openapi
+  - url: https://gateway.saxobank.com/openapi
 paths:
-  /root/diagnostics/users:
-    get:
-      description: Get information about unique users served by the publishers and other performance related information.
-      operationId: root_users
-      parameters:
-        - $ref: '#/components/parameters/XInternalIP'
-      responses:
-        '200':
-          description: OK
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
-      x-network-visibility: internal
-  /root/diagnostics/subscriptions:
-    get:
-      description: "Gets information about subscriptions in the publishers.\r\n\r\nIf no filter is specified all subscriptions from all publishers are returned."
-      operationId: root_subscriptions
-      parameters:
-        - $ref: '#/components/parameters/XInternalIP'
-        - name: ApplicationId
-          in: query
-          description: Restricts the subscriptions to an application if specified.
-          schema:
-            title: Restricts the subscriptions to an application if specified.
-            minimum: 1
-            type: integer
-            format: int32
-            x-type-name: ApplicationId
-          example: "115"
-        - name: ContextId
-          in: query
-          description: Restricts the subscriptions to a streaming session if specified along with a session id.
-          schema:
-            title: Restricts the subscriptions to a streaming session if specified along with a session id.
-            type: string
-          example: "c745020f-248b-4efd-a408-6a663d03f43c"
-        - name: Publisher
-          in: query
-          description: Restricts the subscriptions to a publisher if specified.
-          schema:
-            title: Restricts the subscriptions to a publisher if specified.
-            type: string
-          example: "c745020f-248b-4efd-a408-6a663d03f43c"
-        - name: SessionId
-          in: query
-          description: Restricts the subscriptions to a session if specified.
-          schema:
-            title: Restricts the subscriptions to a session if specified.
-            pattern: '^[0-9a-fA-F]{32}$|^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
-            type: string
-            x-type-name: SessionId
-          example: "2c219fe3-df38-4f6a-9efb-c72cfe72cf31"
-        - name: UserId
-          in: query
-          description: Restricts the subscriptions to a MITS user if specified.
-          schema:
-            title: Restricts the subscriptions to a MITS user if specified.
-            allOf:
-              - $ref: '#/components/schemas/UserIdNullable'
-          example: 2054807607
-      responses:
-        '200':
-          description: OK
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
-      x-network-visibility: internal
-  /root/diagnostics/publishers:
-    get:
-      description: Returns the list of publisher names.
-      operationId: root_publishers
-      parameters:
-        - $ref: '#/components/parameters/XInternalIP'
-      responses:
-        '200':
-          description: OK
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
-      x-network-visibility: internal
   '/root/v1/subscriptions/{ContextId}':
     delete:
       tags:
@@ -117,7 +22,7 @@ paths:
           required: true
           schema:
             type: string
-          example: 20160204125301453
+          example: '20160204125301453'
         - name: Tag
           in: query
           description: Tag that subscriptions are marked with.
@@ -138,51 +43,7 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
-  /root/online:
-    post:
-      description: Attempts to take the application online
-      operationId: root_online
-      parameters:
-        - $ref: '#/components/parameters/XInternalIP'
-      responses:
-        '202':
-          description: Accepted
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
-      x-application-visibility: saxo-only
-      x-network-visibility: internal
-  /root/offline:
-    post:
-      description: Attempts to take the application offline
-      operationId: root_offline
-      parameters:
-        - $ref: '#/components/parameters/XInternalIP'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: string
-            example: "00:00:00.0000255"
-      responses:
-        '202':
-          description: Accepted
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
-      x-application-visibility: saxo-only
-      x-network-visibility: internal
-  /root/v1/user:
+  '/root/v1/user}':
     get:
       tags:
         - User
@@ -195,22 +56,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MyUserInfo'
-              example: {
-  "AccessRights": {
-    "CanManageCashTransfers": true,
-    "CanTakePriceSession": true,
-    "CanTakeTradeSession": true,
-    "CanTrade": true,
-    "CanViewAnyClient": true
-  },
-  "AccountAccessMode": "All",
-  "ClientId": 626671862,
-  "EmployeeId": "1093549067",
-  "Roles": [
-    "OAPI.Roles.RetailClient"
-  ],
-  "UserId": 545189055
-}
+              example:
+                AccessRights:
+                  CanManageCashTransfers: true
+                  CanTakePriceSession: true
+                  CanTakeTradeSession: true
+                  CanTrade: true
+                  CanViewAnyClient: true
+                AccountAccessMode: All
+                ClientId: 1110796393
+                EmployeeId: '1674910310'
+                Roles:
+                  - OAPI.Roles.RetailClient
+                UserId: 2062140880
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -222,26 +80,7 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
-  /root/api/oas3:
-    get:
-      summary: Get Open API Specification 3.0 documentation for the service group.
-      description: Returns the OAS 3 document for the service group.
-      operationId: OasGetOas3
-      parameters:
-        - $ref: '#/components/parameters/XInternalIP'
-      responses:
-        '200':
-          description: OK
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
-      x-network-visibility: internal
-  /root/v1/diagnostics/options:
+  '/root/v1/diagnostics/options':
     options:
       tags:
         - Diagnostics
@@ -259,7 +98,7 @@ paths:
           $ref: '#/components/responses/ServiceUnavailable'
         '429':
           $ref: '#/components/responses/TooManyRequests'
-  /root/v1/diagnostics/head:
+  '/root/v1/diagnostics/head':
     head:
       tags:
         - Diagnostics
@@ -277,7 +116,7 @@ paths:
           $ref: '#/components/responses/ServiceUnavailable'
         '429':
           $ref: '#/components/responses/TooManyRequests'
-  /root/v1/diagnostics/patch:
+  '/root/v1/diagnostics/patch':
     patch:
       tags:
         - Diagnostics
@@ -295,7 +134,7 @@ paths:
           $ref: '#/components/responses/ServiceUnavailable'
         '429':
           $ref: '#/components/responses/TooManyRequests'
-  /root/v1/diagnostics/delete:
+  '/root/v1/diagnostics/delete':
     delete:
       tags:
         - Diagnostics
@@ -313,7 +152,7 @@ paths:
           $ref: '#/components/responses/ServiceUnavailable'
         '429':
           $ref: '#/components/responses/TooManyRequests'
-  /root/v1/diagnostics/put:
+  '/root/v1/diagnostics/put':
     put:
       tags:
         - Diagnostics
@@ -331,7 +170,7 @@ paths:
           $ref: '#/components/responses/ServiceUnavailable'
         '429':
           $ref: '#/components/responses/TooManyRequests'
-  /root/v1/diagnostics/post:
+  '/root/v1/diagnostics/post':
     post:
       tags:
         - Diagnostics
@@ -349,7 +188,7 @@ paths:
           $ref: '#/components/responses/ServiceUnavailable'
         '429':
           $ref: '#/components/responses/TooManyRequests'
-  /root/v1/diagnostics/get:
+  '/root/v1/diagnostics/get':
     get:
       tags:
         - Diagnostics
@@ -367,7 +206,7 @@ paths:
           $ref: '#/components/responses/ServiceUnavailable'
         '429':
           $ref: '#/components/responses/TooManyRequests'
-  '/root/v1/sessions/events/subscriptions/{ContextId}/{ReferenceId}':
+  '/root/v1/sessions/events/subscriptions/{ContextId/{ReferenceId}':
     delete:
       tags:
         - Sessions
@@ -381,7 +220,7 @@ paths:
           required: true
           schema:
             type: string
-          example: 20180204125301453
+          example: '20180204125301453'
         - name: ReferenceId
           in: path
           description: The reference id that identifies the subscription (within a streaming session).
@@ -403,7 +242,7 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
-  /root/v1/sessions/events/subscriptions:
+  '/root/v1/sessions/events/subscriptions':
     post:
       tags:
         - Sessions
@@ -415,12 +254,11 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SessionSubscriptionRequest'
-            example: {
-  "ContextId": "20220405121639371",
-  "ReferenceId": "S18365",
-  "RefreshRate": 1000,
-  "Tag": "PAGE1"
-}
+            example:
+              ContextId: '20220222112143196'
+              ReferenceId: S01916
+              RefreshRate: 1000
+              Tag: PAGE1
       responses:
         '201':
           description: Created
@@ -428,19 +266,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SessionSubscriptionResponse'
-              example: {
-  "ContextId": "20220405121639371",
-  "Format": "application/json",
-  "InactivityTimeout": 120,
-  "ReferenceId": "S18365",
-  "RefreshRate": 1000,
-  "Snapshot": {
-    "AuthenticationLevel": "Authenticated",
-    "DataLevel": "Standard",
-    "TradeLevel": "OrdersOnly"
-  },
-  "State": "Active"
-}
+              example:
+                ContextId: '20220222112143196'
+                Format: application/json
+                InactivityTimeout: 120
+                ReferenceId: S01916
+                RefreshRate: 1000
+                Snapshot:
+                  AuthenticationLevel: Authenticated
+                  DataLevel: Standard
+                  TradeLevel: OrdersOnly
+                State: Active
         '400':
           description: Bad Request
           content:
@@ -492,9 +328,8 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
-      x-streaming-type:
-        $ref: '#/components/schemas/SessionSubscriptionStreamedState'
-  /root/v1/sessions/events/subscriptions/active:
+      x-streaming-type: '#/components/schemas/SessionSubscriptionStreamedState'
+  '/root/v1/sessions/events/subscriptions/active':
     post:
       tags:
         - Sessions
@@ -506,12 +341,11 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SessionSubscriptionRequest'
-            example: {
-  "ContextId": "20220405121639371",
-  "ReferenceId": "S18365",
-  "RefreshRate": 1000,
-  "Tag": "PAGE1"
-}
+            example:
+              ContextId: '20220222112143196'
+              ReferenceId: S01916
+              RefreshRate: 1000
+              Tag: PAGE1
       responses:
         '201':
           description: Created
@@ -519,19 +353,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SessionSubscriptionResponse'
-              example: {
-  "ContextId": "20220405121639371",
-  "Format": "application/json",
-  "InactivityTimeout": 120,
-  "ReferenceId": "S18365",
-  "RefreshRate": 1000,
-  "Snapshot": {
-    "AuthenticationLevel": "Authenticated",
-    "DataLevel": "Standard",
-    "TradeLevel": "OrdersOnly"
-  },
-  "State": "Active"
-}
+              example:
+                ContextId: '20220222112143196'
+                Format: application/json
+                InactivityTimeout: 120
+                ReferenceId: S01916
+                RefreshRate: 1000
+                Snapshot:
+                  AuthenticationLevel: Authenticated
+                  DataLevel: Standard
+                  TradeLevel: OrdersOnly
+                State: Active
         '400':
           description: Bad Request
           content:
@@ -584,9 +416,8 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
-      x-streaming-type:
-        $ref: '#/components/schemas/SessionSubscriptionStreamedState'
-  /root/v1/sessions/capabilities:
+      x-streaming-type: '#/components/schemas/SessionSubscriptionStreamedState'
+  '/root/v1/sessions/capabilities':
     get:
       tags:
         - Sessions
@@ -600,11 +431,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CapabilitiesResponse'
-              example: {
-  "AuthenticationLevel": "Authenticated",
-  "DataLevel": "Standard",
-  "TradeLevel": "OrdersOnly"
-}
+              example:
+                AuthenticationLevel: Authenticated
+                DataLevel: Standard
+                TradeLevel: OrdersOnly
         '400':
           description: Returned when either the 'Authorization' header is missing the request or the Open API token sent in this header does not belong to the session identified by the the session ID in the URI.
           content:
@@ -645,9 +475,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PutCapabilitiesRequest'
-            example: {
-  "TradeLevel": "OrdersOnly"
-}
+            example:
+              TradeLevel: OrdersOnly
       responses:
         '202':
           description: Indicates that the request to change capabilities has been accepted and will be executed as soon as possible. Indication of actual capabilities change is streamed to the client.
@@ -691,9 +520,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PatchCapabilitiesRequest'
-            example: {
-  "TradeLevel": "OrdersOnly"
-}
+            example:
+              TradeLevel: OrdersOnly
       responses:
         '202':
           description: Indicates that capabilities are being changed.
@@ -726,135 +554,7 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
-  /root/v1/sessions/force-logout:
-    post:
-      tags:
-        - Sessions
-      summary: Force logout all sessions of user except current session
-      description: Force logout out all other sessions except current session
-      operationId: SessionsV1ForceLogoutAllOtherSessions
-      responses:
-        '200':
-          description: 'Indicates operation was successful, all sessions except current session will be logged out eventually'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
-      security:
-        - OpenApiOAuthSecurityScheme: [ ]
-        - OpenApiJWTSecurityScheme: [ ]
-      x-application-visibility: saxo-only
-  /root/apistatus:
-    get:
-      description: Returns default server status information
-      operationId: root_apistatus
-      parameters:
-        - $ref: '#/components/parameters/XInternalIP'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerStatus'
-              example: {
-  "Created": "0001-01-01T00:00:00Z",
-  "LeasePeriod": 0,
-  "LogicalProcessors": 0,
-  "MachineUptime": 0,
-  "SystemUptime": 0,
-  "TimeSpentMs": 283.29,
-  "ToolId": 0
-}
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
-      x-network-visibility: internal
-  /root/isalive:
-    get:
-      description: Determines whether this service-group instance is alive.
-      operationId: root_isalive
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: string
-              example: "c745020f-248b-4efd-a408-6a663d03f43c"
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
-  /root/v1/diagnostics/probes:
-    post:
-      tags:
-        - Diagnostics
-      summary: Start probing streaming connections.
-      description: "When started, probes are sent to the streaming connections with regular intervals until the streaming connection\r\n            is closed.\r\n            \r\n            Probes are streaming control messages with the reference id \"_probe\". \r\n            They contain a probeId that uniquely identifies the probe and can contain a string payload, if provided in the request."
-      operationId: StreamingProbesV1Start
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/StreamingProbesRequest'
-            example: {
-  "ContextIds": [
-    "98a042d3-0ff6-4d12-8b70-a59e99512a5f"
-  ],
-  "ProbeIntervalMilliseconds": 211,
-  "ProbePayload": "ProbePayload04d56e73-5136-4d81-b8e8-73eeb21e787d"
-}
-      responses:
-        '202':
-          description: Indicates that the probing request was accepted
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
-      security:
-        - OpenApiOAuthSecurityScheme: [ ]
-        - OpenApiJWTSecurityScheme: [ ]
-      x-application-visibility: saxo-only
-    delete:
-      tags:
-        - Diagnostics
-      summary: Stops probing for a session.
-      description: 'When called, probe message are no longer sent for the associated session.'
-      operationId: StreamingProbesV1Remove
-      responses:
-        '204':
-          description: No Content
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
-      security:
-        - OpenApiOAuthSecurityScheme: [ ]
-        - OpenApiJWTSecurityScheme: [ ]
-      x-application-visibility: saxo-only
-  '/root/v1/features/availability/subscriptions/{ContextId}/{ReferenceId}':
+  '/root/v1/features/availability/subscriptions/{ContextId/{ReferenceId}':
     delete:
       tags:
         - Features
@@ -868,7 +568,7 @@ paths:
           required: true
           schema:
             type: string
-          example: 20180204125301453
+          example: '20180204125301453'
         - name: ReferenceId
           in: path
           description: The reference id that identifies the subscription (within a streaming session).
@@ -890,7 +590,7 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
-  /root/v1/features/availability/subscriptions:
+  '/root/v1/features/availability/subscriptions':
     post:
       tags:
         - Features
@@ -902,11 +602,10 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/FeatureAvailabilitySubscriptionRequest'
-            example: {
-  "ContextId": "20220405121639438",
-  "ReferenceId": "Features",
-  "RefreshRate": 1000
-}
+            example:
+              ContextId: '20220222112143496'
+              ReferenceId: Features
+              RefreshRate: 1000
       responses:
         '201':
           description: Created
@@ -914,20 +613,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FeatureAvailabilitySubscriptionResponse'
-              example: {
-  "ContextId": "20220405121639438",
-  "Format": "application/json",
-  "InactivityTimeout": 120,
-  "ReferenceId": "Features",
-  "RefreshRate": 1000,
-  "Snapshot": [
-    {
-      "Available": true,
-      "Feature": "Chart"
-    }
-  ],
-  "State": "Active"
-}
+              example:
+                ContextId: '20220222112143496'
+                Format: application/json
+                InactivityTimeout: 120
+                ReferenceId: Features
+                RefreshRate: 1000
+                Snapshot:
+                  - Available: true
+                    Feature: Chart
+                State: Active
         '400':
           description: Bad Request
           content:
@@ -979,9 +674,8 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
-      x-streaming-type:
-        $ref: '#/components/schemas/FeatureAvailabilityArray'
-  /root/v1/features/availability:
+      x-streaming-type: '#/components/schemas/FeatureAvailabilityArray'
+  '/root/v1/features/availability':
     get:
       tags:
         - Features
@@ -997,12 +691,9 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/FeatureAvailability'
-              example: [
-  {
-    "Available": true,
-    "Feature": "Chart"
-  }
-]
+              example:
+                - Available: true
+                  Feature: Chart
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -1035,7 +726,6 @@ components:
         CanViewAnyClient:
           title: True when the user is allowed to view any client.
           type: boolean
-      additionalProperties: false
     AccountAccessMode:
       title: Account access mode indicating the maximum aggregation level of data for accounts.
       enum:
@@ -1047,19 +737,6 @@ components:
         All: "User has no explicit restriction for operating on accounts, which means\r\n            it may operate on all accounts under its client only depending on its roles and operations."
         ViewAll: 'The user can view all accounts under its client, but have limited rights to interact with them.'
         Restricted: Some accounts are not visible to user.
-    ApiGroupInfo:
-      title: Infor for an Api Group.
-      type: object
-      properties:
-        Controller:
-          title: Gets the Api Controller name.
-          type: string
-        Routes:
-          title: Gets the routes for the ApiGroup.
-          type: array
-          items:
-            type: string
-      additionalProperties: false
     AuthenticationLevel:
       title: Represents levels of authentication
       enum:
@@ -1085,7 +762,6 @@ components:
           title: Determines ability to trade on quote and receive real time data.
           allOf:
             - $ref: '#/components/schemas/TradeLevel'
-      additionalProperties: false
     DataLevel:
       title: Enumeration of allowed data levels for a user using a client application.
       enum:
@@ -1096,69 +772,8 @@ components:
         Standard: 'Default trade level, where average prices are served.'
         Premium: Live up-to-date prices are served.
     DataLevelNullable:
-      $ref: '#/components/schemas/Domain.DataLevel'
-    DependencyInfo:
-      title: 'Represents information about named dependency, component, or subsystem.'
-      type: object
-      properties:
-        Events:
-          title: The events related to the dependency.
-          type: array
-          items:
-            $ref: '#/components/schemas/DependencyStatusEvent'
-        Name:
-          title: The unique name of the dependency.
-          type: string
-      additionalProperties: false
-    DependencyStatusEvent:
-      type: object
-      properties:
-        Message:
-          title: A free-text message describing the event.
-          type: string
-          description: 'The message can indicate the type of failure, an exception message, or likewise.'
-        Status:
-          title: The dependency status after the event.
-          allOf:
-            - $ref: '#/components/schemas/DependencyStatusKind'
-        Timestamp:
-          type: string
-          format: date-time
-          x-type-name: UtcDateTime
-      additionalProperties: false
-    DependencyStatusKind:
-      title: Represents different dependency statuses.
-      enum:
-        - Failed
-        - Initializing
-        - None
-        - Ready
-      type: string
-      x-enum-descriptions:
-        None: Indicates that no status has been set for a dependency.
-        Initializing: Indicates a dependency is initializing.
-        Ready: Indicates that a dependency has operational status.
-        Failed: Indicates that a dependency is not operational.
-    DiskDrive:
-      title: 'Data contract for logical disk drives, including Total and Free disk space'
-      type: object
-      properties:
-        DriveSize:
-          title: DriveSize (in GB)
-          type: integer
-          format: int64
-        FreeSpace:
-          title: FreeSpace (in GB)
-          type: integer
-          format: int64
-        LogicalDrive:
-          title: LogicalDrive (e.g. C or D)
-          type: string
-        PercentUsed:
-          title: PercentUsed
-          type: integer
-          format: int32
-      additionalProperties: false
+      allOf:
+        - $ref: '#/components/schemas/Domain.DataLevel'
     Domain.DataLevel:
       title: Enumeration of allowed data levels for a user using a client application.
       enum:
@@ -1177,8 +792,6 @@ components:
       x-enum-descriptions:
         OrdersOnly: Orders only.
         FullTradingAndChat: Full Trading.
-    Domain.TradeLevelNullable:
-      $ref: '#/components/schemas/Domain.TradeLevel'
     FeatureAvailability:
       required:
         - Feature
@@ -1190,7 +803,6 @@ components:
         Feature:
           title: The name identifying the feature.
           type: string
-      additionalProperties: false
     FeatureAvailabilityArray:
       type: array
       items:
@@ -1214,12 +826,6 @@ components:
         Format:
           title: "Optional Media type (RFC 2046) of the serialized data updates that are streamed to the client.\r\n            Currently only application/json and application/x-protobuf is supported.\r\n            If an unrecognized format is specified, the subscription end point will return HTTP status code 400 - Bad format."
           type: string
-        KnownSchemas:
-          title: "SAXO INTERNAL Optional list of known schemas for the specified . \r\n            If a schema is specified in this list it will not be returned in the  property."
-          type: array
-          items:
-            type: string
-          x-network-visibility: internal
         RefreshRate:
           title: "Optional custom refresh rate, measured in milliseconds, between each data update.\r\n            Note that it is not possible to get a refresh rate lower than the rate specified in the\r\n            customer service level agreement (SLA)."
           maximum: 2147483647
@@ -1233,7 +839,6 @@ components:
         Tag:
           title: Optional client specified tag used for grouping subscriptions.
           type: string
-      additionalProperties: false
     FeatureAvailabilitySubscriptionResponse:
       type: object
       properties:
@@ -1241,13 +846,13 @@ components:
           title: The streaming context id that this response is associated with.
           type: string
           deprecated: true
-          x-deprecated-date: '2022-11-01'
+          x-deprecated-date: '2022-11-01T00:00:00.0000000+00:00'
           x-display-order: 1
         ReferenceId:
           title: The reference id that (along with streaming context id and session id) identifies the subscription (within the context of a specific service/subscription type)
           type: string
           deprecated: true
-          x-deprecated-date: '2022-11-01'
+          x-deprecated-date: '2022-11-01T00:00:00.0000000+00:00'
           x-display-order: 2
         Format:
           title: 'The media type (RFC 2046), of the serialized data updates that are streamed to the client.'
@@ -1260,14 +865,6 @@ components:
           title: Actual refresh rate assigned to the subscription according to the customers SLA.
           type: integer
           format: int32
-        Schema:
-          title: 'SAXO INTERNAL Optional schema that describes the message format, as in the requested media format. If this name is included in the  property on the  request then the  and  properties will be omitted from the response. Currently this will not return anything for application/json.'
-          type: string
-          x-network-visibility: internal
-        SchemaName:
-          title: SAXO INTERNAL Optional schema that names the schema requested. If this name is included in the  property on the  request then the  and  properties will be omitted from the response.
-          type: string
-          x-network-visibility: internal
         Snapshot:
           title: 'Snapshot of the current data on hand, when subscription was created.'
           type: array
@@ -1278,87 +875,10 @@ components:
           type: string
           description: This property is kept for backwards compatibility.
           deprecated: true
-          x-deprecated-date: '2022-11-01'
+          x-deprecated-date: '2022-11-01T00:00:00.0000000+00:00'
         Tag:
           title: 'Client specified tag assigned to the subscription, if specified in the request.'
           type: string
-      additionalProperties: false
-    FileVersionInfo:
-      type: object
-      properties:
-        Comments:
-          type: string
-        CompanyName:
-          type: string
-        FileBuildPart:
-          type: integer
-          format: int32
-        FileDescription:
-          type: string
-        FileMajorPart:
-          type: integer
-          format: int32
-        FileMinorPart:
-          type: integer
-          format: int32
-        FileName:
-          type: string
-        FilePrivatePart:
-          type: integer
-          format: int32
-        FileVersion:
-          type: string
-        InternalName:
-          type: string
-        IsDebug:
-          type: boolean
-        IsPatched:
-          type: boolean
-        IsPreRelease:
-          type: boolean
-        IsPrivateBuild:
-          type: boolean
-        IsSpecialBuild:
-          type: boolean
-        Language:
-          type: string
-        LegalCopyright:
-          type: string
-        LegalTrademarks:
-          type: string
-        OriginalFilename:
-          type: string
-        PrivateBuild:
-          type: string
-        ProductBuildPart:
-          type: integer
-          format: int32
-        ProductMajorPart:
-          type: integer
-          format: int32
-        ProductMinorPart:
-          type: integer
-          format: int32
-        ProductName:
-          type: string
-        ProductPrivatePart:
-          type: integer
-          format: int32
-        ProductVersion:
-          type: string
-        SpecialBuild:
-          type: string
-      additionalProperties: false
-    IServiceCustomization:
-      title: Information about how the services has been customized primarily through OpenApiStartup settings.
-      type: object
-      properties:
-        Customizations:
-          title: Gets the customizations.
-          type: array
-          items:
-            $ref: '#/components/schemas/StringStringKeyValuePair'
-      additionalProperties: false
     Model.AuthenticationLevel:
       title: Represents levels of authentication
       enum:
@@ -1402,13 +922,6 @@ components:
           type: array
           items:
             type: string
-        EmployeeId:
-          title: Possible ID of employee.
-          minimum: 1
-          type: integer
-          format: int32
-          x-network-visibility: internal
-          x-type-name: EmployeeId
         Operations:
           title: List of operations the user can perform.
           type: array
@@ -1419,7 +932,6 @@ components:
           type: array
           items:
             type: string
-      additionalProperties: false
     PatchCapabilitiesRequest:
       title: Represents a request to change session capabilities.
       type: object
@@ -1428,40 +940,6 @@ components:
           title: Determines ability to trade on quote and receive real time data.
           allOf:
             - $ref: '#/components/schemas/TradeLevelNullable'
-      additionalProperties: false
-    ProcessInfo:
-      title: Data contract for process status
-      type: object
-      properties:
-        HostName:
-          title: Name of computer process is running on
-          type: string
-        Id:
-          title: Process Id
-          type: integer
-          format: int32
-        PeakWorkingSet:
-          title: Maximum memory usage(in Bytes)
-          type: integer
-          format: int64
-        ProcessTimePercent:
-          title: Measurement of CPU Utilization Percentage based on .net process values
-          type: number
-        ProcessTimePercentPerformanceCounter:
-          title: Measurement of CPU Utilization Percentage based on performance counter
-          type: number
-        StartTime:
-          title: The time the process was started
-          type: string
-        Threads:
-          title: Number of operating system threads running in process
-          type: integer
-          format: int32
-        WorkingSet:
-          title: Current memory usage (in Bytes)
-          type: integer
-          format: int64
-      additionalProperties: false
     PutCapabilitiesRequest:
       title: Represents a request to set all session capabilities.
       type: object
@@ -1470,138 +948,6 @@ components:
           title: Determines ability to trade on quote and receive real time data.
           allOf:
             - $ref: '#/components/schemas/TradeLevel'
-      additionalProperties: false
-    ResponseFilterRegistration:
-      title: Response filter/contract type registration.
-      type: object
-      properties:
-        Contract:
-          title: Contract type for which a response filter was registered.
-          type: string
-        Processor:
-          title: ResponseFilterProcessor type handling contract.
-          type: string
-      additionalProperties: false
-    ServerStatus:
-      title: Data contract for server status.
-      type: object
-      properties:
-        AppPoolId:
-          title: Gets the current app pool id.
-          type: string
-        ApplicationName:
-          title: Name of service group (host assembly)
-          type: string
-        ApplicationVersion:
-          title: Version of service group (host assembly)
-          type: string
-        BuildTime:
-          title: Gets the build time of the current assembly.
-          type: string
-        Created:
-          title: UtcDateTime stamp for when this object was created.
-          type: string
-          format: date-time
-          x-type-name: UtcDateTime
-        Customization:
-          title: Information about how the services has been customized primarily through OpenApiStartup settings.
-          allOf:
-            - $ref: '#/components/schemas/IServiceCustomization'
-        Dependencies:
-          title: Information about the service dependencies.
-          type: array
-          items:
-            $ref: '#/components/schemas/DependencyInfo'
-        DeployTime:
-          title: Gets the datetime of deployment (last modified).
-          type: string
-        DiskDrives:
-          title: DiskDrives (drive space in GB)
-          type: array
-          items:
-            $ref: '#/components/schemas/DiskDrive'
-        FrameworkVersion:
-          title: Version of OpenAI Framework in use
-          type: string
-        InternalInformation:
-          title: InternalInformation
-          type: array
-          items:
-            $ref: '#/components/schemas/StringStringKeyValuePair'
-        LeasePeriod:
-          title: The lease period (expiry) of the authentication token.
-          type: integer
-          format: int32
-        LoadedAssemblies:
-          title: 'Loaded assemblies, full'
-          type: array
-          items:
-            $ref: '#/components/schemas/FileVersionInfo'
-        LoadedAssembliesVersions:
-          title: Loaded assemblies and versions
-          type: array
-          items:
-            $ref: '#/components/schemas/StringStringKeyValuePair'
-        LogicalProcessors:
-          title: Information about number of logical processors on the box
-          type: integer
-          format: int32
-        MachineUptime:
-          title: Ticks since the machine was started.
-          type: integer
-          format: int64
-        MachineUptimeText:
-          title: Ticks since the machine was started in text.
-          type: string
-        NetFrameworkVersion:
-          title: Version of .NET Framework in use
-          type: string
-        OSVersion:
-          title: Version of server hosting Operating System.
-          type: string
-        PerformanceCounters:
-          title: Values of performance counters reported by the servicegroup
-          type: array
-          items:
-            $ref: '#/components/schemas/StringStringKeyValuePair'
-        Process:
-          title: Information about current process.
-          allOf:
-            - $ref: '#/components/schemas/ProcessInfo'
-        ResponseFilters:
-          title: Lists registered response filter/contract types.
-          type: array
-          items:
-            $ref: '#/components/schemas/ResponseFilterRegistration'
-        RouteTable:
-          title: Gets or the route table.
-          type: array
-          items:
-            $ref: '#/components/schemas/ApiGroupInfo'
-        RunningIdentity:
-          title: Identity in which the application is running.
-          type: string
-        SystemEnvironment:
-          title: "SystemEnvironment is read from configuration and has to be one of the following:\r\n            \"Dev(elopment)\", \"Test\", \"Sim(ulation)\" or \"Live\"."
-          type: string
-        SystemUptime:
-          title: Ticks since the service group was started.
-          type: integer
-          format: int64
-        SystemUptimeText:
-          title: Ticks since the service group was started in text.
-          type: string
-        TimeSpentMs:
-          title: Time spent in ms to generate the status information.
-          type: number
-        ToolId:
-          title: System ToolId (hard coded as 40 for OpenApi). See Iit.FrontOffice.Trading.Public.ToolId enum for full definition.
-          type: integer
-          format: int32
-        WebAPIVersion:
-          title: Version of WebAPI in use
-          type: string
-      additionalProperties: false
     SessionSubscriptionRequest:
       title: The request object required to setup a session wide subscription.
       required:
@@ -1622,12 +968,6 @@ components:
         Format:
           title: "Optional Media type (RFC 2046) of the serialized data updates that are streamed to the client.\r\n            Currently only application/json and application/x-protobuf is supported.\r\n            If an unrecognized format is specified, the subscription end point will return HTTP status code 400 - Bad format."
           type: string
-        KnownSchemas:
-          title: "SAXO INTERNAL Optional list of known schemas for the specified . \r\n            If a schema is specified in this list it will not be returned in the  property."
-          type: array
-          items:
-            type: string
-          x-network-visibility: internal
         RefreshRate:
           title: "Optional custom refresh rate, measured in milliseconds, between each data update.\r\n            Note that it is not possible to get a refresh rate lower than the rate specified in the\r\n            customer service level agreement (SLA)."
           maximum: 2147483647
@@ -1641,7 +981,6 @@ components:
         Tag:
           title: Optional client specified tag used for grouping subscriptions.
           type: string
-      additionalProperties: false
     SessionSubscriptionResponse:
       title: Response returned when creating a new subscription for broken data.
       type: object
@@ -1650,13 +989,13 @@ components:
           title: The streaming context id that this response is associated with.
           type: string
           deprecated: true
-          x-deprecated-date: '2022-11-01'
+          x-deprecated-date: '2022-11-01T00:00:00.0000000+00:00'
           x-display-order: 1
         ReferenceId:
           title: The reference id that (along with streaming context id and session id) identifies the subscription (within the context of a specific service/subscription type)
           type: string
           deprecated: true
-          x-deprecated-date: '2022-11-01'
+          x-deprecated-date: '2022-11-01T00:00:00.0000000+00:00'
           x-display-order: 2
         Format:
           title: 'The media type (RFC 2046), of the serialized data updates that are streamed to the client.'
@@ -1669,14 +1008,6 @@ components:
           title: Actual refresh rate assigned to the subscription according to the customers SLA.
           type: integer
           format: int32
-        Schema:
-          title: 'SAXO INTERNAL Optional schema that describes the message format, as in the requested media format. If this name is included in the  property on the  request then the  and  properties will be omitted from the response. Currently this will not return anything for application/json.'
-          type: string
-          x-network-visibility: internal
-        SchemaName:
-          title: SAXO INTERNAL Optional schema that names the schema requested. If this name is included in the  property on the  request then the  and  properties will be omitted from the response.
-          type: string
-          x-network-visibility: internal
         Snapshot:
           title: 'Snapshot of the current data on hand, when subscription was created.'
           allOf:
@@ -1686,11 +1017,10 @@ components:
           type: string
           description: This property is kept for backwards compatibility.
           deprecated: true
-          x-deprecated-date: '2022-11-01'
+          x-deprecated-date: '2022-11-01T00:00:00.0000000+00:00'
         Tag:
           title: 'Client specified tag assigned to the subscription, if specified in the request.'
           type: string
-      additionalProperties: false
     SessionSubscriptionStreamedState:
       title: Data class that cannot be serialized.
       type: object
@@ -1706,61 +1036,10 @@ components:
         TradeLevel:
           title: Gets or sets the trade level.
           allOf:
-            - $ref: '#/components/schemas/Domain.TradeLevelNullable'
-      additionalProperties: false
-    StreamingProbesRequest:
-      title: Request object for setting up streaming probes.
-      required:
-        - ContextIds
-      type: object
-      properties:
-        ContextIds:
-          title: Identification of the target streaming connection within the current session.
-          type: array
-          items:
-            type: string
-        ProbeIntervalMilliseconds:
-          title: The interval between probe control messages in milliseconds. The default is 60000 milliseconds.
-          type: integer
-          format: int32
-        ProbePayload:
-          title: Payload to be sent in probe messages.
-          type: string
-      additionalProperties: false
-    StringStringKeyValuePair:
-      type: object
-      properties:
-        Key:
-          type: string
-        Value:
-          type: string
-      additionalProperties: false
-    SubscriptionInfoFilter:
-      title: Represents subscription filters for querying the subscription diagnostics endpoint.
-      type: object
-      properties:
-        ApplicationId:
-          title: Restricts the subscriptions to an application if specified.
-          minimum: 1
-          type: integer
-          format: int32
-          x-type-name: ApplicationId
-        ContextId:
-          title: Restricts the subscriptions to a streaming session if specified along with a session id.
-          type: string
-        Publisher:
-          title: Restricts the subscriptions to a publisher if specified.
-          type: string
-        SessionId:
-          title: Restricts the subscriptions to a session if specified.
-          pattern: '^[0-9a-fA-F]{32}$|^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
-          type: string
-          x-type-name: SessionId
-        UserId:
-          title: Restricts the subscriptions to a MITS user if specified.
-          allOf:
-            - $ref: '#/components/schemas/UserIdNullable'
-      additionalProperties: false
+            - $ref: '#/components/schemas/System.TradeLevelNullable'
+    System.TradeLevelNullable:
+      allOf:
+        - $ref: '#/components/schemas/Domain.TradeLevel'
     TradeLevel:
       title: Enumeration of allowed trade levels for a user using a client application.
       enum:
@@ -1771,13 +1050,12 @@ components:
         OrdersOnly: Orders only.
         FullTradingAndChat: Full Trading and access to real time data.
     TradeLevelNullable:
-      $ref: '#/components/schemas/TradeLevel'
+      allOf:
+        - $ref: '#/components/schemas/TradeLevel'
     UserId:
       minimum: 1
       type: integer
       format: int32
-    UserIdNullable:
-      $ref: '#/components/schemas/UserId'
   responses:
     BadRequest:
       description: One or more of the provided parameters are invalid.
@@ -1805,16 +1083,6 @@ components:
       description: The request was rejected due to rate limit being exceeded.
     Unauthorized:
       description: Indicates that the request was rejected because the 'Authorization' header was missing in the request or contained an invalid security token.
-  parameters:
-    XInternalIP:
-      name: X-Internal-IP
-      in: header
-      description: Required header for access to network internal endpoints.
-      required: true
-      schema:
-        enum:
-          - '1'
-        type: string
   securitySchemes:
     OpenApiJWTSecurityScheme:
       type: http
@@ -1824,8 +1092,8 @@ components:
       type: oauth2
       flows:
         authorizationCode:
-          authorizationUrl: https://idp.blue.sso.sys.dom/authorize
-          tokenUrl: https://idp.blue.sso.sys.dom/token
+          authorizationUrl: https://live.logonvalidation.net/authorize
+          tokenUrl: https://live.logonvalidation.net/token
           scopes: { }
 tags:
   - name: Diagnostics

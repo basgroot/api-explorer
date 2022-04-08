@@ -1,13 +1,319 @@
 openapi: 3.0.1
 info:
-  contact:
-    email: openapisupport@saxobank.com
   title: Services.ReferenceData
   description: 'The Reference Data service group provides reference data, such as instrument details, exchange info etc..'
   version: 2.3.300+3f93a68d0f
+  x-framework-version: 22.0.46+a0002617f5
+  x-machine: SATOAWEB31-DK1
 servers:
-  - url: 'https://gateway.saxobank.com/sim/openapi'
+  - url: https://gateway.saxobank.com/openapi
 paths:
+  /ref/v1/languages:
+    get:
+      tags:
+        - Languages
+      summary: Get all supported languages
+      description: Returns a list containing all the languages supported by Saxo Bank.
+      operationId: LanguagesGet
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LanguageDetailsListResult'
+              example:
+                __next: /openapi/....../?$top=1&$skip=1
+                Data:
+                  - LanguageCode: en
+                    LanguageName: English
+                    NativeName: English
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  '/ref/v1/standarddates/forwardtenor/{uic}':
+    get:
+      tags:
+        - StandardDates
+      summary: Get a list of forward tenor dates
+      description: Use this GET operation to retrieve a list of forward tenor dates for an UIC.
+      operationId: StandardDatesGetForwardTenorDates
+      parameters:
+        - name: accountKey
+          in: query
+          description: Account to which short tenor permissions are checked against. Short tenors are not returned if no account is specified.
+          schema:
+            allOf:
+              - minLength: 1
+                type: string
+                x-type-name: AccountKey
+        - name: uic
+          in: path
+          description: The Universal Instrument Code (UIC) of the instrument to get.
+          required: true
+          schema:
+            minimum: 1
+            type: integer
+            format: int32
+            x-type-name: Uic
+          example: 22
+      responses:
+        '200':
+          description: Indicates the list was retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardDateListResult'
+              example:
+                Data:
+                  - Date: '2021-02-18T00:00:00.0000000+00:00'
+                    Unit: Days
+                    Value: 100
+                MaxRows: 126
+        '404':
+          description: Indicates forward tenor dates were not found for the given UIC.
+        '401':
+          description: Indicates request was disallowed because either the 'Authorization' header was missing or contained an invalid Open API token.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  '/ref/v1/standarddates/fxoptionexpiry/{uic}':
+    get:
+      tags:
+        - StandardDates
+      summary: Get a list of FX option expiry dates
+      description: Use this GET operation to retrieve a list of FX option expiry dates for an UIC.
+      operationId: StandardDatesGetFxOptionExpiryDates
+      parameters:
+        - name: uic
+          in: path
+          description: The Universal Instrument Code (UIC) of the instrument to get.
+          required: true
+          schema:
+            minimum: 1
+            type: integer
+            format: int32
+            x-type-name: Uic
+          example: 22
+      responses:
+        '200':
+          description: Indicates the list was retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardDateListResult'
+              example:
+                Data:
+                  - Date: '2021-02-18T00:00:00.0000000+00:00'
+                    Unit: Days
+                    Value: 100
+                MaxRows: 126
+        '404':
+          description: Indicates FX option expiry dates were not found for the given UIC.
+        '401':
+          description: Indicates request was disallowed because either the 'Authorization' header was missing or contained an invalid Open API token.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  /ref/v1/timezones:
+    get:
+      tags:
+        - TimeZones
+      summary: Get a list of all timezones
+      description: Use this GET operation to retrieve a list all the time zones supported by Saxo Bank.
+      operationId: TimeZonesGetTimeZones
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeZoneDetailsListResult'
+              example:
+                Data:
+                  - DisplayName: GMT a.k.a. UTC
+                    TimeZoneId: '0'
+                    TimeZoneOffset: '2022-02-23T00:00:00.0000000+00:00'
+                    ZoneName: Etc/UTC
+                  - DisplayName: British Time
+                    TimeZoneId: '1'
+                    TimeZoneOffset: '2022-02-23T00:00:00.0000000+00:00'
+                    ZoneName: Europe/London
+                  - DisplayName: Singapore Time
+                    TimeZoneId: '2'
+                    TimeZoneOffset: '2022-02-23T00:00:00.0000000+00:00'
+                    ZoneName: Asia/Singapore
+                  - DisplayName: US Eastern Time
+                    TimeZoneId: '3'
+                    TimeZoneOffset: '2022-02-23T00:00:00.0000000+00:00'
+                    ZoneName: America/New_York
+                  - DisplayName: Central European Time
+                    TimeZoneId: '4'
+                    TimeZoneOffset: '2022-02-23T00:00:00.0000000+00:00'
+                    ZoneName: Europe/Paris
+                  - DisplayName: US Central Time
+                    TimeZoneId: '5'
+                    TimeZoneOffset: '2022-02-23T00:00:00.0000000+00:00'
+                    ZoneName: America/Chicago
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  /ref/v1/countries:
+    get:
+      tags:
+        - Countries
+      summary: Get all supported countries
+      description: Use this GET operation to retrieve a list all the countries supported by Saxo Bank.
+      operationId: CountriesGet
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CountryDetailsListResult'
+              example:
+                Data:
+                  - A3: BOL
+                    CountryCode: BO
+                    Name: Bolivia
+                    Numeric: 68
+                  - A3: BDI
+                    CountryCode: BI
+                    Name: Burundi
+                    Numeric: 108
+                  - A3: COG
+                    CountryCode: CG
+                    Name: Congo
+                    Numeric: 178
+                  - A3: DNK
+                    CountryCode: DK
+                    Name: Denmark
+                    Numeric: 208
+                  - A3: SLV
+                    CountryCode: SV
+                    Name: El Salvador
+                    Numeric: 222
+                  - A3: GNQ
+                    CountryCode: GQ
+                    Name: Equatorial Guinea
+                    Numeric: 226
+                  - A3: ERI
+                    CountryCode: ER
+                    Name: Eritrea
+                    Numeric: 232
+                  - A3: EST
+                    CountryCode: EE
+                    Name: Estonia
+                    Numeric: 233
+                  - A3: ETH
+                    CountryCode: ET
+                    Name: Ethiopia
+                    Numeric: 231
+                  - A3: DEU
+                    CountryCode: DE
+                    Name: Germany
+                    Numeric: 276
+                  - A3: GRD
+                    CountryCode: GD
+                    Name: Grenada
+                    Numeric: 308
+                  - A3: GLP
+                    CountryCode: GP
+                    Name: Guadeloupe
+                    Numeric: 312
+                  - A3: HND
+                    CountryCode: HN
+                    Name: Honduras
+                    Numeric: 340
+                  - A3: HKG
+                    CountryCode: HK
+                    Name: Hong Kong
+                    Numeric: 344
+                  - A3: HUN
+                    CountryCode: HU
+                    Name: Hungary
+                    Numeric: 348
+                  - A3: ISL
+                    CountryCode: IS
+                    Name: Iceland
+                    Numeric: 352
+                  - A3: MNP
+                    CountryCode: MP
+                    Name: Northern Mariana Islands
+                    Numeric: 580
+                  - A3: NOR
+                    CountryCode: NO
+                    Name: Norway
+                    Numeric: 578
+                  - A3: THA
+                    CountryCode: TH
+                    Name: Thailand
+                    Numeric: 764
+                  - A3: TGO
+                    CountryCode: TG
+                    Name: Togo
+                    Numeric: 768
+                  - A3: TKL
+                    CountryCode: TK
+                    Name: Tokelau
+                    Numeric: 772
+                  - A3: UZB
+                    CountryCode: UZ
+                    Name: Uzbekistan
+                    Numeric: 860
+                  - A3: VUT
+                    CountryCode: VU
+                    Name: Vanuatu
+                    Numeric: 548
+                  - A3: VEN
+                    CountryCode: VE
+                    Name: Venezuela
+                    Numeric: 862
+                  - A3: ZWE
+                    CountryCode: ZW
+                    Name: Zimbabwe
+                    Numeric: 716
+                MaxRows: 155
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
   /ref/v1/instruments:
     get:
       tags:
@@ -209,13 +515,13 @@ paths:
                     $ref: '#/components/schemas/ModelStateDictionary'
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
       security:
-        - OpenApiOAuthSecurityScheme: []
-        - OpenApiJWTSecurityScheme: []
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
   /ref/v1/instruments/details:
     get:
       tags:
@@ -290,7 +596,8 @@ paths:
               example:
                 __next: /openapi/....../?$top=1&$skip=1
                 Data:
-                  - AmountDecimals: 0
+                  - AffiliateInfoRequired: false
+                    AmountDecimals: 0
                     AssetType: FxSpot
                     CurrencyCode: AUD
                     DefaultAmount: 100000
@@ -341,7 +648,7 @@ paths:
                       - TrailingStop
                       - StopLimit
                     Symbol: GBPAUD
-                    TickSize: 0.00005
+                    TickSize: 5E-05
                     TradableAs:
                       - FxSpot
                       - FxForwards
@@ -353,9 +660,11 @@ paths:
                       - 76940INET1
                       - 76940INET2
                       - SAMGS*585220
+                    TradingSignals: NotAllowed
                     TradingStatus: NotDefined
                     Uic: 22
-                  - AmountDecimals: 0
+                  - AffiliateInfoRequired: false
+                    AmountDecimals: 0
                     AssetType: FxSpot
                     CurrencyCode: CAD
                     DefaultAmount: 100000
@@ -406,7 +715,7 @@ paths:
                       - TrailingStop
                       - StopLimit
                     Symbol: GBPCAD
-                    TickSize: 0.00005
+                    TickSize: 5E-05
                     TradableAs:
                       - FxSpot
                       - FxForwards
@@ -418,6 +727,7 @@ paths:
                       - 76940INET1
                       - 76940INET2
                       - SAMGS*585220
+                    TradingSignals: NotAllowed
                     TradingStatus: NotDefined
                     Uic: 23
         '400':
@@ -444,14 +754,14 @@ paths:
                     $ref: '#/components/schemas/ModelStateDictionary'
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
       security:
-        - OpenApiOAuthSecurityScheme: []
-        - OpenApiJWTSecurityScheme: []
-  '/ref/v1/instruments/details/{Uic}/{AssetType}':
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  '/ref/v1/instruments/details/{uic}/{assetType}':
     get:
       tags:
         - Instruments
@@ -481,14 +791,14 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/InstrumentFieldGroup'
-        - name: AssetType
+        - name: assetType
           in: path
           description: The  of the instrument to get.
           required: true
           schema:
             $ref: '#/components/schemas/AssetType'
           example: FxSpot
-        - name: Uic
+        - name: uic
           in: path
           description: The Universal Instrument Code (UIC) of the instrument to get.
           required: true
@@ -506,6 +816,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/InstrumentDetails'
               example:
+                AffiliateInfoRequired: false
                 AmountDecimals: 0
                 AssetType: FxSpot
                 CurrencyCode: AUD
@@ -517,7 +828,7 @@ paths:
                   CountryCode: DK
                   ExchangeId: SBFX
                   Name: Inter Bank
-                ExerciseCutOffTime: '2022-02-18T00:00:00.0000000+00:00'
+                ExerciseCutOffTime: '2022-02-23T00:00:00.0000000+00:00'
                 Format:
                   Decimals: 4
                   Format: AllowDecimalPips
@@ -559,6 +870,10 @@ paths:
                   - 5000000
                   - 10000000
                   - 20000000
+                SupportedOrderTriggerPriceTypes:
+                  - LastTraded
+                  - Close
+                  - Open
                 SupportedOrderTypes:
                   - Market
                   - Limit
@@ -566,7 +881,7 @@ paths:
                   - TrailingStop
                   - StopLimit
                 Symbol: GBPAUD
-                TickSize: 0.00005
+                TickSize: 5E-05
                 TradableAs:
                   - FxSpot
                   - FxForwards
@@ -578,6 +893,7 @@ paths:
                   - 76940INET1
                   - 76940INET2
                   - SAMGS*585220
+                TradingSignals: NotAllowed
                 TradingStatus: NotDefined
                 Uic: 22
         '400':
@@ -602,14 +918,14 @@ paths:
                     $ref: '#/components/schemas/ModelStateDictionary'
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
       security:
-        - OpenApiOAuthSecurityScheme: []
-        - OpenApiJWTSecurityScheme: []
-  '/ref/v1/instruments/contractoptionspaces/{OptionRootId}':
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  '/ref/v1/instruments/contractoptionspaces/{optionRootId}':
     get:
       tags:
         - Instruments
@@ -624,22 +940,21 @@ paths:
               - minLength: 1
                 type: string
                 x-type-name: ClientKey
-        - name: CanParticipateInMultiLegOrder
+        - name: canParticipateInMultiLegOrder
           in: query
           description: 'Should the result only include option roots that allow/disallow exchange traded option strategies, also know as multi-leg or combination orders. This is an optional parameter, all roots are returned regardless if omitted.'
           schema:
             allOf:
               - type: boolean
-        - name: ExpiryDates
+        - name: expiryDates
           in: query
           description: Return specific information for the ExpiryDates in this array (if OptionSpaceSegment is set to 'SpecificDates').
           schema:
             type: array
             items:
               type: string
-          example:
-            - '2107-06-16T00:00:00.0000000+00:00'
-        - name: OptionRootId
+          example: '2107-06-16T00:00:00.0000000+00:00'
+        - name: optionRootId
           in: path
           description: ID of the contract option root.
           required: true
@@ -647,17 +962,17 @@ paths:
             type: integer
             format: int32
           example: 6
-        - name: OptionSpaceSegment
+        - name: optionSpaceSegment
           in: query
           description: 'How large a segment of the option space should return full contract option details (in the OptionsSpace[].SpecificOptions property). Default is None.'
           schema:
             $ref: '#/components/schemas/OptionSpaceSegment'
           example: SpecificDates
-        - name: TradingStatus
+        - name: tradingStatus
           in: query
           schema:
             $ref: '#/components/schemas/TradingStatusNullable'
-        - name: UnderlyingUic
+        - name: underlyingUic
           in: query
           description: The uic of the underlying instrument. This is an optional parameter (if OptionSpaceSegment is set to 'UnderlyingUic').
           schema:
@@ -699,13 +1014,13 @@ paths:
                 OptionSpace:
                   - DisplayDaysToExpiry: 3
                     DisplayDaysToLastTradeDate: 0
-                    DisplayExpiry: '2020-10-01'
-                    Expiry: '2020-10-01'
+                    DisplayExpiry: '2017-05-01T00:00:00.0000000+00:00'
+                    Expiry: '2017-05-19T00:00:00.0000000+00:00'
                     LastTradeDate: '0001-01-01T00:00:00.0000000+00:00'
                   - DisplayDaysToExpiry: 34
                     DisplayDaysToLastTradeDate: 0
-                    DisplayExpiry: '2020-10-01'
-                    Expiry: '2020-10-01'
+                    DisplayExpiry: '2017-06-01T00:00:00.0000000+00:00'
+                    Expiry: '2017-06-16T00:00:00.0000000+00:00'
                     LastTradeDate: '0001-01-01T00:00:00.0000000+00:00'
                     SpecificOptions:
                       - PutCall: Call
@@ -735,48 +1050,48 @@ paths:
                         UnderlyingUic: 1907570
                   - DisplayDaysToExpiry: 126
                     DisplayDaysToLastTradeDate: 0
-                    DisplayExpiry: '2020-10-01'
-                    Expiry: '2020-10-01'
+                    DisplayExpiry: '2017-09-01T00:00:00.0000000+00:00'
+                    Expiry: '2017-09-15T00:00:00.0000000+00:00'
                     LastTradeDate: '0001-01-01T00:00:00.0000000+00:00'
                   - DisplayDaysToExpiry: 217
                     DisplayDaysToLastTradeDate: 0
-                    DisplayExpiry: '2020-10-01'
-                    Expiry: '2020-10-01'
+                    DisplayExpiry: '2017-12-01T00:00:00.0000000+00:00'
+                    Expiry: '2017-12-15T00:00:00.0000000+00:00'
                     LastTradeDate: '0001-01-01T00:00:00.0000000+00:00'
                   - DisplayDaysToExpiry: 307
                     DisplayDaysToLastTradeDate: 0
-                    DisplayExpiry: '2020-10-01'
-                    Expiry: '2020-10-01'
+                    DisplayExpiry: '2018-03-01T00:00:00.0000000+00:00'
+                    Expiry: '2018-03-16T00:00:00.0000000+00:00'
                     LastTradeDate: '0001-01-01T00:00:00.0000000+00:00'
                   - DisplayDaysToExpiry: 399
                     DisplayDaysToLastTradeDate: 0
-                    DisplayExpiry: '2020-10-01'
-                    Expiry: '2020-10-01'
+                    DisplayExpiry: '2018-06-01T00:00:00.0000000+00:00'
+                    Expiry: '2018-06-15T00:00:00.0000000+00:00'
                     LastTradeDate: '0001-01-01T00:00:00.0000000+00:00'
                   - DisplayDaysToExpiry: 582
                     DisplayDaysToLastTradeDate: 0
-                    DisplayExpiry: '2020-10-01'
-                    Expiry: '2020-10-01'
+                    DisplayExpiry: '2018-12-01T00:00:00.0000000+00:00'
+                    Expiry: '2018-12-21T00:00:00.0000000+00:00'
                     LastTradeDate: '0001-01-01T00:00:00.0000000+00:00'
                   - DisplayDaysToExpiry: 764
                     DisplayDaysToLastTradeDate: 0
-                    DisplayExpiry: '2020-10-01'
-                    Expiry: '2020-10-01'
+                    DisplayExpiry: '2019-06-01T00:00:00.0000000+00:00'
+                    Expiry: '2019-06-21T00:00:00.0000000+00:00'
                     LastTradeDate: '0001-01-01T00:00:00.0000000+00:00'
                   - DisplayDaysToExpiry: 947
                     DisplayDaysToLastTradeDate: 0
-                    DisplayExpiry: '2020-10-01'
-                    Expiry: '2020-10-01'
+                    DisplayExpiry: '2019-12-01T00:00:00.0000000+00:00'
+                    Expiry: '2019-12-20T00:00:00.0000000+00:00'
                     LastTradeDate: '0001-01-01T00:00:00.0000000+00:00'
                   - DisplayDaysToExpiry: 1313
                     DisplayDaysToLastTradeDate: 0
-                    DisplayExpiry: '2020-10-01'
-                    Expiry: '2020-10-01'
+                    DisplayExpiry: '2020-12-01T00:00:00.0000000+00:00'
+                    Expiry: '2020-12-18T00:00:00.0000000+00:00'
                     LastTradeDate: '0001-01-01T00:00:00.0000000+00:00'
                   - DisplayDaysToExpiry: 1678
                     DisplayDaysToLastTradeDate: 0
-                    DisplayExpiry: '2020-10-01'
-                    Expiry: '2020-10-01'
+                    DisplayExpiry: '2021-12-01T00:00:00.0000000+00:00'
+                    Expiry: '2021-12-17T00:00:00.0000000+00:00'
                     LastTradeDate: '0001-01-01T00:00:00.0000000+00:00'
                 OrderDistances:
                   EntryDefaultDistance: 0
@@ -813,7 +1128,7 @@ paths:
                   - 1000
                 SupportedOrderTypes:
                   - Limit
-                Symbol: 'ODAX:xeur'
+                Symbol: ODAX:xeur
                 TickSize: 0.1
                 TradableOn:
                   - 76940INET
@@ -846,14 +1161,14 @@ paths:
                     $ref: '#/components/schemas/ModelStateDictionary'
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
       security:
-        - OpenApiOAuthSecurityScheme: []
-        - OpenApiJWTSecurityScheme: []
-  '/ref/v1/instruments/futuresspaces/{ContinuousFuturesUic}':
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  '/ref/v1/instruments/futuresspaces/{continuousFuturesUic}':
     get:
       tags:
         - Instruments
@@ -861,7 +1176,7 @@ paths:
       description: 'Provides an overview of a contract futures space, with key futures-related properties for all instances in the futures space.'
       operationId: InstrumentsV1GetFuturesSpace
       parameters:
-        - name: ContinuousFuturesUic
+        - name: continuousFuturesUic
           in: path
           description: The UIC of the continuous futures instrument of the space.
           required: true
@@ -880,31 +1195,31 @@ paths:
                 BaseIdentifier: W
                 Elements:
                   - DaysToExpiry: 64
-                    ExpiryDate: '2020-10-01'
+                    ExpiryDate: '2017-07-14T00:00:00.0000000+00:00'
                     Symbol: WQ7
                     Uic: 3406797
                   - DaysToExpiry: 127
-                    ExpiryDate: '2020-10-01'
+                    ExpiryDate: '2017-09-15T00:00:00.0000000+00:00'
                     Symbol: WV7
                     Uic: 3844782
                   - DaysToExpiry: 188
-                    ExpiryDate: '2020-10-01'
+                    ExpiryDate: '2017-11-15T00:00:00.0000000+00:00'
                     Symbol: WZ7
                     Uic: 4239352
                   - DaysToExpiry: 278
-                    ExpiryDate: '2020-10-01'
+                    ExpiryDate: '2018-02-13T00:00:00.0000000+00:00'
                     Symbol: WH8
                     Uic: 4895721
                   - DaysToExpiry: 337
-                    ExpiryDate: '2020-10-01'
+                    ExpiryDate: '2018-04-13T00:00:00.0000000+00:00'
                     Symbol: WK8
                     Uic: 5352847
                   - DaysToExpiry: 431
-                    ExpiryDate: '2020-10-01'
+                    ExpiryDate: '2018-07-16T00:00:00.0000000+00:00'
                     Symbol: WQ8
                     Uic: 6112156
                   - DaysToExpiry: 491
-                    ExpiryDate: '2020-10-01'
+                    ExpiryDate: '2018-09-14T00:00:00.0000000+00:00'
                     Symbol: WV8
                     Uic: 6609171
         '400':
@@ -929,14 +1244,14 @@ paths:
                     $ref: '#/components/schemas/ModelStateDictionary'
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
       security:
-        - OpenApiOAuthSecurityScheme: []
-        - OpenApiJWTSecurityScheme: []
-  '/ref/v1/instruments/tradingschedule/{Uic}/{AssetType}':
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  '/ref/v1/instruments/tradingschedule/{uic}/{assetType}':
     get:
       tags:
         - Instruments
@@ -944,14 +1259,14 @@ paths:
       description: Returns trading schedule for a given uic and asset type.
       operationId: InstrumentsV1GetTradingSchedule
       parameters:
-        - name: AssetType
+        - name: assetType
           in: path
           description: The  of the instrument to get.
           required: true
           schema:
             $ref: '#/components/schemas/AssetType'
           example: FxSpot
-        - name: Uic
+        - name: uic
           in: path
           description: The Universal Instrument Code (UIC) of the instrument to get.
           required: true
@@ -970,12 +1285,12 @@ paths:
                 $ref: '#/components/schemas/InstrumentTradeSessions'
               example:
                 Sessions:
-                  - EndTime: '2021-06-09T10:27:49.1770500+00:00'
-                    StartTime: '2022-12-09T22:50:36.2785170+00:00'
+                  - EndTime: '2020-07-10T15:37:54.0552090+00:00'
+                    StartTime: '2023-08-02T23:40:24.2530660+00:00'
                     State: Undefined
-                TimeZone: 116
-                TimeZoneAbbreviation: TimeZoneAbbreviation173ef3b2-526a-4a8e-a7fa-b7b8bc1d5884
-                TimeZoneOffset: '2022-02-18T00:00:00.0000176+00:00'
+                TimeZone: 125
+                TimeZoneAbbreviation: TimeZoneAbbreviation90171860-e140-466c-b04f-c0493567828c
+                TimeZoneOffset: '2022-02-23T00:00:00.0000071+00:00'
         '400':
           description: Bad Request
           content:
@@ -998,140 +1313,13 @@ paths:
                     $ref: '#/components/schemas/ModelStateDictionary'
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
-      security:
-        - OpenApiOAuthSecurityScheme: []
-        - OpenApiJWTSecurityScheme: []
-  /ref/v1/currencies:
-    get:
-      tags:
-        - Currencies
-      summary: Get all supported currencies
-      description: Returns a list of all supported currencies.
-      operationId: CurrenciesGetCurrencies
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CurrencyDetailsListResult'
-              example:
-                __next: /openapi/....../?$top=1&$skip=1
-                Data:
-                  - CurrencyCode: EUR
-                    Decimals: 2
-                    Name: Euro
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
         '429':
           $ref: '#/components/responses/TooManyRequests'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
       security:
-        - OpenApiOAuthSecurityScheme: []
-        - OpenApiJWTSecurityScheme: []
-  '/ref/v1/standarddates/forwardtenor/{Uic}':
-    get:
-      tags:
-        - StandardDates
-      summary: Get a list of forward tenor dates
-      description: Use this GET operation to retrieve a list of forward tenor dates for an UIC.
-      operationId: StandardDatesGetForwardTenorDates
-      parameters:
-        - name: AccountKey
-          in: query
-          description: Account to which short tenor permissions are checked against. Short tenors are not returned if no account is specified.
-          schema:
-            allOf:
-              - minLength: 1
-                type: string
-                x-type-name: AccountKey
-        - name: Uic
-          in: path
-          description: The Universal Instrument Code (UIC) of the instrument to get.
-          required: true
-          schema:
-            minimum: 1
-            type: integer
-            format: int32
-            x-type-name: Uic
-          example: 22
-      responses:
-        '200':
-          description: Indicates the list was retrieved successfully.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/StandardDateListResult'
-              example:
-                Data:
-                  - Date: '2020-10-01'
-                    Unit: Days
-                    Value: 115
-                MaxRows: 134
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          description: Indicates request was disallowed because either the 'Authorization' header was missing or contained an invalid Open API token.
-        '404':
-          description: Indicates forward tenor dates were not found for the given UIC.
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
-      security:
-        - OpenApiOAuthSecurityScheme: []
-        - OpenApiJWTSecurityScheme: []
-  '/ref/v1/standarddates/fxoptionexpiry/{Uic}':
-    get:
-      tags:
-        - StandardDates
-      summary: Get a list of FX option expiry dates
-      description: Use this GET operation to retrieve a list of FX option expiry dates for an UIC.
-      operationId: StandardDatesGetFxOptionExpiryDates
-      parameters:
-        - name: Uic
-          in: path
-          description: The Universal Instrument Code (UIC) of the instrument to get.
-          required: true
-          schema:
-            minimum: 1
-            type: integer
-            format: int32
-            x-type-name: Uic
-          example: 22
-      responses:
-        '200':
-          description: Indicates the list was retrieved successfully.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/StandardDateListResult'
-              example:
-                Data:
-                  - Date: '2020-10-01'
-                    Unit: Days
-                    Value: 115
-                MaxRows: 134
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          description: Indicates request was disallowed because either the 'Authorization' header was missing or contained an invalid Open API token.
-        '404':
-          description: Indicates FX option expiry dates were not found for the given UIC.
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
-      security:
-        - OpenApiOAuthSecurityScheme: []
-        - OpenApiJWTSecurityScheme: []
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
   /ref/v1/currencypairs:
     get:
       tags:
@@ -1191,174 +1379,13 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
-      security:
-        - OpenApiOAuthSecurityScheme: []
-        - OpenApiJWTSecurityScheme: []
-  /ref/v1/algostrategies:
-    get:
-      tags:
-        - AlgoStrategies
-      summary: Get all strategies supported by Saxo Bank.
-      description: "This operation retrieves a list of strategies with detailed information about each strategy.\r\n            The response also contains links to other relevant data, such as their parameters."
-      operationId: StrategiesV1GetAllStrategies
-      parameters:
-        - name: $skip
-          in: query
-          schema:
-            minimum: 0
-            type: integer
-            format: int32
-        - name: $top
-          in: query
-          schema:
-            minimum: 0
-            type: integer
-            format: int32
-            default: 0
-      responses:
-        '200':
-          description: Indicates the list was retrieved successfully.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/StrategyListResult'
-              example:
-                Data:
-                  - Description: Description099124f0-ad8a-49bd-969e-a62a7a1e0c39
-                    MinAmountUSD: 6.296272842642563e+28
-                    Name: Namee59e98ab-70a5-4466-81e8-9bd7e8fe4e8d
-                    Parameters:
-                      - DataType: Char
-                        IsEditable: false
-                        IsMandatory: false
-                        UiDefaultValue: UiDefaultValuec8fd88be-a739-4bb2-a569-15693ec3f6d8
-                        UiOrderingIndex: 0
-                        UiStepSize: 47.88
-                    SupportedDurationTypes:
-                      - GoodTillCancel
-                    SupportedOrderTypes:
-                      - None
-                    TradableInstrumentTypes:
-                      - FxVanillaOption
-                MaxRows: 172
-        '204':
-          description: Indicates no information about Strategys is available with the service.
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          description: Indicates request was disallowed because either the 'Authorization' header was missing or contained an invalid Open API token.
         '429':
           $ref: '#/components/responses/TooManyRequests'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
       security:
-        - OpenApiOAuthSecurityScheme: []
-        - OpenApiJWTSecurityScheme: []
-  '/ref/v1/algostrategies/{Name}':
-    get:
-      tags:
-        - AlgoStrategies
-      summary: Get details about a specific strategy.
-      description: This operation retrieves detailed information about a specific Strategy. The Strategy is specified by the 'name' parameter in the URI.
-      operationId: StrategiesV1GetStrategyByName
-      parameters:
-        - name: Name
-          in: path
-          description: The name of the Strategy.
-          required: true
-          schema:
-            type: string
-          example: LME
-      responses:
-        '200':
-          description: Indicates the information was retrieved successfully.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Strategy'
-              example:
-                Description: Description7d798df0-42ed-4c86-a93e-34c9e09c70a1
-                MinAmountUSD: 5.585043930243093e+27
-                Name: Name735b16ee-b37d-4972-a3df-04568d8d70a2
-                Parameters:
-                  - DataType: Char
-                    IsEditable: false
-                    IsMandatory: false
-                    UiDefaultValue: UiDefaultValue78c6aa2b-c6c2-4e94-adcd-614359e530f2
-                    UiOrderingIndex: 0
-                    UiStepSize: 198.17
-                SupportedDurationTypes:
-                  - DayOrder
-                SupportedOrderTypes:
-                  - Market
-                TradableInstrumentTypes:
-                  - FxKnockInOption
-        '204':
-          description: Indicates no information about the Strategy is available with the service.
-        '400':
-          description: Indicates that the name is malformed.
-          content:
-            application/json:
-              schema:
-                required:
-                  - ErrorCode
-                  - Message
-                type: object
-                properties:
-                  ErrorCode:
-                    enum:
-                      - InvalidRequest
-                    type: string
-                    x-enum-descriptions:
-                      InvalidRequest: Default error code returned when it cannot be determined which part of the request is malformed.
-                  Message:
-                    type: string
-                  ModelState:
-                    $ref: '#/components/schemas/ModelStateDictionary'
-        '401':
-          description: Indicates request was disallowed because either the 'Authorization' header was missing or contained an invalid Open API token.
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
-      security:
-        - OpenApiOAuthSecurityScheme: []
-        - OpenApiJWTSecurityScheme: []
-  /ref/v1/languages:
-    get:
-      tags:
-        - Languages
-      summary: Get all supported languages
-      description: Returns a list containing all the languages supported by Saxo Bank.
-      operationId: LanguagesGet
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LanguageDetailsListResult'
-              example:
-                __next: /openapi/....../?$top=1&$skip=1
-                Data:
-                  - LanguageCode: en
-                    LanguageName: English
-                    NativeName: English
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
-      security:
-        - OpenApiOAuthSecurityScheme: []
-        - OpenApiJWTSecurityScheme: []
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
   /ref/v1/exchanges:
     get:
       tags:
@@ -1396,21 +1423,21 @@ paths:
                     Mic: XLME
                     Name: London Metal Exchange
                     TimeZone: 1
-                    TimeZoneOffset: '2022-02-18T00:00:00.0000000+00:00'
+                    TimeZoneOffset: '2022-02-23T00:00:00.0000000+00:00'
         '204':
           description: Indicates no information about exchanges is available with the service.
-        '400':
-          $ref: '#/components/responses/BadRequest'
         '401':
           description: Indicates request was disallowed because either the 'Authorization' header was missing or contained an invalid Open API token.
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
       security:
-        - OpenApiOAuthSecurityScheme: []
-        - OpenApiJWTSecurityScheme: []
-  '/ref/v1/exchanges/{ExchangeId}':
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  '/ref/v1/exchanges/{exchangeId}':
     get:
       tags:
         - Exchanges
@@ -1418,7 +1445,7 @@ paths:
       description: This operation retrieves detailed information about a specific exchange. The exchange is specified by the 'exchangeId' parameter in the URI.
       operationId: ExchangesV1GetExchange
       parameters:
-        - name: ExchangeId
+        - name: exchangeId
           in: path
           description: The ID of the exchange.
           required: true
@@ -1439,7 +1466,7 @@ paths:
                 Mic: XLME
                 Name: London Metal Exchange
                 TimeZone: 1
-                TimeZoneOffset: '2022-02-18T00:00:00.0000000+00:00'
+                TimeZoneOffset: '2022-02-23T00:00:00.0000000+00:00'
         '204':
           description: Indicates no information about the exchange is available with the service.
         '400':
@@ -1464,141 +1491,13 @@ paths:
                     $ref: '#/components/schemas/ModelStateDictionary'
         '401':
           description: Indicates request was disallowed because either the 'Authorization' header was missing or contained an invalid Open API token.
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
-      security:
-        - OpenApiOAuthSecurityScheme: []
-        - OpenApiJWTSecurityScheme: []
-  /ref/v1/countries:
-    get:
-      tags:
-        - Countries
-      summary: Get all supported countries
-      description: Use this GET operation to retrieve a list all the countries supported by Saxo Bank.
-      operationId: CountriesGet
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CountryDetailsListResult'
-              example:
-                Data:
-                  - A3: BOL
-                    CountryCode: BO
-                    Name: Bolivia
-                    Numeric: 68
-                  - A3: BDI
-                    CountryCode: BI
-                    Name: Burundi
-                    Numeric: 108
-                  - A3: COG
-                    CountryCode: CG
-                    Name: Congo
-                    Numeric: 178
-                  - A3: DNK
-                    CountryCode: DK
-                    Name: Denmark
-                    Numeric: 208
-                  - A3: SLV
-                    CountryCode: SV
-                    Name: El Salvador
-                    Numeric: 222
-                  - A3: GNQ
-                    CountryCode: GQ
-                    Name: Equatorial Guinea
-                    Numeric: 226
-                  - A3: ERI
-                    CountryCode: ER
-                    Name: Eritrea
-                    Numeric: 232
-                  - A3: EST
-                    CountryCode: EE
-                    Name: Estonia
-                    Numeric: 233
-                  - A3: ETH
-                    CountryCode: ET
-                    Name: Ethiopia
-                    Numeric: 231
-                  - A3: DEU
-                    CountryCode: DE
-                    Name: Germany
-                    Numeric: 276
-                  - A3: GRD
-                    CountryCode: GD
-                    Name: Grenada
-                    Numeric: 308
-                  - A3: GLP
-                    CountryCode: GP
-                    Name: Guadeloupe
-                    Numeric: 312
-                  - A3: HND
-                    CountryCode: HN
-                    Name: Honduras
-                    Numeric: 340
-                  - A3: HKG
-                    CountryCode: HK
-                    Name: Hong Kong
-                    Numeric: 344
-                  - A3: HUN
-                    CountryCode: HU
-                    Name: Hungary
-                    Numeric: 348
-                  - A3: ISL
-                    CountryCode: IS
-                    Name: Iceland
-                    Numeric: 352
-                  - A3: MNP
-                    CountryCode: MP
-                    Name: Northern Mariana Islands
-                    Numeric: 580
-                  - A3: NOR
-                    CountryCode: 'NO'
-                    Name: Norway
-                    Numeric: 578
-                  - A3: THA
-                    CountryCode: TH
-                    Name: Thailand
-                    Numeric: 764
-                  - A3: TGO
-                    CountryCode: TG
-                    Name: Togo
-                    Numeric: 768
-                  - A3: TKL
-                    CountryCode: TK
-                    Name: Tokelau
-                    Numeric: 772
-                  - A3: UZB
-                    CountryCode: UZ
-                    Name: Uzbekistan
-                    Numeric: 860
-                  - A3: VUT
-                    CountryCode: VU
-                    Name: Vanuatu
-                    Numeric: 548
-                  - A3: VEN
-                    CountryCode: VE
-                    Name: Venezuela
-                    Numeric: 862
-                  - A3: ZWE
-                    CountryCode: ZW
-                    Name: Zimbabwe
-                    Numeric: 716
-                MaxRows: 163
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
         '429':
           $ref: '#/components/responses/TooManyRequests'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
       security:
-        - OpenApiOAuthSecurityScheme: []
-        - OpenApiJWTSecurityScheme: []
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
   /ref/v1/cultures:
     get:
       tags:
@@ -1617,73 +1516,552 @@ paths:
                 Data:
                   - CultureCode: nl-NL
                     Name: Dutch (Netherlands)
-                MaxRows: 50
+                MaxRows: 60
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
       security:
-        - OpenApiOAuthSecurityScheme: []
-        - OpenApiJWTSecurityScheme: []
-  /ref/v1/timezones:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  /ref/v1/algostrategies:
     get:
       tags:
-        - TimeZones
-      summary: Get a list of all timezones
-      description: Use this GET operation to retrieve a list all the time zones supported by Saxo Bank.
-      operationId: TimeZonesGetTimeZones
+        - AlgoStrategies
+      summary: Get all strategies supported by Saxo Bank.
+      description: "This operation retrieves a list of strategies with detailed information about each strategy.\r\n            The response also contains links to other relevant data, such as their parameters."
+      operationId: StrategiesV1GetAllStrategies
+      parameters:
+        - name: $skip
+          in: query
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+        - name: $top
+          in: query
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+            default: 0
+      responses:
+        '200':
+          description: Indicates the list was retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StrategyListResult'
+              example:
+                Data:
+                  - Description: Description36af4883-58f0-4219-a3bb-c8b7b2737ee5
+                    MinAmountUSD: -2.9055981986296193E+22
+                    Name: Name5d6a8057-e7a7-4b0c-9ddc-2900ff18cfda
+                    Parameters:
+                      - DataType: 0
+                        IsEditable: false
+                        IsMandatory: false
+                        UiDefaultValue: UiDefaultValued8f6cc4e-4474-4276-bfea-a7e3a8c9e286
+                        UiOrderingIndex: 0
+                        UiStepSize: 129.01
+                    SupportedDurationTypes:
+                      - GoodTillCancel
+                    SupportedOrderTypes:
+                      - None
+                    TradableInstrumentTypes:
+                      - FxVanillaOption
+                MaxRows: 117
+        '204':
+          description: Indicates no information about Strategys is available with the service.
+        '401':
+          description: Indicates request was disallowed because either the 'Authorization' header was missing or contained an invalid Open API token.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  '/ref/v1/algostrategies/{name}':
+    get:
+      tags:
+        - AlgoStrategies
+      summary: Get details about a specific strategy.
+      description: This operation retrieves detailed information about a specific Strategy. The Strategy is specified by the 'name' parameter in the URI.
+      operationId: StrategiesV1GetStrategyByName
+      parameters:
+        - name: name
+          in: path
+          description: The name of the Strategy.
+          required: true
+          schema:
+            type: string
+          example: LME
+      responses:
+        '200':
+          description: Indicates the information was retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Strategy'
+              example:
+                Description: Description702f4fa6-2bb5-4f62-9382-fbe07c4c7924
+                MinAmountUSD: 4133.505005584334
+                Name: Namef5d76548-c7bc-400b-8533-7aecf6f27b88
+                Parameters:
+                  - DataType: 0
+                    IsEditable: false
+                    IsMandatory: false
+                    UiDefaultValue: UiDefaultValue32a0d69e-a556-40af-bf52-c05c1f687d2a
+                    UiOrderingIndex: 0
+                    UiStepSize: 152.95
+                SupportedDurationTypes:
+                  - DayOrder
+                SupportedOrderTypes:
+                  - Market
+                TradableInstrumentTypes:
+                  - FxKnockInOption
+        '204':
+          description: Indicates no information about the Strategy is available with the service.
+        '400':
+          description: Indicates that the name is malformed.
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - InvalidRequest
+                    type: string
+                    x-enum-descriptions:
+                      InvalidRequest: Default error code returned when it cannot be determined which part of the request is malformed.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          description: Indicates request was disallowed because either the 'Authorization' header was missing or contained an invalid Open API token.
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  /ref/v1/currencies:
+    get:
+      tags:
+        - Currencies
+      summary: Get all supported currencies
+      description: Returns a list of all supported currencies.
+      operationId: CurrenciesGetCurrencies
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TimeZoneDetailsListResult'
+                $ref: '#/components/schemas/CurrencyDetailsListResult'
               example:
+                __next: /openapi/....../?$top=1&$skip=1
                 Data:
-                  - DisplayName: GMT a.k.a. UTC
-                    TimeZoneId: '0'
-                    TimeZoneOffset: '2022-02-18T00:00:00.0000000+00:00'
-                    ZoneName: Etc/UTC
-                  - DisplayName: British Time
-                    TimeZoneId: '1'
-                    TimeZoneOffset: '2022-02-18T00:00:00.0000000+00:00'
-                    ZoneName: Europe/London
-                  - DisplayName: Singapore Time
-                    TimeZoneId: '2'
-                    TimeZoneOffset: '2022-02-18T00:00:00.0000000+00:00'
-                    ZoneName: Asia/Singapore
-                  - DisplayName: US Eastern Time
-                    TimeZoneId: '3'
-                    TimeZoneOffset: '2022-02-18T00:00:00.0000000+00:00'
-                    ZoneName: America/New_York
-                  - DisplayName: Central European Time
-                    TimeZoneId: '4'
-                    TimeZoneOffset: '2022-02-18T00:00:00.0000000+00:00'
-                    ZoneName: Europe/Paris
-                  - DisplayName: US Central Time
-                    TimeZoneId: '5'
-                    TimeZoneOffset: '2022-02-18T00:00:00.0000000+00:00'
-                    ZoneName: America/Chicago
+                  - CurrencyCode: EUR
+                    Decimals: 2
+                    Name: Euro
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
       security:
-        - OpenApiOAuthSecurityScheme: []
-        - OpenApiJWTSecurityScheme: []
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  /ref/instruments/search:
+    post:
+      tags:
+        - Instruments
+      summary: Search for instruments
+      description: "Use this endpoint to create temporary search resources based on a search criteria posted to the endpoint.\r\n\r\nThis endpoint supports OData query operators: $top, $skip and $inlinecount."
+      operationId: InstrumentsSearch
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Model.InstrumentSearchCriteria'
+            example:
+              InstrumentKeys:
+                - Type: Type7a57f4e7-bac0-4dac-b25d-884fe51388d6
+                  Uic: 226
+              InstrumentTypes:
+                - 71c72ca5-113e-4c96-9d25-6f8ebb10ab65
+              OnlyActive: true
+              Pattern: Patternbaf4198e-ea59-473c-a0c7-645c252e8dc1
+              Uics:
+                - 74
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InstrumentInfo'
+              example:
+                - Amounts:
+                    - 279.3
+                  AutoQuoteEnabled: true
+                  ClientTradableTypes: None
+                  ContractOptionRootId: 68
+                  ContractSize: 42.56
+                  Decimals: 104
+                  DefaultAmount: 81.13000000000001
+                  Description: Description52e89767-f352-4ed2-bf29-45ec5b4ecf01
+                  ExchangeId: ExchangeId7f887d8c-86e6-48ea-8a0a-83de0a9ff2aa
+                  ExpiryDate: '2022-08-02T23:57:41.3630430+00:00'
+                  ExpiryDateTime: '2023-09-28T15:37:15.0884663+00:00'
+                  FigureSize: 34.58
+                  FuturesStrategyLegs:
+                    - BuySell:
+                        ValueAsLong: 1
+                      Description: Descriptioncdd9c8dd-a524-42a5-89f3-4bb94295dc1f
+                      ExpiryRank: 252.70000000000002
+                      InstrumentType:
+                        ValueAsLong: 2
+                      LegNumber: 283.29
+                      QuantityMultiplier: 25.270000000000003
+                      Uic: 239
+                  IncrementSize: 147.63
+                  InstrumentSubtype: None
+                  InstrumentType: FxVanillaOption
+                  IsActive: true
+                  IsClientTradable: false
+                  Isin: Isinb43aaf10-b633-4788-bf13-9a0bef26ec70
+                  IssuerCountry: IssuerCountry5782b3ae-77b1-4cea-aa33-aa511c755781
+                  IsTradable: false
+                  LegalTypes: None
+                  LotSize: 196.84
+                  LotSizeType: NotUsed
+                  MinimumLotSize: 70.49000000000001
+                  MinimumOrderValue: 73.15
+                  NoticeDate: '2021-05-13T10:10:20.7680505+00:00'
+                  Options: 65
+                  PitTraded: false
+                  PriceFormat: None
+                  PriceToContract: 211.47
+                  PriceToContractFactor: 143.64000000000001
+                  PrimarySectorId: 13
+                  SupportedOrderTypes:
+                    - Limit
+                  Symbol: Symbolc6a8629c-f571-4013-878c-c21f69214034
+                  SymbolCurrency: SymbolCurrencyc6191e92-e842-4c6d-9049-9466d3f6b73b
+                  TickSize: 47.88
+                  TradingUnitsPlural: TradingUnitsPlural7f816955-b91f-4477-a01c-b6ade840d3ec
+                  TradingUnitsSingular: TradingUnitsSingular751efb12-9891-4279-b161-a580a17a2e3b
+                  Uic: 29
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  /ref/instruments/cs/search:
+    post:
+      tags:
+        - Instruments
+      summary: Search for instruments
+      description: "Use this endpoint to create temporary search resources based on a search criteria posted to the endpoint.\r\n\r\nThis endpoint supports OData query operators: $top, $skip and $inlinecount."
+      operationId: InstrumentsSearchForContentSharing
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Model.InstrumentSearchCriteria'
+            example:
+              InstrumentKeys:
+                - Type: Type7a57f4e7-bac0-4dac-b25d-884fe51388d6
+                  Uic: 226
+              InstrumentTypes:
+                - 71c72ca5-113e-4c96-9d25-6f8ebb10ab65
+              OnlyActive: true
+              Pattern: Patternbaf4198e-ea59-473c-a0c7-645c252e8dc1
+              Uics:
+                - 74
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InstrumentInfo'
+              example:
+                - Amounts:
+                    - 279.3
+                  AutoQuoteEnabled: true
+                  ClientTradableTypes: None
+                  ContractOptionRootId: 68
+                  ContractSize: 42.56
+                  Decimals: 104
+                  DefaultAmount: 81.13000000000001
+                  Description: Description52e89767-f352-4ed2-bf29-45ec5b4ecf01
+                  ExchangeId: ExchangeId7f887d8c-86e6-48ea-8a0a-83de0a9ff2aa
+                  ExpiryDate: '2022-08-02T23:57:41.3630430+00:00'
+                  ExpiryDateTime: '2023-09-28T15:37:15.0884663+00:00'
+                  FigureSize: 34.58
+                  FuturesStrategyLegs:
+                    - BuySell:
+                        ValueAsLong: 1
+                      Description: Descriptioncdd9c8dd-a524-42a5-89f3-4bb94295dc1f
+                      ExpiryRank: 252.70000000000002
+                      InstrumentType:
+                        ValueAsLong: 2
+                      LegNumber: 283.29
+                      QuantityMultiplier: 25.270000000000003
+                      Uic: 239
+                  IncrementSize: 147.63
+                  InstrumentSubtype: None
+                  InstrumentType: FxVanillaOption
+                  IsActive: true
+                  IsClientTradable: false
+                  Isin: Isinb43aaf10-b633-4788-bf13-9a0bef26ec70
+                  IssuerCountry: IssuerCountry5782b3ae-77b1-4cea-aa33-aa511c755781
+                  IsTradable: false
+                  LegalTypes: None
+                  LotSize: 196.84
+                  LotSizeType: NotUsed
+                  MinimumLotSize: 70.49000000000001
+                  MinimumOrderValue: 73.15
+                  NoticeDate: '2021-05-13T10:10:20.7680505+00:00'
+                  Options: 65
+                  PitTraded: false
+                  PriceFormat: None
+                  PriceToContract: 211.47
+                  PriceToContractFactor: 143.64000000000001
+                  PrimarySectorId: 13
+                  SupportedOrderTypes:
+                    - Limit
+                  Symbol: Symbolc6a8629c-f571-4013-878c-c21f69214034
+                  SymbolCurrency: SymbolCurrencyc6191e92-e842-4c6d-9049-9466d3f6b73b
+                  TickSize: 47.88
+                  TradingUnitsPlural: TradingUnitsPlural7f816955-b91f-4477-a01c-b6ade840d3ec
+                  TradingUnitsSingular: TradingUnitsSingular751efb12-9891-4279-b161-a580a17a2e3b
+                  Uic: 29
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  '/ref/instruments/{uic}/{type}':
+    get:
+      tags:
+        - Instruments
+      summary: Get a specific instrument
+      description: Use this operation to retrieve basic information for a specific instrument.
+      operationId: InstrumentsGetInstrument
+      parameters:
+        - name: type
+          in: path
+          description: The type of the instrument to look up.
+          required: true
+          schema:
+            $ref: '#/components/schemas/InstrumentTypes'
+        - name: uic
+          in: path
+          description: The uic of the instrument to fetch.
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstrumentInfo'
+              example:
+                Amounts:
+                  - 212.8
+                AutoQuoteEnabled: false
+                ClientTradableTypes: Cfd
+                ContractOptionRootId: 12
+                ContractSize: 74.48
+                Decimals: 77
+                DefaultAmount: 203.49
+                Description: Description55ed27a0-4024-492d-b94d-6776676a3bd3
+                ExchangeId: ExchangeIdd1a25f4a-7b5c-48fc-94f0-302afa2b4ae9
+                ExpiryDate: '2022-01-17T21:39:57.9403406+00:00'
+                ExpiryDateTime: '2023-01-31T23:00:24.7007631+00:00'
+                FigureSize: 97.09
+                FuturesStrategyLegs:
+                  - BuySell:
+                      ValueAsLong: 1
+                    Description: Description91996cb2-95e9-4ab2-91d9-ba0be7c8acf0
+                    ExpiryRank: 22.61
+                    InstrumentType:
+                      ValueAsLong: 512
+                    LegNumber: 111.72
+                    QuantityMultiplier: 130.34
+                    Uic: 59
+                IncrementSize: 232.75
+                InstrumentSubtype: Rights
+                InstrumentType: Indices
+                IsActive: false
+                IsClientTradable: true
+                Isin: Isinaec14599-2262-4291-ac33-e96eeeba6db6
+                IssuerCountry: IssuerCountry64b28d6c-419a-44a3-9ba4-d9779bce7315
+                IsTradable: false
+                LegalTypes: None
+                LotSize: 2.66
+                LotSizeType: OddLotsAllowed
+                MinimumLotSize: 247.38000000000002
+                MinimumOrderValue: 239.4
+                NoticeDate: '2021-10-09T13:14:18.1978915+00:00'
+                Options: 199
+                PitTraded: true
+                PriceFormat: DeciPipsDigit
+                PriceToContract: 151.62
+                PriceToContractFactor: 119.7
+                PrimarySectorId: 184
+                SupportedOrderTypes:
+                  - Stop
+                Symbol: Symbolbcfe589d-db4a-4c4b-b588-14be01244327
+                SymbolCurrency: SymbolCurrency1adab220-1903-4fde-a12f-fba3996efd0a
+                TickSize: 91.77000000000001
+                TradingUnitsPlural: TradingUnitsPlural04ad6f9b-6dd2-447f-b4a1-446acb3c0828
+                TradingUnitsSingular: TradingUnitsSingulardcde4864-3deb-47d3-8e15-26f077252383
+                Uic: 178
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  '/ref/instruments/cs/{uic}/{type}':
+    get:
+      tags:
+        - Instruments
+      summary: Get a specific instrument
+      description: Use this operation to retrieve basic information for a specific instrument.
+      operationId: InstrumentsGetInstrumentContentSharing
+      parameters:
+        - name: type
+          in: path
+          description: The type of the instrument to look up.
+          required: true
+          schema:
+            $ref: '#/components/schemas/InstrumentTypes'
+        - name: uic
+          in: path
+          description: The uic of the instrument to fetch.
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstrumentInfo'
+              example:
+                Amounts:
+                  - 212.8
+                AutoQuoteEnabled: false
+                ClientTradableTypes: Cfd
+                ContractOptionRootId: 12
+                ContractSize: 74.48
+                Decimals: 77
+                DefaultAmount: 203.49
+                Description: Description55ed27a0-4024-492d-b94d-6776676a3bd3
+                ExchangeId: ExchangeIdd1a25f4a-7b5c-48fc-94f0-302afa2b4ae9
+                ExpiryDate: '2022-01-17T21:39:57.9403406+00:00'
+                ExpiryDateTime: '2023-01-31T23:00:24.7007631+00:00'
+                FigureSize: 97.09
+                FuturesStrategyLegs:
+                  - BuySell:
+                      ValueAsLong: 1
+                    Description: Description91996cb2-95e9-4ab2-91d9-ba0be7c8acf0
+                    ExpiryRank: 22.61
+                    InstrumentType:
+                      ValueAsLong: 512
+                    LegNumber: 111.72
+                    QuantityMultiplier: 130.34
+                    Uic: 59
+                IncrementSize: 232.75
+                InstrumentSubtype: Rights
+                InstrumentType: Indices
+                IsActive: false
+                IsClientTradable: true
+                Isin: Isinaec14599-2262-4291-ac33-e96eeeba6db6
+                IssuerCountry: IssuerCountry64b28d6c-419a-44a3-9ba4-d9779bce7315
+                IsTradable: false
+                LegalTypes: None
+                LotSize: 2.66
+                LotSizeType: OddLotsAllowed
+                MinimumLotSize: 247.38000000000002
+                MinimumOrderValue: 239.4
+                NoticeDate: '2021-10-09T13:14:18.1978915+00:00'
+                Options: 199
+                PitTraded: true
+                PriceFormat: DeciPipsDigit
+                PriceToContract: 151.62
+                PriceToContractFactor: 119.7
+                PrimarySectorId: 184
+                SupportedOrderTypes:
+                  - Stop
+                Symbol: Symbolbcfe589d-db4a-4c4b-b588-14be01244327
+                SymbolCurrency: SymbolCurrency1adab220-1903-4fde-a12f-fba3996efd0a
+                TickSize: 91.77000000000001
+                TradingUnitsPlural: TradingUnitsPlural04ad6f9b-6dd2-447f-b4a1-446acb3c0828
+                TradingUnitsSingular: TradingUnitsSingulardcde4864-3deb-47d3-8e15-26f077252383
+                Uic: 178
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
 components:
   schemas:
     AssetType:
-      additionalProperties: false
       title: The possible AssetTypes for which you can get a quote or place an order or a trade.
       enum:
         - Bond
@@ -1801,11 +2179,9 @@ components:
         PortfolioNote: Danish pooled investment scheme (“Pulje”). Not online tradeable.
         GuaranteeNote: Danish investment scheme (“Grantbevis”). Not online tradeable.
     AssetTypeNullable:
-      additionalProperties: false
       allOf:
         - $ref: '#/components/schemas/AssetType'
     BondType:
-      additionalProperties: false
       title: Enum to identify the type of bond
       enum:
         - Convertible
@@ -1823,11 +2199,9 @@ components:
         FloatingRateNote: FloatingRateNote Bond
         DualCurrency: DualCurrency Bond
     BondTypeNullable:
-      additionalProperties: false
       allOf:
         - $ref: '#/components/schemas/BondType'
     BondsCouponType:
-      additionalProperties: false
       title: The possible coupon types of a bond.
       enum:
         - Fixed
@@ -1841,11 +2215,9 @@ components:
         Variable: Variable.
         Other: Other.
     BondsCouponTypeNullable:
-      additionalProperties: false
       allOf:
         - $ref: '#/components/schemas/BondsCouponType'
     BuySell:
-      additionalProperties: false
       title: "BuySell indicator \r\n            Note: Values are *NOT* identical to the values of the _BuySellTypes defined in ClmTradeEnums.idl\r\n            If we should align this then we should coordinate with web trader which have taken a dependency on the \r\n            actual values of this enum."
       enum:
         - Buy
@@ -1855,7 +2227,6 @@ components:
         Buy: Buy
         Sell: Sell
     BuySellRatio:
-      additionalProperties: false
       title: Calculated buy sell ratio of end client trading count
       type: object
       properties:
@@ -1883,8 +2254,14 @@ components:
           title: Sell ratio for 7 days counted from the last trading day
           allOf:
             - type: number
+    BuySellSafeEnum:
+      type: object
+      properties:
+        Value:
+          title: The wrapped value.
+          allOf:
+            - $ref: '#/components/schemas/BuySell'
     Class:
-      additionalProperties: false
       title: Contains instrument class filter flags
       enum:
         - Complex
@@ -1894,7 +2271,6 @@ components:
         NonComplex: Non-complex
         Complex: Complex
     ContractOption:
-      additionalProperties: false
       title: 'Information about a specific option entry, where the expiration date is given by the enclosing ContractOptionEntry'
       type: object
       properties:
@@ -1918,7 +2294,6 @@ components:
           type: integer
           format: int32
     ContractOptionEntry:
-      additionalProperties: false
       title: Describes one specific option related to an option root.
       type: object
       properties:
@@ -1955,7 +2330,6 @@ components:
           allOf:
             - $ref: '#/components/schemas/TickSizeScheme'
     ContractOptionSpace:
-      additionalProperties: false
       title: Detailed information of all options related to a specific option root
       type: object
       properties:
@@ -2121,7 +2495,7 @@ components:
           items:
             $ref: '#/components/schemas/OptionsStrategyType'
         Symbol:
-          title: 'Symbol- A combination of letters used to uniquely identify a traded instrument. e.g. ODAX/X13C8950:xeur or EURUSD.'
+          title: Symbol- A combination of letters used to uniquely identify a traded instrument. e.g. ODAX/X13C8950:xeur or EURUSD.
           type: string
         TickSize:
           title: Minimum price movement of an instrument.
@@ -2137,7 +2511,6 @@ components:
           allOf:
             - $ref: '#/components/schemas/AssetTypeNullable'
     CountryDetails:
-      additionalProperties: false
       title: Represents a country.
       type: object
       properties:
@@ -2159,7 +2532,6 @@ components:
             - type: integer
               format: int32
     CountryDetailsListResult:
-      additionalProperties: false
       type: object
       properties:
         Data:
@@ -2177,18 +2549,16 @@ components:
           type: string
           description: The link for the next page of items in the feed.
     CultureDetails:
-      additionalProperties: false
       title: Information about a culture in the format provided in Windows
       type: object
       properties:
         CultureCode:
-          title: 'The culture code in the format {Ll}-{Cc}, where ll is the language and cc is the country.'
+          title: 'The culture code in the format {ll}-{cc}, where ll is the language and cc is the country.'
           type: string
         Name:
           title: Description/Displayname.
           type: string
     CultureDetailsListResult:
-      additionalProperties: false
       type: object
       properties:
         Data:
@@ -2206,7 +2576,6 @@ components:
           type: string
           description: The link for the next page of items in the feed.
     CurrencyDetails:
-      additionalProperties: false
       title: Represents a currency.
       type: object
       properties:
@@ -2224,7 +2593,6 @@ components:
           title: Symbol of the currency.
           type: string
     CurrencyDetailsListResult:
-      additionalProperties: false
       type: object
       properties:
         Data:
@@ -2242,7 +2610,6 @@ components:
           type: string
           description: The link for the next page of items in the feed.
     CurrencyPairDetails:
-      additionalProperties: false
       title: Represents a currency pair.
       type: object
       properties:
@@ -2255,7 +2622,6 @@ components:
           items:
             $ref: '#/components/schemas/RelatedCurrency'
     CurrencyPairDetailsListResult:
-      additionalProperties: false
       type: object
       properties:
         Data:
@@ -2273,7 +2639,6 @@ components:
           type: string
           description: The link for the next page of items in the feed.
     DefaultSlippageType:
-      additionalProperties: false
       title: Default slippage type (price tolerance type).
       enum:
         - Percentage
@@ -2285,11 +2650,9 @@ components:
         Pips: Slippage is defined as a number of additional pips of the price.
         Ticks: Slippage is defined as a number of additional ticks of the price.
     DefaultSlippageTypeNullable:
-      additionalProperties: false
       allOf:
         - $ref: '#/components/schemas/DefaultSlippageType'
     DisplayHintType:
-      additionalProperties: false
       title: Display Hint Type.
       enum:
         - Continuous
@@ -2321,11 +2684,30 @@ components:
         Fund: Fund.
         CryptoCurrencies: Crypto currencies.
     DisplayHintTypeNullable:
-      additionalProperties: false
       allOf:
         - $ref: '#/components/schemas/DisplayHintType'
+    Domain.NonTradableReasons:
+      title: Non Tradable Reasons
+      enum:
+        - ETFsWithoutKIIDs
+        - ExpiredInstrument
+        - NonShortableInstrument
+        - None
+        - NotOnlineClientTradable
+        - OfflineTradableBonds
+        - OtherReason
+        - ReduceOnlyInstrument
+      type: string
+      x-enum-descriptions:
+        None: None
+        NotOnlineClientTradable: This instrument is not tradable
+        ReduceOnlyInstrument: This instrument is not reduce-only
+        ExpiredInstrument: This instrument has expired
+        OfflineTradableBonds: This instrument is tradable offline
+        ETFsWithoutKIIDs: The issuer has not provided a Key Information Document (KID) for this instrument
+        NonShortableInstrument: Short selling is not available for this instrument
+        OtherReason: This instrument is not tradable
     DurationType:
-      additionalProperties: false
       title: Possible algo orders' duration types.
       enum:
         - DayOrder
@@ -2343,7 +2725,6 @@ components:
         GoodTillDate: Good till date
         GoodForPeriod: Good for period
     EntityType:
-      additionalProperties: false
       title: Type of the summary result element.
       enum:
         - ContractOptionRoot
@@ -2353,7 +2734,6 @@ components:
         Instrument: This describes a real instrument.
         ContractOptionRoot: This describes an optionroot (the basis for exchange tradec contract options).
     ExchangeDetails:
-      additionalProperties: false
       title: Public data contract for an exchange.
       type: object
       properties:
@@ -2400,7 +2780,6 @@ components:
           title: The time zone offset from UTC.
           type: string
     ExchangeDetailsListResult:
-      additionalProperties: false
       type: object
       properties:
         Data:
@@ -2418,7 +2797,6 @@ components:
           type: string
           description: The link for the next page of items in the feed.
     ExchangeSession:
-      additionalProperties: false
       title: Responsible for carrying information about an Exchange session.
       type: object
       properties:
@@ -2437,7 +2815,6 @@ components:
           allOf:
             - $ref: '#/components/schemas/ExchangeSessionState'
     ExchangeSessionState:
-      additionalProperties: false
       title: The different states an Exchange session can have
       enum:
         - Auction
@@ -2473,7 +2850,6 @@ components:
         OpeningAuction: Opening auction exchange state
         TradingAtLast: Orders collected at last price in absence of closing auction price
     ExchangeSummary:
-      additionalProperties: false
       title: Name and id of an Exchange.
       type: object
       properties:
@@ -2495,7 +2871,6 @@ components:
           title: Exchange's TimeZone
           type: string
     ExerciseStyle:
-      additionalProperties: false
       title: Indicates the type of the Options. Currently defined for European and American.
       enum:
         - American
@@ -2507,7 +2882,6 @@ components:
         American: American Option. Can be exercised prior to expiry date.
         European: European Option. Must be exercised on expiry date.
     FuturesSpace:
-      additionalProperties: false
       title: Represents a complete futures space.
       type: object
       properties:
@@ -2520,7 +2894,6 @@ components:
           items:
             $ref: '#/components/schemas/FuturesSpaceElement'
     FuturesSpaceElement:
-      additionalProperties: false
       title: Contains futures space-relevant information about one element in the space.
       type: object
       properties:
@@ -2542,8 +2915,35 @@ components:
           title: Gets the UIC (Unique Instrument Code. Saxo Bank internal code for instruments)
           type: integer
           format: int32
+    FuturesStrategyLeg:
+      title: Exposes information about a single leg of a futures strategy instrument.
+      type: object
+      properties:
+        BuySell:
+          title: Buy/sell.
+          allOf:
+            - $ref: '#/components/schemas/BuySellSafeEnum'
+        Description:
+          title: The description of the instrument this leg represents.
+          type: string
+        ExpiryRank:
+          title: The order in which the legs of a strategy will expire.
+          type: number
+        InstrumentType:
+          title: The instrument type of the leg instrument.
+          allOf:
+            - $ref: '#/components/schemas/InstrumentTypesSafeEnum'
+        LegNumber:
+          title: The leg's position in the strategy.
+          type: number
+        QuantityMultiplier:
+          title: The factor by which trade quantity should be multiplied for this leg.
+          type: number
+        Uic:
+          title: The uic of the leg instrument.
+          type: integer
+          format: int32
     InstrumentDetails:
-      additionalProperties: false
       title: Provides detailed information about an instrument
       type: object
       properties:
@@ -2731,7 +3131,7 @@ components:
         NonTradableReason:
           title: Optional reason of why the  is not tradable.
           allOf:
-            - $ref: '#/components/schemas/NonTradableReasons'
+            - $ref: '#/components/schemas/Domain.NonTradableReasons'
         NoticeDate:
           title: Notice date of the instrument. Futures only.
           allOf:
@@ -2822,7 +3222,7 @@ components:
           items:
             type: string
         Symbol:
-          title: 'Symbol- A combination of letters used to uniquely identify a traded instrument. e.g. ODAX/X13C8950:xeur or EURUSD.'
+          title: Symbol- A combination of letters used to uniquely identify a traded instrument. e.g. ODAX/X13C8950:xeur or EURUSD.
           type: string
         TickSize:
           title: Minimum price movement of an instrument.
@@ -2875,7 +3275,6 @@ components:
           allOf:
             - $ref: '#/components/schemas/AssetTypeNullable'
     InstrumentDetailsListResult:
-      additionalProperties: false
       type: object
       properties:
         Data:
@@ -2893,7 +3292,6 @@ components:
           type: string
           description: The link for the next page of items in the feed.
     InstrumentFieldGroup:
-      additionalProperties: false
       title: Specification of field group to include additional data in results.
       enum:
         - OrderSetting
@@ -2904,8 +3302,179 @@ components:
         OrderSetting: Adds information about the instrument's order setting.
         Popularity: Adds information about the instrument's popularity.
         TradingSessions: Adds information about the instrument's trading sessions.
+    InstrumentInfo:
+      title: Generic data contract for an instrument.
+      type: object
+      properties:
+        Amounts:
+          title: Gets the amount list.
+          type: array
+          items:
+            type: number
+          description: "We should find a better way to model this data. At least as an IEnumerable\r\n            or as a whole new object."
+        AutoQuoteEnabled:
+          title: Gets or sets a value indicating whether auto is quote enabled.
+          allOf:
+            - type: boolean
+          description: 'Applicable for Types: Forex'
+        ClientTradableTypes:
+          allOf:
+            - $ref: '#/components/schemas/InstrumentTypesNullable'
+        ContractOptionRootId:
+          title: Gets or sets the contract option root id.
+          allOf:
+            - type: integer
+              format: int32
+          description: 'Applicable for Types: ContractOptions'
+        ContractSize:
+          title: Gets or sets the size of the contract.
+          allOf:
+            - type: number
+          description: 'Applicable for Types: ContractOptions'
+        Decimals:
+          title: Gets or sets the decimals.
+          type: integer
+          format: int32
+        DefaultAmount:
+          title: Gets default amount.
+          type: number
+          description: "Since this is derived from LotSize, which is only pertinent to certain types,\r\n            does this mean this property only relates to the instruments that have a LotSize."
+        Description:
+          type: string
+        ExchangeId:
+          type: string
+        ExpiryDate:
+          title: Expiry date of the instrument. Futures only.
+          allOf:
+            - type: string
+          description: 'Applicable for Types: Futures, CfdOnFutures, ContractOptions'
+        ExpiryDateTime:
+          title: ExpiryDateTime (UTC). CfdOnFutures only.
+          allOf:
+            - type: string
+          description: 'Applicable for Types: CfdOnFutures'
+        FigureSize:
+          title: Gets or sets the size of the figure.
+          allOf:
+            - type: number
+          description: 'Applicable for Types: Shares, Futures, ContractOptions'
+        FuturesStrategyLegs:
+          title: The individual legs of a futures strategy/spread.
+          type: array
+          items:
+            $ref: '#/components/schemas/FuturesStrategyLeg'
+        IncrementSize:
+          title: Get increment size.
+          type: number
+        InstrumentSubtype:
+          allOf:
+            - $ref: '#/components/schemas/InstrumentSubtype'
+        InstrumentType:
+          allOf:
+            - $ref: '#/components/schemas/InstrumentTypes'
+        IsActive:
+          title: Gets or sets a value indicating whether this instance is active.
+          type: boolean
+        IsClientTradable:
+          title: Gets or sets a value indicating whether this instance is client tradable.
+          allOf:
+            - type: boolean
+        IsTradable:
+          title: Is the instrument (currently) tradable.
+          type: boolean
+        Isin:
+          title: Gets or sets the ISIN Code.
+          type: string
+        IssuerCountry:
+          title: Gets or sets the issuer country.
+          type: string
+        LegalTypes:
+          title: The Legal Types
+          allOf:
+            - $ref: '#/components/schemas/InstrumentTypes'
+        LotSize:
+          title: Gets the LotSize
+          allOf:
+            - type: number
+          description: "Since this is only pertinent to stocks, contract option, futures and CFD on futures,\r\n            it should be moved to those subclasses"
+        LotSizeText:
+          title: Lot size description for the instrument. Futures only.
+          type: string
+          description: 'Applicable for Types: Futures, ContractOptions'
+        LotSizeType:
+          title: "Gets or sets the type of the lot size.\r\n            \r\n             Lot size not used\r\n             NotUsed = 0,\r\n            \r\n             Lot size must be respected = no odd lot support\r\n             OddLotsNotAllowed = 1,\r\n            \r\n             Lot size should be respected = odd lot support support exist\r\n             OddLotsAllowed = 2"
+          allOf:
+            - $ref: '#/components/schemas/System.LotSizeTypeNullable'
+          description: 'Applicable for Types: Shares, CfdOnFutures, ContractOptions'
+        MinimumLotSize:
+          title: Gets the minimum number of shares to by at a time. Stock and CFDs only.
+          allOf:
+            - type: number
+          description: "Since this is only pertinent to CFDs and stocks, it should be moved to those subclasses,\r\n            eventhough the value is defined for all instrument types. Or is it?"
+        MinimumOrderValue:
+          title: Gets the minimum value for each order.
+          allOf:
+            - type: number
+          description: Value of trade (Amount * Price) must be greater than or equal to
+        NoticeDate:
+          title: Notice date of the instrument. Futures only.
+          allOf:
+            - type: string
+          description: 'Applicable for Types: Futures'
+        Options:
+          title: Gets or sets the options.
+          type: integer
+          format: int32
+        PitTraded:
+          title: 'Gets or sets a value indicating whether [pit traded].'
+          allOf:
+            - type: boolean
+          description: 'Applicable for Types: Futures'
+        PriceFormat:
+          title: Options for price formatting
+          allOf:
+            - $ref: '#/components/schemas/PriceFormatFlags'
+        PriceToContract:
+          title: Gets or sets the price to contract.
+          allOf:
+            - type: number
+          description: 'Applicable for Types: Shares'
+        PriceToContractFactor:
+          title: Gets or sets the price to contract factor.
+          allOf:
+            - type: number
+          description: 'Applicable for Types: Futures, CfdOnFutures, ContractOptions, CfdIndices'
+        PrimarySectorId:
+          allOf:
+            - type: integer
+              format: int32
+        SupportedOrderTypes:
+          title: The order types applicable for this instrument.
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderType'
+        Symbol:
+          type: string
+        SymbolCurrency:
+          title: Gets or sets the symbol currency.
+          type: string
+        TickSize:
+          title: Gets the size of the tick.
+          allOf:
+            - type: number
+          description: Price step = Tick Size.
+        TradingUnitsPlural:
+          title: Gets or sets the trading units plural. CFD on Futures only.
+          type: string
+          description: 'Applicable for Types: CfdOnFutures'
+        TradingUnitsSingular:
+          title: Gets or sets the trading units singular. CFD on Futures only
+          type: string
+          description: 'Applicable for Types: CfdOnFutures'
+        Uic:
+          type: integer
+          format: int32
     InstrumentKey:
-      additionalProperties: false
       title: Combination of Uic and AssetType to uniquely identify an instrument.
       type: object
       properties:
@@ -2918,7 +3487,6 @@ components:
           type: integer
           format: int32
     InstrumentSession:
-      additionalProperties: false
       type: object
       properties:
         EndTime:
@@ -2936,7 +3504,6 @@ components:
           allOf:
             - $ref: '#/components/schemas/InstrumentSessionState'
     InstrumentSessionState:
-      additionalProperties: false
       title: The different states an instrument session can have
       enum:
         - Auction
@@ -2971,8 +3538,95 @@ components:
         Auction: "Participants place orders to buy or sell units at certain buying or selling prices.\r\n            Orders collected during an auction are matched to form a contract"
         OpeningAuction: Opening auction exchange state
         TradingAtLast: Orders collected at last price in absence of closing auction price
+    InstrumentSubtype:
+      title: An enumeration of the Instrument Subtypes. This is not relevant for all instrument types.
+      enum:
+        - Basket
+        - CertificateBonus
+        - CertificateCappedBonus
+        - CertificateCappedCapitalProtected
+        - CertificateCappedOutperformance
+        - CertificateConstantLeverage
+        - CertificateDiscount
+        - CertificateExpress
+        - CertificateTracker
+        - CertificateUncappedCapitalProtection
+        - CertificateUncappedOutperformance
+        - CfdForex
+        - CfdFuturesStockIndices
+        - CfdInterests
+        - Continuous
+        - CryptoCurrencies
+        - DiscountedBonds
+        - Etc
+        - Etf
+        - Etn
+        - Fund
+        - FutureOption
+        - FutureStrategy
+        - GuaranteeNote
+        - IPO
+        - MiniFuture
+        - MixedDiscountBonds
+        - Ndf
+        - None
+        - PortfolioNote
+        - PreciousMetal
+        - Rights
+        - SpanishSicav
+        - StockIndexOption
+        - StockOption
+        - Warrant
+        - WarrantDoubleKnockOut
+        - WarrantKnockOut
+        - WarrantOpenEndKnockOut
+        - WarrantSpread
+        - ZeroDiscountBonds
+      type: string
+      description: "The ordering is identical to  Iit.DataFeedServer.SubTypeID, although only sub types that are actually in use have been included.\r\n            Some subtypes have been left out because they are represented as 'full' types, e.g. futures strategy.\r\n            Subtypes with a numerical value in the 1000-span are InstrumentCache-specific. This means they do not originate from the Instruments db and are not available in CLM DataFeed."
+      x-enum-descriptions:
+        None: No subtype
+        Etf: Exchange-traded fund
+        Rights: Rights
+        Warrant: Warrant
+        Etn: Exchange-traded note
+        Etc: Exchange-traded commodity
+        Continuous: Continuous
+        StockOption: Stock option
+        FutureOption: Future option
+        StockIndexOption: Stock index option
+        PreciousMetal: 'Precious metal, e.g. gold or silver'
+        FutureStrategy: Future Strategy
+        Ndf: Non Deliverable Forwards
+        Fund: Fund
+        ZeroDiscountBonds: Zero discount bonds
+        MixedDiscountBonds: Mixed discount bonds
+        DiscountedBonds: Discounted bonds
+        SpanishSicav: Spanish SICAV
+        Basket: Basket
+        WarrantSpread: Warrant Spread
+        WarrantKnockOut: Warrant KnockOut
+        WarrantOpenEndKnockOut: Warrant OpenEnd KnockOut
+        MiniFuture: MiniFuture
+        WarrantDoubleKnockOut: Warrant Double KnockOut
+        CertificateUncappedCapitalProtection: Certificate Uncapped Capital Protection
+        CertificateCappedCapitalProtected: Certificate Capped Capital Protected
+        CertificateDiscount: Certificate Discount
+        CertificateCappedOutperformance: Certificate Capped Outperformance
+        CertificateCappedBonus: Certificate Capped Bonus
+        CertificateExpress: Certificate Express
+        CertificateTracker: Certificate Tracker
+        CertificateUncappedOutperformance: Certificate Uncapped Outperformance
+        CertificateBonus: Certificate Bonus
+        CertificateConstantLeverage: Certificate Constant Leverage
+        IPO: Initial Public Offering (IPO)
+        PortfolioNote: Danish pooled investment scheme (“Pulje”).
+        GuaranteeNote: Danish investment scheme (“Grantbevis”).
+        CryptoCurrencies: Crypto Currencies
+        CfdInterests: CFD on futures - bonds. This subtype does not exist in Instruments db.
+        CfdForex: CFD on futures - Forex. This subtype does not exist in Instruments db.
+        CfdFuturesStockIndices: CFD on futures - stock indices. This subtype does not exist in Instruments db.
     InstrumentTradeSessions:
-      additionalProperties: false
       title: Represents instrument's trading sessions
       type: object
       properties:
@@ -2991,8 +3645,89 @@ components:
         TimeZoneOffset:
           title: 'Gets the time zone offset, relative to UTC.'
           type: string
+    InstrumentTypes:
+      title: Instrument types
+      enum:
+        - AllInstruments
+        - BinaryOptions
+        - Bonds
+        - Cash
+        - Certificates
+        - Cfd
+        - CfdIndices
+        - CfdOnFutures
+        - CfdOnIndexOptions
+        - ContractFutures
+        - ContractOptionsAll
+        - FutureOtc
+        - FuturesOptions
+        - FuturesStrategies
+        - FxForwards
+        - FxOptionsAll
+        - FxSpot
+        - FxSwaps
+        - FxVanillaOption
+        - Indices
+        - KnockInOptions
+        - KnockOutOptions
+        - MutualFunds
+        - NoTouchOptions
+        - None
+        - OneTouchOptions
+        - Shares
+        - Srd
+        - StockIndex
+        - StockIndexOptions
+        - StockOptions
+        - Turbos
+        - Warrants
+      type: string
+      x-enum-descriptions:
+        None: None
+        FxSpot: FxSpot
+        FxForwards: FxForwards
+        FxVanillaOption: FXOTCOptionsEU
+        ContractFutures: ContractFutures
+        FuturesOptions: FuturesOptions
+        Shares: Shares
+        StockOptions: StockOptions
+        Cfd: Cfd
+        Bonds: Bonds
+        MutualFunds: MutualFunds
+        Indices: Indices
+        CfdIndices: CFD indices like DAX.I
+        Cash: 'Cash, 2048'
+        CfdOnFutures: CfdOnFutures
+        KnockInOptions: KnockInOptions
+        KnockOutOptions: KnockOutOptions
+        BinaryOptions: BinaryOptions
+        OneTouchOptions: OneTouchOptions
+        NoTouchOptions: NoTouchOptions
+        FxOptionsAll: Any FX Options
+        StockIndexOptions: StockIndexOptions
+        ContractOptionsAll: 'Contract Options = all Exchange Traded Option (ETO) types: FuturesOptions, StockOptions, StockIndexOptions'
+        FuturesStrategies: Futures Strategies
+        CfdOnIndexOptions: CFD on Index Options
+        FxSwaps: FX Swaps
+        Warrants: Warrants
+        Turbos: Turbos
+        Certificates: Certificates
+        Srd: SRD
+        StockIndex: Stock Index
+        FutureOtc: Future OTC
+        AllInstruments: All Instruments - excluding pseudo instrument Cash.
+      x-type-warning: FlaggableEnum
+    InstrumentTypesNullable:
+      allOf:
+        - $ref: '#/components/schemas/InstrumentTypes'
+    InstrumentTypesSafeEnum:
+      type: object
+      properties:
+        Value:
+          title: The wrapped value.
+          allOf:
+            - $ref: '#/components/schemas/InstrumentTypes'
     IpoDetails:
-      additionalProperties: false
       title: Initial public offering details information
       type: object
       properties:
@@ -3042,7 +3777,6 @@ components:
             - type: integer
               format: int32
     LanguageDetails:
-      additionalProperties: false
       title: Represents a language.
       type: object
       properties:
@@ -3058,7 +3792,6 @@ components:
           title: The name of the language (in native language).
           type: string
     LanguageDetailsListResult:
-      additionalProperties: false
       type: object
       properties:
         Data:
@@ -3076,7 +3809,6 @@ components:
           type: string
           description: The link for the next page of items in the feed.
     LocalizedInfo:
-      additionalProperties: false
       title: Provides information about the localization.
       type: object
       properties:
@@ -3087,7 +3819,6 @@ components:
           title: "A string value that represents the localized text. If the key is not found in specific language, it will be text of default language.\r\n            If the key is not found at all in localization resources, then key will be used in value itself."
           type: string
     LotSizeType:
-      additionalProperties: false
       title: Lot size type.
       enum:
         - BuyOnly
@@ -3101,39 +3832,65 @@ components:
         OddLotsAllowed: Lot size should be respected = odd lot support support exist.
         BuyOnly: Lot size should be respected = for buy only
     LotSizeTypeNullable:
-      additionalProperties: false
       allOf:
         - $ref: '#/components/schemas/LotSizeType'
+    Model.InstrumentKey:
+      title: A key for uniquely identifying an instrument.
+      type: object
+      properties:
+        Type:
+          title: The instrument type of the instrument. This must match a value from .
+          type: string
+        Uic:
+          title: The UIC of the instrument. This is not enough in itself to uniquely identify an instrument.
+          type: integer
+          format: int32
+    Model.InstrumentSearchCriteria:
+      title: "Public data contract for specifying search criteria \r\n            posted to the instrument search resource."
+      type: object
+      properties:
+        InstrumentKeys:
+          title: One or more instruments keys (UIC/type) to search for. Each key will find no more than one instrument.
+          type: array
+          items:
+            $ref: '#/components/schemas/Model.InstrumentKey'
+        InstrumentTypes:
+          title: One or more instrument types to search for.
+          type: array
+          items:
+            type: string
+        OnlyActive:
+          title: Whether the search should return only active instruments.
+          type: boolean
+        Pattern:
+          title: A textual pattern to search for instrument symbol or description.
+          type: string
+        Uics:
+          title: One or more uic's to search for. This may return multiple instruments per UIC.
+          type: array
+          items:
+            type: integer
+            format: int32
+    Model.LotSizeType:
+      title: Lot size type enumeration
+      enum:
+        - BuyOnly
+        - NotUsed
+        - OddLotsAllowed
+        - OddLotsNotAllowed
+      type: string
+      x-enum-descriptions:
+        NotUsed: Lot size not used
+        OddLotsNotAllowed: Lot size must be respected = no odd lot support
+        OddLotsAllowed: Lot size should be respected = odd lot support support exist
+        BuyOnly: Lot size should be respected = for buy only
     ModelStateDictionary:
       type: object
       additionalProperties:
         type: array
         items:
           type: string
-    NonTradableReasons:
-      additionalProperties: false
-      title: Non Tradable Reasons
-      enum:
-        - ETFsWithoutKIIDs
-        - ExpiredInstrument
-        - NonShortableInstrument
-        - None
-        - NotOnlineClientTradable
-        - OfflineTradableBonds
-        - OtherReason
-        - ReduceOnlyInstrument
-      type: string
-      x-enum-descriptions:
-        None: None
-        NotOnlineClientTradable: This instrument is not tradable
-        ReduceOnlyInstrument: This instrument is not reduce-only
-        ExpiredInstrument: This instrument has expired
-        OfflineTradableBonds: This instrument is tradable offline
-        ETFsWithoutKIIDs: The issuer has not provided a Key Information Document (KID) for this instrument
-        NonShortableInstrument: Short selling is not available for this instrument
-        OtherReason: This instrument is not tradable
     OptionSpaceSegment:
-      additionalProperties: false
       title: Specify how large a segment of the complete option space to return.
       enum:
         - AllDates
@@ -3149,7 +3906,6 @@ components:
         SpecificDates: Return all options for specified strike days.
         UnderlyingUic: Used to specify filter to return all options for with specified underlying Uic.
     OptionsStrategyType:
-      additionalProperties: false
       title: Common exchange traded options strategies.
       enum:
         - BackRatio
@@ -3185,7 +3941,6 @@ components:
         Synthetic: 'Buy a call, sell a put at the same strike. Sell a call, buy a put at the same strike. 1:1 ratio'
         Combo: 'Sell call, buy put at lower strike. Buy call, Sell put at lower strike (1:1 ratio).'
     OrderDistanceType:
-      additionalProperties: false
       title: Defines how order distance is represented.
       enum:
         - Percentage
@@ -3198,7 +3953,6 @@ components:
         Pips: +/- the current price.  Only applicable to Fx.
         Price: Absolute price.
     OrderDistances:
-      additionalProperties: false
       title: Distance information for creating orders.
       type: object
       properties:
@@ -3241,7 +3995,6 @@ components:
           title: Should the Add a related limit order checkbox be checked by default
           type: boolean
     OrderDurationType:
-      additionalProperties: false
       title: "An enum describing the different order duration types.\r\n            Note that not all order types are possible for all asset types."
       enum:
         - AtTheClose
@@ -3263,7 +4016,6 @@ components:
         GoodTillDate: Good til Date - Expiration Date must also be specified.
         ImmediateOrCancel: Immediate or Cancel Order.
     OrderSetting:
-      additionalProperties: false
       title: Represents configurations of an instrument for an order
       type: object
       properties:
@@ -3286,7 +4038,6 @@ components:
             - type: integer
               format: int32
     OrderType:
-      additionalProperties: false
       title: Order type definitions.
       enum:
         - Algorithmic
@@ -3324,7 +4075,6 @@ components:
         TrailingStop: Trailing Stop.
         TrailingStopIfTraded: Trailing Stop if Traded.
     OrderTypeSetting:
-      additionalProperties: false
       title: Represents the configurations of an instrument for a specific order.
       type: object
       properties:
@@ -3367,7 +4117,6 @@ components:
           allOf:
             - type: number
     PlaceableOrderType:
-      additionalProperties: false
       title: Specifies supported order types placeable in the orders ticket.
       enum:
         - Algorithmic
@@ -3405,7 +4154,6 @@ components:
         TriggerBreakout: Trigger breakout order. Specific type for trigger orders.
         DealCapture: "Deal Capture Order. Specify to capture trades, which are already registered on Exchange, into Saxo System. \r\n            Currently supported for selected partners only."
     PriceDisplayFormat:
-      additionalProperties: false
       title: 'Public data contract containing information about the instrument of a position, which is useful for display and formatting.'
       type: object
       properties:
@@ -3449,7 +4197,6 @@ components:
           allOf:
             - $ref: '#/components/schemas/PriceDisplayFormatTypeNullable'
     PriceDisplayFormatType:
-      additionalProperties: false
       title: The format modifiers in which e.g. a price must be displayed and possibly edited.
       enum:
         - AllowDecimalPips
@@ -3465,11 +4212,16 @@ components:
         AllowDecimalPips: "Display the last digit as a smaller than the rest of the numbers. Note that this digit is not included in the number of decimals, effectively\r\n            increasing the number of decimals by one. E.g. 12.345 when Decimals is 2 and DisplayFormat is AllowDecimalPips."
         Fractions: "Display as regular fraction i.e. 3 1/4 \r\n            The Decimals field indicates the fraction demoninator as 1/(2^x). \r\n            So if Decimals is 2, the value should represent the number of 1/4'ths."
     PriceDisplayFormatTypeNullable:
-      additionalProperties: false
       allOf:
         - $ref: '#/components/schemas/PriceDisplayFormatType'
+    PriceFormatFlags:
+      title: Options for price formatting.
+      enum:
+        - DeciPipsDigit
+        - None
+        - Percentage
+      type: string
     Public.PutCall:
-      additionalProperties: false
       title: "Specifies type of option. \r\n             Note: The Put/Call numerical values are not the same as defined in the enum _ClmFeedPutCallTypes\r\n                   enum _ClmFeedPutCallTypes { ClmFeedCall = 1, ClmFeedPut = 2 } \r\n            \r\n             (This enum defines a none (unspecified) value that is not defined in _PutCallTypes)"
       enum:
         - Call
@@ -3481,7 +4233,6 @@ components:
         Put: Put.
         Call: Call.
     RelatedCurrency:
-      additionalProperties: false
       title: Responsible for carrying information about a related currency code and the pairs Uic.
       type: object
       properties:
@@ -3493,7 +4244,6 @@ components:
           type: integer
           format: int32
     RelatedOptionRoot:
-      additionalProperties: false
       title: 'Combination of OptionRootId and AssetType, so endpoint user knows the asset type of the option.'
       type: object
       properties:
@@ -3511,7 +4261,6 @@ components:
           items:
             $ref: '#/components/schemas/OptionsStrategyType'
     SettlementStyle:
-      additionalProperties: false
       title: Options for how a contract option is settled when exercised.
       enum:
         - CashDelivery
@@ -3521,11 +4270,9 @@ components:
         CashDelivery: The contract option is settled as cash.
         PhysicalDelivery: The contract option is settled by physical delivery.
     SettlementStyleNullable:
-      additionalProperties: false
       allOf:
         - $ref: '#/components/schemas/SettlementStyle'
     StandardDate:
-      additionalProperties: false
       title: Represents standard date of a trade.
       type: object
       properties:
@@ -3543,7 +4290,6 @@ components:
           type: integer
           format: int32
     StandardDateListResult:
-      additionalProperties: false
       type: object
       properties:
         Data:
@@ -3561,7 +4307,6 @@ components:
           type: string
           description: The link for the next page of items in the feed.
     Strategy:
-      additionalProperties: false
       title: Represents Algo Strategy object
       type: object
       properties:
@@ -3595,7 +4340,6 @@ components:
           items:
             $ref: '#/components/schemas/AssetType'
     StrategyLeg:
-      additionalProperties: false
       title: Defines one leg in an exchange traded strategy.
       type: object
       properties:
@@ -3622,7 +4366,6 @@ components:
           type: integer
           format: int32
     StrategyListResult:
-      additionalProperties: false
       type: object
       properties:
         Data:
@@ -3640,7 +4383,6 @@ components:
           type: string
           description: The link for the next page of items in the feed.
     StrategyParameter:
-      additionalProperties: false
       title: Strategy custom parameter object
       type: object
       properties:
@@ -3696,7 +4438,6 @@ components:
           allOf:
             - type: number
     StrategyParameterAllowedValue:
-      additionalProperties: false
       title: Represents strategy parameter allowed value
       type: object
       properties:
@@ -3707,7 +4448,6 @@ components:
           title: Parameter value
           type: string
     StrategyParameterDataType:
-      additionalProperties: false
       title: Lists all possible strategy parameters'datatypes
       enum:
         - Char
@@ -3718,7 +4458,6 @@ components:
         - UtcTimeStamp
       type: string
     StrategyType:
-      additionalProperties: false
       title: The type of strategy implemented by the contract.
       enum:
         - CalendarSpread
@@ -3726,11 +4465,9 @@ components:
       x-enum-descriptions:
         CalendarSpread: A calendar spread strategy.
     StrategyTypeNullable:
-      additionalProperties: false
       allOf:
         - $ref: '#/components/schemas/StrategyType'
     SummaryInfo:
-      additionalProperties: false
       title: Provides information about an instrument or contract option root.
       type: object
       properties:
@@ -3783,7 +4520,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/EntityType'
         Symbol:
-          title: 'Symbol- A combination of letters used to uniquely identify a traded instrument. e.g. ODAX/X13C8950:xeur or EURUSD.'
+          title: Symbol- A combination of letters used to uniquely identify a traded instrument. e.g. ODAX/X13C8950:xeur or EURUSD.
           type: string
         TradableAs:
           title: 'For instruments: How can an instrument with "this" uic also be traded.'
@@ -3796,14 +4533,13 @@ components:
             - $ref: '#/components/schemas/AssetTypeNullable'
       description: "This class is named SummaryInfo to distinguish it from the corresponding Summary class in the\r\n            Instrument Cache."
     SummaryInfoListResult:
-      additionalProperties: false
       type: object
       properties:
         Data:
           type: array
-          description: The collection of entities for this feed.
           items:
             $ref: '#/components/schemas/SummaryInfo'
+          description: The collection of entities for this feed.
         MaxRows:
           type: number
           description: The maximum number of rows that can be returned (if applicable).
@@ -3813,14 +4549,13 @@ components:
         __next:
           type: string
           description: The link for the next page of items in the feed.
-        '':
-          $ref: ''
+    System.LotSizeTypeNullable:
+      allOf:
+        - $ref: '#/components/schemas/Model.LotSizeType'
     System.PutCallNullable:
-      additionalProperties: false
       allOf:
         - $ref: '#/components/schemas/Public.PutCall'
     TenorUnit:
-      additionalProperties: false
       title: Tenor unit type enumeration
       enum:
         - Days
@@ -3834,7 +4569,6 @@ components:
         Months: Months
         Years: Years
     TickSizeScheme:
-      additionalProperties: false
       title: 'The tick size scheme of an instrument. Relevant for shares, CFDs on shares and contract options.'
       type: object
       properties:
@@ -3847,7 +4581,6 @@ components:
           items:
             $ref: '#/components/schemas/TickSizeSchemeElement'
     TickSizeSchemeElement:
-      additionalProperties: false
       title: Represents one element of a tick size scheme.
       type: object
       properties:
@@ -3858,7 +4591,6 @@ components:
           title: The tick size of this element.
           type: number
     TimeZoneDetails:
-      additionalProperties: false
       title: Represents a single time zone.
       type: object
       properties:
@@ -3878,7 +4610,6 @@ components:
           title: The IANA/tz database time zone identifier.
           type: string
     TimeZoneDetailsListResult:
-      additionalProperties: false
       type: object
       properties:
         Data:
@@ -3896,7 +4627,6 @@ components:
           type: string
           description: The link for the next page of items in the feed.
     TradingStatus:
-      additionalProperties: false
       title: Trading status of an instrument.
       enum:
         - NonTradable
@@ -3911,7 +4641,6 @@ components:
         ReduceOnly: 'Instrument is Reduce only, which means client can only reduce the exposure by closing existing open position(s) and cannot open new position(s).'
       x-type-warning: FlaggableEnum
     TradingStatusNullable:
-      additionalProperties: false
       allOf:
         - $ref: '#/components/schemas/TradingStatus'
   responses:
@@ -3950,9 +4679,9 @@ components:
       type: oauth2
       flows:
         authorizationCode:
-          authorizationUrl: 'https://live.logonvalidation.net/authorize'
-          tokenUrl: 'https://live.logonvalidation.net/token'
-          scopes: {}
+          authorizationUrl: https://live.logonvalidation.net/authorize
+          tokenUrl: https://live.logonvalidation.net/token
+          scopes: { }
 tags:
   - name: AlgoStrategies
     description: Endpoints serving strategies information.
