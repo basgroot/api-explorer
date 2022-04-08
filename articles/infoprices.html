@@ -25,7 +25,7 @@
         console.log(event.target);
         let button = document.getElementById(event.target.id);
         console.log(button);
-        var content = button.nextElementSibling.nextElementSibling;
+        var content = button.nextElementSibling;
           if (content.style.display === "block") {
             content.style.display = "none";
           } else {
@@ -51,12 +51,19 @@
       <h2> The Info Price Object</h2>
       <div class="two-pane">
         <div class="left-pane">
+          <p>The object contains at least the Quote field group. But it can also hold more information such as display details like x and other stuff like y depending on which field groups you ask for.</p>
+          <h3>Field Groups</h3>
           <div class="field-group">
-            <p>The object contains at least the Quote field group. But it can also hold more information such as display details like x and other stuff like y depending on which field groups you ask for.</p>
             <button type="button" onclick="ExpandOrCollapseTable()" class="x-collapsible" id="exp-Commissions">Comissions</button>
-            <hr>
             <div class="x-content">
               <p>An object holding all information on comissions</p>
+              <hr>
+            </div>
+          </div>
+          <div class="field-group">
+            <button type="button" onclick="ExpandOrCollapseTable()" class="x-collapsible" id="exp-Commissions">DisplayAndFormat</button>
+            <div class="x-content">
+              <p>An object holding information related to displaying the .</p>
               <hr>
             </div>
           </div>
