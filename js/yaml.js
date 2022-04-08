@@ -343,7 +343,7 @@ function yaml() {
         let line;
         let value;
         let parameterName = "";
-        let description;
+        let description = "";
         let isRequired = false;
         let result = "";
         let isParametersActive = false;
@@ -362,6 +362,8 @@ function yaml() {
                         // This is the next param. Add previous to the list.
                         result += addParam(parameterName, description, isRequired);
                         isRequired = false;
+                        description = "";
+                        parameterName = "";
                     }
                     parameterName = value;
                 } else {
