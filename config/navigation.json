@@ -15,7 +15,7 @@
           "title": "Get all accounts groups under a particular client to which the logged in user belongs"
         },
         {
-          "endpoint": "/port/v1/accountgroups/",
+          "endpoint": "/port/v1/accountgroups",
           "method": "GET",
           "title": "Get a list of all accounts groups used by the specified client"
         },
