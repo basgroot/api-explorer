@@ -1,130 +1,116 @@
 {
   "serviceGroups": [
     {
-      "name": "Account Groups",
-      "articles": "",
-      "endpoints": [
-        {
-          "endpoint": "/port/v1/accountgroups/{AccountGroupKey}",
-          "method": "GET",
-          "title": "Get details about a single account group"
-        },
-        {
-          "endpoint": "/port/v1/accountgroups/me",
-          "method": "GET",
-          "title": "Get all accounts groups for the logged in client"
-        },
-        {
-          "endpoint": "/port/v1/accountgroups",
-          "method": "GET",
-          "title": "Get a list of all accounts groups of a client"
-        },
-        {
-          "endpoint": "/port/v1/accountgroups/{AccountGroupKey}",
-          "method": "PATCH",
-          "title": "Update account group information"
-        }
-      ]
-    },
-    {
       "name": "Accounts",
       "articles": "",
       "endpoints": [
         {
-          "endpoint": "/hist/v3/perf/{ClientKey}",
+          "endpoint": "/port/v1/accounts/me",
           "method": "GET",
-          "title": "Get account performance"
-        },
-        {
-          "endpoint": "/hist/v4/performance/timeseries",
-          "method": "GET",
-          "title": "Get account performance"
-        },
-        {
-          "endpoint": "/hist/v4/performance/summary",
-          "method": "GET",
-          "title": "Get account summary"
-        },
-        {
-          "endpoint": "/cm/v2/accounts",
-          "method": "POST",
-          "title": "Create account"
-        },
-        {
-          "endpoint": "/cr/v1/reports/AccountStatement/{ClientKey}",
-          "method": "GET",
-          "title": "Historical Report Data - Account Statement"
+          "isFrequentlyUsed": true,
+          "title": "Get your accounts"
         },
         {
           "endpoint": "/port/v1/accounts/{AccountKey}",
           "method": "GET",
-          "title": "Get account"
+          "isFrequentlyUsed": true,
+          "title": "Get a specific account"
         },
         {
-          "endpoint": "/port/v1/accounts/me",
+          "endpoint": "/hist/v3/perf/{ClientKey}",
           "method": "GET",
-          "title": "Get accounts"
+          "isFrequentlyUsed": true,
+          "title": "Get your account performance"
+        },
+        {
+          "endpoint": "/hist/v4/performance/timeseries",
+          "method": "GET",
+          "isFrequentlyUsed": true,
+          "title": "Get account your performance time series"
+        },
+        {
+          "endpoint": "/hist/v4/performance/summary",
+          "method": "GET",
+          "isFrequentlyUsed": true,
+          "title": "Get account performance summary"
+        },
+        {
+          "endpoint": "/cm/v2/accounts",
+          "method": "POST",
+          "isFrequentlyUsed": false,
+          "title": "Create an account"
+        },
+        {
+          "endpoint": "/cr/v1/reports/AccountStatement/{ClientKey}",
+          "method": "GET",
+          "isFrequentlyUsed": false,
+          "title": "Historical Report Data - Account Statement"
         },
         {
           "endpoint": "/port/v1/accounts",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Get accounts of a client"
         },
         {
           "endpoint": "/port/v1/accounts/{AccountKey}",
           "method": "PATCH",
+          "isFrequentlyUsed": true,
           "title": "Update account"
         },
         {
           "endpoint": "/port/v1/accounts/{AccountKey}/reset",
           "method": "PUT",
+          "isFrequentlyUsed": false,
           "title": "Reset trial account"
         },
         {
           "endpoint": "/port/v1/accounts/subscriptions",
           "method": "POST",
-          "title": "Subscribe to accounts"
+          "isFrequentlyUsed": true,
+          "title": "Subscribe to account changes"
         },
         {
           "endpoint": "/port/v1/accounts/subscriptions/{ContextId}",
           "method": "DELETE",
-          "title": "Remove subscriptions by tag"
+          "isFrequentlyUsed": true,
+          "title": "Remove all account subscriptions"
         },
         {
           "endpoint": "/port/v1/accounts/subscriptions/{ContextId}/{ReferenceId}",
           "method": "DELETE",
-          "title": "Remove subscription"
+          "isFrequentlyUsed": true,
+          "title": "Remove account subscription"
         }
       ]
     },
     {
-      "name": "Allocation Keys",
+      "name": "Account Groups",
       "articles": "",
       "endpoints": [
         {
-          "endpoint": "/trade/v1/allocationkeys",
+          "endpoint": "/port/v1/accountgroups/me",
           "method": "GET",
-          "title": "Get a list of existing allocation keys"
+          "isFrequentlyUsed": true,
+          "title": "Get your accounts groups"
         },
         {
-          "endpoint": "/trade/v1/allocationkeys/{AllocationKeyId}",
+          "endpoint": "/port/v1/accountgroups/{AccountGroupKey}",
           "method": "GET",
-          "title": "Get detailed information about an allocation key"
+          "isFrequentlyUsed": false,
+          "title": "Get details of a specific account group"
         },
         {
-          "endpoint": "/trade/v1/allocationkeys/distributions/{AllocationKeyId}",
+          "endpoint": "/port/v1/accountgroups",
           "method": "GET",
-          "title": "Get distributed amount for a given allocation key"
+          "isFrequentlyUsed": false,
+          "title": "Get a list of all accounts groups of a client"
         },
         {
-          "endpoint": "/trade/v1/allocationkeys",
-          "method": "POST",
-          "title": "Create an allocation key"
-        },
-        {
-          "endpoint": "/trade/v1/allocationkeys/{AllocationKeyId}",
-          "method": "DELETE",
-          "title": "Delete allocation key"
+          "endpoint": "/port/v1/accountgroups/{AccountGroupKey}",
+          "method": "PATCH",
+          "isFrequentlyUsed": false,
+          "title": "Update account group information"
         }
       ]
     },
@@ -135,32 +121,38 @@
         {
           "endpoint": "/port/v1/balances/me",
           "method": "GET",
-          "title": "Get balance data for logged-in client"
+          "isFrequentlyUsed": true,
+          "title": "Get your balance data"
         },
         {
           "endpoint": "/port/v1/balances",
           "method": "GET",
-          "title": "Get balance"
+          "isFrequentlyUsed": true,
+          "title": "Get specific balance data"
         },
         {
           "endpoint": "/port/v1/balances/marginoverview",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get margin overview"
         },
         {
           "endpoint": "/port/v1/balances/subscriptions",
           "method": "POST",
-          "title": "Create a subscription on a balance"
+          "isFrequentlyUsed": true,
+          "title": "Create a subscription on balance changes"
         },
         {
           "endpoint": "/port/v1/balances/subscriptions/{ContextId}",
           "method": "DELETE",
-          "title": "Remove all subscriptions marked with a specific tag"
+          "isFrequentlyUsed": true,
+          "title": "Remove all balance subscriptions"
         },
         {
           "endpoint": "/port/v1/balances/subscriptions/{ContextId}/{ReferenceId}",
           "method": "DELETE",
-          "title": "Remove subscription"
+          "isFrequentlyUsed": true,
+          "title": "Remove specific balance subscription"
         }
       ]
     },
@@ -169,228 +161,136 @@
       "articles": "",
       "endpoints": [
         {
+          "endpoint": "/port/v1/clients/me",
+          "method": "GET",
+          "isFrequentlyUsed": true,
+          "title": "Get your client details"
+        },
+        {
+          "endpoint": "/port/v1/clients/{ClientKey}",
+          "method": "GET",
+          "isFrequentlyUsed": false,
+          "title": "Get specific client details"
+        },
+        {
+          "endpoint": "/port/v1/clients/me",
+          "method": "PATCH",
+          "isFrequentlyUsed": true,
+          "title": "Switch your position netting mode or netting profile"
+        },
+        {
+          "endpoint": "/ens/v1/activities",
+          "method": "GET",
+          "isFrequentlyUsed": true,
+          "title": "Get activities"
+        },
+        {
           "endpoint": "/cm/v1/clientrenewals",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Get renewal data"
         },
         {
           "endpoint": "/cm/v1/clientrenewals/{RenewalEntityId}",
           "method": "PATCH",
+          "isFrequentlyUsed": false,
           "title": "Update renewal data/Documents"
         },
         {
           "endpoint": "/cm/v1/signups/attachments/{SignUpId}",
           "method": "POST",
+          "isFrequentlyUsed": false,
           "title": "Adds a file to a sign up case"
         },
         {
           "endpoint": "/cm/v1/signups/options",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Get all signup options"
         },
         {
           "endpoint": "/cm/v1/signups",
           "method": "POST",
+          "isFrequentlyUsed": false,
           "title": "Create client"
         },
         {
           "endpoint": "/cm/v1/signups/status/{ClientKey}",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Get the onboarding status of a client"
         },
         {
           "endpoint": "/cm/v1/signups/completeapplication/{SignUpId}",
           "method": "PUT",
+          "isFrequentlyUsed": false,
           "title": "Completes the onboarding application"
         },
         {
           "endpoint": "/cm/v1/signups/verification/initiate/{ClientKey}",
           "method": "POST",
+          "isFrequentlyUsed": false,
           "title": "Initiate verification process from external vendor"
         },
         {
           "endpoint": "/cm/v1/signups/onboardingpdf/{ClientKey}",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Generate PDF document of DocumentType"
         },
         {
           "endpoint": "/cm/v2/signups/attachments/{SignUpId}",
           "method": "POST",
+          "isFrequentlyUsed": false,
           "title": "Add multiple files to a sign up case"
         },
         {
           "endpoint": "/cm/v2/signups/options",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Get all signup options"
         },
         {
           "endpoint": "/cm/v2/signups/verification/initiate/{ClientKey}",
           "method": "POST",
+          "isFrequentlyUsed": false,
           "title": "Initiate verification process from external vendor"
         },
         {
           "endpoint": "cs/v2/clientinfo/clients/search",
           "method": "POST",
+          "isFrequentlyUsed": false,
           "title": "Search all child counterparts based on ownerId"
         },
         {
           "endpoint": "/ens/v1/activities/subscriptions",
           "method": "POST",
-          "title": "Create a subscription for client events"
+          "isFrequentlyUsed": true,
+          "title": "Create an ENS subscription for client events"
         },
         {
           "endpoint": "/ens/v1/activities/subscriptions",
           "method": "DELETE",
+          "isFrequentlyUsed": true,
           "title": "Remove subscription"
         },
         {
           "endpoint": "/ens/v1/activities/subscriptions/{ContextId}",
           "method": "DELETE",
+          "isFrequentlyUsed": true,
           "title": "Remove multiple subscriptions"
-        },
-        {
-          "endpoint": "/ens/v1/activities",
-          "method": "GET",
-          "title": "Get activities"
-        },
-        {
-          "endpoint": "/port/v1/clients/me",
-          "method": "GET",
-          "title": "Get logged in client details"
-        },
-        {
-          "endpoint": "/port/v1/clients/{ClientKey}",
-          "method": "GET",
-          "title": "Get client details"
-        },
-        {
-          "endpoint": "/port/v1/clients/me",
-          "method": "PATCH",
-          "title": "Enables user to switch position netting mode or netting profile"
         },
         {
           "endpoint": "/port/v1/clients",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Get details about clients under a particular owner"
         },
         {
           "endpoint": "/port/v1/clients",
           "method": "PATCH",
+          "isFrequentlyUsed": true,
           "title": "Change netting mode and AccountValueProtectionLimit"
-        }
-      ]
-    },
-    {
-      "name": "Coorporate Actions",
-      "articles": "",
-      "endpoints": [
-        {
-          "endpoint": "/ca/v2/elections",
-          "method": "PUT",
-          "title": "Send election instruction"
-        },
-        {
-          "endpoint": "/ca/v2/elections/bulk",
-          "method": "PUT",
-          "title": "Send bulk election instructions"
-        },
-        {
-          "endpoint": "/ca/v2/events/lookupdata",
-          "method": "GET",
-          "title": "Lookup for filters"
-        },
-        {
-          "endpoint": "/ca/v2/events",
-          "method": "GET",
-          "title": "Get corporate action events"
-        },
-        {
-          "endpoint": "/ca/v2/events/{EventId}",
-          "method": "GET",
-          "title": "Get corporate action event"
-        },
-        {
-          "endpoint": "/ca/v2/holdings",
-          "method": "GET",
-          "title": "Get client holdings"
-        },
-        {
-          "endpoint": "/ca/v1/proxyvoting/events",
-          "method": "GET",
-          "title": "Get proxy voting events for client"
-        },
-        {
-          "endpoint": "/ca/v2/standinginstructions",
-          "method": "GET",
-          "title": "Get standing instructions"
-        },
-        {
-          "endpoint": "/ca/v2/standinginstructions",
-          "method": "POST",
-          "title": "Create new standing instruction"
-        },
-        {
-          "endpoint": "/ca/v2/standinginstructions",
-          "method": "DELETE",
-          "title": "Delete standing instructions"
-        }
-      ]
-    },
-    {
-      "name": "Debug",
-      "articles": "",
-      "endpoints": [
-        {
-          "endpoint": "/root/v1/features/availability",
-          "method": "GET",
-          "title": "Get the availability of all features"
-        },
-        {
-          "endpoint": "/root/v1/features/availability/subscriptions",
-          "method": "POST",
-          "title": "Create a feature availability subscription"
-        },
-        {
-          "endpoint": "/root/v1/features/availability/subscriptions/{ContextId}/{ReferenceId}",
-          "method": "DELETE",
-          "title": "Remove a feature availability subscription"
-        }
-      ]
-    },
-    {
-      "name": "Documents",
-      "articles": "",
-      "endpoints": [
-        {
-          "endpoint": "/mkt/v1/instruments/{Uic}/{AssetType}/documents/recommended",
-          "method": "GET",
-          "title": "Gets list of recommended instrument document information"
-        },
-        {
-          "endpoint": "/mkt/v1/instruments/{Uic}/{AssetType}/documents/pdf",
-          "method": "GET",
-          "title": "Gets document related to instrument"
-        }
-      ]
-    },
-    {
-      "name": "Exposure",
-      "articles": "",
-      "endpoints": [
-        {
-          "endpoint": "/port/v1/exposure/instruments/subscriptions",
-          "method": "POST",
-          "title": "Create a subscription on a list of instrument exposure and make it active"
-        },
-        {
-          "endpoint": "/port/v1/exposure/instruments/subscriptions/{ContextId}",
-          "method": "DELETE",
-          "title": "Remove multiple subscriptions"
-        },
-        {
-          "endpoint": "/port/v1/exposure/instruments/subscriptions/{ContextId}/{ReferenceId}",
-          "method": "DELETE",
-          "title": "Remove subscription"
         }
       ]
     },
@@ -401,31 +301,37 @@
         {
           "endpoint": "/ref/v1/instruments",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Search for instruments or contract option roots"
         },
         {
           "endpoint": "/ref/v1/instruments/details",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get detailed information for list of instruments"
         },
         {
           "endpoint": "/ref/v1/instruments/details/{Uic}/{AssetType}",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get detailed information for a specific instrument"
         },
         {
           "endpoint": "/ref/v1/instruments/contractoptionspaces/{OptionRootId}",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get option details and options space for an option root"
         },
         {
           "endpoint": "/ref/v1/instruments/futuresspaces/{ContinuousFuturesUic}",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get contract futures space"
         },
         {
           "endpoint": "/ref/v1/instruments/tradingschedule/{Uic}/{AssetType}",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Trading schedules"
         }
       ]
@@ -437,31 +343,37 @@
         {
           "endpoint": "/trade/v1/messages",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get trade messages for the current user"
         },
         {
           "endpoint": "/trade/v1/messages/seen/{MessageId}",
           "method": "PUT",
+          "isFrequentlyUsed": true,
           "title": "Mark trade message as 'seen'"
         },
         {
           "endpoint": "/trade/v1/messages/seen",
           "method": "PUT",
+          "isFrequentlyUsed": true,
           "title": "Mark trade message as 'seen'"
         },
         {
           "endpoint": "/trade/v1/messages/subscriptions",
           "method": "POST",
+          "isFrequentlyUsed": true,
           "title": "Create a subscription on trade messages"
         },
         {
           "endpoint": "/trade/v1/messages/subscriptions/{ContextId}/{ReferenceId}",
           "method": "DELETE",
+          "isFrequentlyUsed": true,
           "title": "Remove a trade message subscription"
         },
         {
           "endpoint": "/trade/v1/messages/subscriptions/{ContextId}",
           "method": "DELETE",
+          "isFrequentlyUsed": true,
           "title": "Remove multiple trade message subscriptions"
         }
       ]
@@ -473,21 +385,25 @@
         {
           "endpoint": "/trade/v1/optionschain/subscriptions",
           "method": "POST",
+          "isFrequentlyUsed": true,
           "title": "Create an active options chain subscription"
         },
         {
           "endpoint": "/trade/v1/optionschain/subscriptions/{ContextId}/{ReferenceId}",
           "method": "PATCH",
+          "isFrequentlyUsed": true,
           "title": "Modify an existing options chain subscription"
         },
         {
           "endpoint": "trade/v1/optionschain/subscriptions/{ContextId}/{ReferenceId}",
           "method": "DELETE",
+          "isFrequentlyUsed": true,
           "title": "Remove an options chain subscription"
         },
         {
           "endpoint": "/trade/v1/optionschain/subscriptions/{ContextId}/{ReferenceId}/ResetATM",
           "method": "PUT",
+          "isFrequentlyUsed": true,
           "title": "Reset an options chain subscription 'At The Money'"
         }
       ]
@@ -497,88 +413,105 @@
       "articles": "",
       "endpoints": [
         {
-          "endpoint": "/port/v1/orders/{ClientKey}/{OrderId}",
-          "method": "GET",
-          "title": "Get an open order"
-        },
-        {
-          "endpoint": "/port/v1/orders/me",
-          "method": "GET",
-          "title": "Get all open orders for the client to which the logged in user belongs"
-        },
-        {
-          "endpoint": "/port/v1/orders/{OrderId}/details",
-          "method": "GET",
-          "title": "Get detailed information for a open order"
-        },
-        {
-          "endpoint": "/port/v1/orders",
-          "method": "GET",
-          "title": "Get all open orders for a client or an account"
-        },
-        {
-          "endpoint": "/port/v1/orders/subscriptions",
+          "endpoint": "/trade/v2/orders/precheck",
           "method": "POST",
-          "title": "Create a subscription to open orders"
-        },
-        {
-          "endpoint": "/port/v1/orders/subscriptions/{ContextId}",
-          "method": "DELETE",
-          "title": "Remove multiple subscriptions"
-        },
-        {
-          "endpoint": "/port/v1/orders/subscriptions/{ContextId}/{ReferenceId}",
-          "method": "DELETE",
-          "title": "Remove subscription"
+          "isFrequentlyUsed": true,
+          "title": "Pre-check orders"
         },
         {
           "endpoint": "/trade/v2/orders",
           "method": "POST",
+          "isFrequentlyUsed": true,
           "title": "Place a new order"
         },
         {
           "endpoint": "/trade/v2/orders",
           "method": "PATCH",
+          "isFrequentlyUsed": true,
           "title": "Change one or more existing orders"
         },
         {
           "endpoint": "/trade/v2/orders/{OrderIds}",
           "method": "DELETE",
+          "isFrequentlyUsed": true,
           "title": "Cancel one or more orders"
         },
         {
           "endpoint": "/trade/v2/orders",
           "method": "DELETE",
+          "isFrequentlyUsed": true,
           "title": "Cancels all orders for requested instrument and account"
-        },
-        {
-          "endpoint": "/trade/v2/orders/precheck",
-          "method": "POST",
-          "title": "Pre-check orders"
         },
         {
           "endpoint": "/trade/v2/orders/multileg/precheck",
           "method": "POST",
+          "isFrequentlyUsed": true,
           "title": "Pre-check a multileg options strategy order"
         },
         {
           "endpoint": "/trade/v2/orders/multileg",
           "method": "POST",
+          "isFrequentlyUsed": true,
           "title": "Place a new multi-leg option strategy order"
         },
         {
           "endpoint": "/trade/v2/orders/multileg",
           "method": "PATCH",
+          "isFrequentlyUsed": true,
           "title": "Change an existing multi-leg option strategy order"
         },
         {
           "endpoint": "/trade/v2/orders/multileg/{MultiLegOrderId}",
           "method": "DELETE",
+          "isFrequentlyUsed": true,
           "title": "Cancel a multi-leg strategy order"
+        },
+        {
+          "endpoint": "/port/v1/orders/me",
+          "method": "GET",
+          "isFrequentlyUsed": true,
+          "title": "Get all my open orders"
+        },
+        {
+          "endpoint": "/port/v1/orders/{ClientKey}/{OrderId}",
+          "method": "GET",
+          "isFrequentlyUsed": true,
+          "title": "Get an open order"
+        },
+        {
+          "endpoint": "/port/v1/orders/{OrderId}/details",
+          "method": "GET",
+          "isFrequentlyUsed": true,
+          "title": "Get detailed information for a open order"
+        },
+        {
+          "endpoint": "/port/v1/orders",
+          "method": "GET",
+          "isFrequentlyUsed": true,
+          "title": "Get all open orders for a client or an account"
+        },
+        {
+          "endpoint": "/port/v1/orders/subscriptions",
+          "method": "POST",
+          "isFrequentlyUsed": true,
+          "title": "Create a subscription to open orders"
+        },
+        {
+          "endpoint": "/port/v1/orders/subscriptions/{ContextId}",
+          "method": "DELETE",
+          "isFrequentlyUsed": true,
+          "title": "Remove multiple subscriptions"
+        },
+        {
+          "endpoint": "/port/v1/orders/subscriptions/{ContextId}/{ReferenceId}",
+          "method": "DELETE",
+          "isFrequentlyUsed": true,
+          "title": "Remove subscription"
         },
         {
           "endpoint": "/trade/v2/orders/multileg/defaults",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get default values for a option multi-leg order strategies"
         }
       ]
@@ -590,116 +523,139 @@
         {
           "endpoint": "/cs/v1/reports/closedPositions",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get all closed positions between two dates"
         },
         {
           "endpoint": "/port/v1/closedpositions/{ClosedPositionId}",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get a single position"
         },
         {
           "endpoint": "/port/v1/closedpositions/{ClosedPositionId}/details",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get detailed information for a single position"
         },
         {
           "endpoint": "/port/v1/closedpositions/subscriptions",
           "method": "POST",
+          "isFrequentlyUsed": true,
           "title": "Create a subscription on a list of closed positions and make it active"
         },
         {
           "endpoint": "/port/v1/closedpositions/subscriptions/{ContextId}/{ReferenceId}",
           "method": "PATCH",
+          "isFrequentlyUsed": true,
           "title": "Change the closed positions subscription page size"
         },
         {
           "endpoint": "/port/v1/closedpositions/subscriptions/{ContextId}",
           "method": "DELETE",
+          "isFrequentlyUsed": true,
           "title": "Remove multiple subscriptions"
         },
         {
           "endpoint": "/port/v1/closedpositions/subscriptions/{ContextId}/{ReferenceId}",
           "method": "DELETE",
+          "isFrequentlyUsed": true,
           "title": "Remove subscription"
         },
         {
           "endpoint": "/port/v1/netpositions/{NetPositionId}",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get a single net position"
         },
         {
           "endpoint": "/port/v1/netpositions/{NetPositionId}/details",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get detailed information for a single net position"
         },
         {
           "endpoint": "/port/v1/netpositions/me",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get net positions for the current user's client"
         },
         {
           "endpoint": "/port/v1/netpositions/subscriptions",
           "method": "POST",
+          "isFrequentlyUsed": true,
           "title": "Create a subscription on a list of net positions and make it active"
         },
         {
           "endpoint": "/port/v1/netpositions/subscriptions/{ContextId}",
           "method": "DELETE",
+          "isFrequentlyUsed": true,
           "title": "Remove multiple subscriptions"
         },
         {
           "endpoint": "/port/v1/netpositions/subscriptions/{ContextId}/{ReferenceId}",
           "method": "DELETE",
+          "isFrequentlyUsed": true,
           "title": "Remove subscription"
         },
         {
           "endpoint": "/port/v1/positions/{PositionId}",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get a single position"
         },
         {
           "endpoint": "/port/v1/positions/{PositionId}/details",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get detailed information for a single position"
         },
         {
           "endpoint": "/port/v1/positions/me",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get positions for the logged-in client"
         },
         {
           "endpoint": "/port/v1/positions/subscriptions",
           "method": "POST",
+          "isFrequentlyUsed": true,
           "title": "Create a subscription on a list positions and make it active"
         },
         {
           "endpoint": "/port/v1/positions/subscriptions/{ContextId}/{ReferenceId}",
           "method": "PATCH",
+          "isFrequentlyUsed": true,
           "title": "Change the positions subscription page size"
         },
         {
           "endpoint": "/port/v1/positions/subscriptions/{ContextId}/{ReferenceId}",
           "method": "DELETE",
+          "isFrequentlyUsed": true,
           "title": "Remove subscription"
         },
         {
           "endpoint": "/trade/v1/positions",
           "method": "POST",
+          "isFrequentlyUsed": true,
           "title": "Create a new position by accepting a quote"
         },
         {
           "endpoint": "/trade/v1/positions/{PositionId}",
           "method": "PATCH",
+          "isFrequentlyUsed": true,
           "title": "Update a position"
         },
         {
           "endpoint": "/trade/v1/positions/{PositionId}/exercise",
           "method": "PUT",
+          "isFrequentlyUsed": true,
           "title": "Exercise a position"
         },
         {
           "endpoint": "/trade/v1/positions/exercise",
           "method": "PUT",
+          "isFrequentlyUsed": true,
           "title": "Exercise an amount"
         }
       ]
@@ -711,121 +667,145 @@
         {
           "endpoint": "/chart/v1/charts",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get chart data"
         },
         {
           "endpoint": "/chart/v1/charts/subscriptions",
           "method": "POST",
+          "isFrequentlyUsed": true,
           "title": "Create a subscription on chart data"
         },
         {
           "endpoint": "/chart/v1/charts/subscriptions/{ContextId}",
           "method": "DELETE",
+          "isFrequentlyUsed": true,
           "title": "Remove multiple subscriptions"
         },
         {
           "endpoint": "/chart/v1/charts/subscriptions/{ContextId}/{ReferenceId}",
           "method": "DELETE",
-          "title": "Remove subscription"
+          "isFrequentlyUsed": true,
+          "title": "Remove chart subscription"
         },
         {
           "endpoint": "/trade/v1/infoprices",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get an info price for a specific instrument"
         },
         {
           "endpoint": "/trade/v1/infoprices/list",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get info prices for a list of instruments"
         },
         {
           "endpoint": "/trade/v1/infoprices/subscriptions",
           "method": "POST",
+          "isFrequentlyUsed": true,
           "title": "Create an active info price subscription on an list of instruments"
         },
         {
           "endpoint": "/trade/v1/infoprices/subscriptions/{ContextId}",
           "method": "DELETE",
+          "isFrequentlyUsed": true,
           "title": "Remove info price subscriptions on instruments"
         },
         {
           "endpoint": "/trade/v1/infoprices/subscriptions/{ContextId}/{ReferenceId}",
           "method": "DELETE",
+          "isFrequentlyUsed": true,
           "title": "Remove info price subscription on an instrument"
         },
         {
           "endpoint": "/trade/v1/prices/subscriptions",
           "method": "POST",
+          "isFrequentlyUsed": true,
           "title": "Create a price subscription on an instrument"
         },
         {
           "endpoint": "/trade/v1/prices/subscriptions/{ContextId}/{ReferenceId}/MarginImpact",
           "method": "PUT",
+          "isFrequentlyUsed": true,
           "title": "Request margin impact on one price update"
         },
         {
           "endpoint": "/trade/v1/prices/subscriptions/{ContextId}",
           "method": "DELETE",
+          "isFrequentlyUsed": true,
           "title": "Remove multiple instrument price subscriptions"
         },
         {
           "endpoint": "/trade/v1/prices/subscriptions/{ContextId}/{ReferenceId}",
           "method": "DELETE",
+          "isFrequentlyUsed": true,
           "title": "Remove an instrument price subscription"
         },
         {
           "endpoint": "/trade/v1/prices/multileg",
           "method": "POST",
+          "isFrequentlyUsed": true,
           "title": "Get a price snapshot for a multi-leg strategy"
         },
         {
           "endpoint": "/trade/v1/prices/multileg/subscriptions",
           "method": "POST",
+          "isFrequentlyUsed": true,
           "title": "Create a price subscription on a multi-leg strategy"
         },
         {
           "endpoint": "/trade/v1/prices/multileg/subscriptions/{ContextId}",
           "method": "DELETE",
+          "isFrequentlyUsed": true,
           "title": "Remove a multi-leg price subscriptions"
         },
         {
           "endpoint": "/trade/v1/prices/multileg/subscriptions/{ContextId}/{ReferenceId}",
           "method": "DELETE",
+          "isFrequentlyUsed": true,
           "title": "Remove a multi-leg price subscription"
         },
         {
           "endpoint": "/vas/v1/pricealerts/definitions",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get all price alert definitions"
         },
         {
           "endpoint": "/vas/v1/pricealerts/definitions/{AlertDefinitionId}",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get a price alert definition"
         },
         {
           "endpoint": "/vas/v1/pricealerts/definitions",
           "method": "POST",
+          "isFrequentlyUsed": true,
           "title": "Create a price alert definition"
         },
         {
           "endpoint": "/vas/v1/pricealerts/definitions/{AlertDefinitionId}",
           "method": "PUT",
+          "isFrequentlyUsed": true,
           "title": "Update a price alert definition"
         },
         {
           "endpoint": "/vas/v1/pricealerts/definitions/{AlertDefinitionIds}",
           "method": "DELETE",
+          "isFrequentlyUsed": true,
           "title": "Delete price alert definitions"
         },
         {
           "endpoint": "/vas/v1/pricealerts/usersettings",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get notification settings"
         },
         {
           "endpoint": "/vas/v1/pricealerts/usersettings",
           "method": "PUT",
+          "isFrequentlyUsed": true,
           "title": "Update notification settings"
         }
       ]
@@ -837,61 +817,73 @@
         {
           "endpoint": "/ref/v1/algostrategies",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get all strategies supported by Saxo Bank"
         },
         {
           "endpoint": "/ref/v1/algostrategies/{Name}",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get details about a specific strategy"
         },
         {
           "endpoint": "/ref/v1/countries",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get all supported countries"
         },
         {
           "endpoint": "/ref/v1/cultures",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Get all supported cultures for user preference localization"
         },
         {
           "endpoint": "/ref/v1/currencies",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Get all supported currencies"
         },
         {
           "endpoint": "/ref/v1/currencypairs",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get all supported currency pairs"
         },
         {
           "endpoint": "/ref/v1/exchanges",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get all exchanges"
         },
         {
           "endpoint": "/ref/v1/exchanges/{ExchangeId}",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get details about a specific exchange"
         },
         {
           "endpoint": "/ref/v1/languages",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Get all supported languages"
         },
         {
           "endpoint": "ref/v1/standarddates/forwardtenor/{Uic}",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Get a list of forward tenor dates"
         },
         {
           "endpoint": "/ref/v1/standarddates/fxoptionexpiry/{Uic}",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get a list of FX option expiry dates"
         },
         {
           "endpoint": "/ref/v1/timezones",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Get a list of all timezones"
         }
       ]
@@ -903,46 +895,55 @@
         {
           "endpoint": "/cr/v1/reports/Portfolio/{ClientKey}/{Fromdate}/{ToDate}",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Get a portfolio report"
         },
         {
           "endpoint": "/cr/v1/reports/Portfolio/me/{Fromdate}/{ToDate}",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get portfolio report for the logged in user"
         },
         {
           "endpoint": "/cr/v1/reports/TradeDetails/{ClientKey}",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Get a trade details report"
         },
         {
           "endpoint": "/cr/v1/reports/TradesExecuted/{ClientKey}",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Get trades executed report"
         },
         {
           "endpoint": "/cs/v1/audit/activities",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Get activities"
         },
         {
           "endpoint": "/cs/v1/audit/orderactivities",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Get order activities history"
         },
         {
           "endpoint": "/cs/v1/reports/aggregatedAmounts/{ClientKey}/{FromDate}/{ToDate}",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Get all aggregated amounts between two dates"
         },
         {
           "endpoint": "/cs/v1/reports/bookings/{ClientKey}",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Get bookings"
         },
         {
           "endpoint": "/cs/v1/reports/trades/{ClientKey}",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Gets all trades for dates or tradeId"
         }
       ]
@@ -954,31 +955,37 @@
         {
           "endpoint": "/root/v1/sessions/capabilities",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get the sessions capabilities"
         },
         {
           "endpoint": "/root/v1/sessions/capabilities",
           "method": "PUT",
+          "isFrequentlyUsed": true,
           "title": "Change the sessions capabilities"
         },
         {
           "endpoint": "/root/v1/sessions/capabilities",
           "method": "PATCH",
+          "isFrequentlyUsed": true,
           "title": "Change the sessions capabilities"
         },
         {
           "endpoint": "/root/v1/sessions/events/subscriptions",
           "method": "POST",
+          "isFrequentlyUsed": true,
           "title": "Create a session capabilities subscription"
         },
         {
           "endpoint": "root/v1/sessions/events/subscriptions/{ContextId}/{ReferenceId}",
           "method": "DELETE",
+          "isFrequentlyUsed": true,
           "title": "Remove session capabilities subscription"
         },
         {
           "endpoint": "/root/v1/subscriptions/{ContextId}/?Tag={Tag}",
           "method": "DELETE",
+          "isFrequentlyUsed": true,
           "title": "Remove multiple active subscriptions"
         }
       ]
@@ -990,36 +997,43 @@
         {
           "endpoint": "/cs/v1/partner/support/cases",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get a list of all support cases"
         },
         {
           "endpoint": "/cs/v1/partner/support/cases/{CaseId}",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Get a specific support case"
         },
         {
           "endpoint": "/cs/v1/partner/support/cases/{CaseId}/caseclose",
           "method": "PUT",
+          "isFrequentlyUsed": false,
           "title": "Close a specific support case"
         },
         {
           "endpoint": "cs/v1/partner/support/cases/{CaseId}/internalcomment",
           "method": "POST",
+          "isFrequentlyUsed": false,
           "title": "Create internal comment under a case"
         },
         {
           "endpoint": "/cs/v1/partner/support/cases/{CaseId}/note",
           "method": "POST",
+          "isFrequentlyUsed": false,
           "title": "Create note under a case"
         },
         {
           "endpoint": "/cs/v1/partner/support/cases/{CaseId}",
           "method": "PATCH",
+          "isFrequentlyUsed": false,
           "title": "Update support case"
         },
         {
           "endpoint": "/cs/v1/partner/support/cases",
           "method": "POST",
+          "isFrequentlyUsed": false,
           "title": "Facilitates an IB to create a new case on behalf of its client"
         }
       ]
@@ -1031,16 +1045,19 @@
         {
           "endpoint": "/cs/v1/tradingconditions/instrument/{AccountKey}/{Uic}/{AssetType}",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Trading conditions for all instruments except contract options"
         },
         {
           "endpoint": "/cs/v1/tradingconditions/ContractOptionSpaces/{AccountKey}/{OptionRootId}",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get trading conditions for a contract option"
         },
         {
           "endpoint": "/cs/v1/tradingconditions/cost/{AccountKey}/{Uic}/{AssetType}",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Get pre-trade cost illustration for regular instruments"
         }
       ]
@@ -1052,72 +1069,254 @@
         {
           "endpoint": "/atr/v1/cashmanagement/beneficiaryinstructions",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Cash Management - Beneficiary Instructions"
         },
         {
           "endpoint": "/atr/v1/cashmanagement/withdrawals",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "CashManagement - Cash Withdrawal"
         },
         {
           "endpoint": "/atr/v1/cashmanagement/withdrawallimits",
           "method": "POST",
+          "isFrequentlyUsed": false,
           "title": "Get available amount for withdrawal"
         },
         {
           "endpoint": "/atr/v1/partner/cashtransfers%2\u00a0",
           "method": "POST",
+          "isFrequentlyUsed": false,
           "title": "Cash transfer initiated by partner"
         },
         {
           "endpoint": "/atr/v1/partner/cashtransfers",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Fetches the latest status of fund transfers"
         },
         {
           "endpoint": "/atr/v1/partner/cashtransfers",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Fetches a summary of transfers"
         },
         {
           "endpoint": "/atr/v1/partner/cashtransferlimits",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Get available amount for transfer.\u00c2\u00a0"
         },
         {
           "endpoint": "/atr/v1/partner/cashtransferlimits",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Get available amount for transfer"
         },
         {
           "endpoint": "/atr/v1/partner/prebookedfunds",
           "method": "POST",
+          "isFrequentlyUsed": false,
           "title": "Credit client account based on pre-advice"
         },
         {
           "endpoint": "/atr/v1/securitiestransfers/transfers",
           "method": "POST",
+          "isFrequentlyUsed": false,
           "title": "Submit Securities Transfer Request"
         },
         {
           "endpoint": "atr/v1/securitiestransfers/brokers",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Get list of brokers for the given ISO Country Code"
         },
         {
           "endpoint": "/atr/v1/securitiestransfers/transfers",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Get list of Security Transfers"
         },
         {
           "endpoint": "/cs/v2/cashmanagement/interaccounttransfers",
           "method": "POST",
+          "isFrequentlyUsed": false,
           "title": "Submit interaccount transfer"
         },
         {
           "endpoint": "/cs/v2/cashmanagement/wiretransfers/instructions",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Get wiretransfer instructions"
+        }
+      ]
+    },
+    {
+      "name": "Allocation Keys",
+      "articles": "",
+      "endpoints": [
+        {
+          "endpoint": "/trade/v1/allocationkeys",
+          "method": "GET",
+          "isFrequentlyUsed": true,
+          "title": "Get a list of existing allocation keys"
+        },
+        {
+          "endpoint": "/trade/v1/allocationkeys/{AllocationKeyId}",
+          "method": "GET",
+          "isFrequentlyUsed": false,
+          "title": "Get detailed information about an allocation key"
+        },
+        {
+          "endpoint": "/trade/v1/allocationkeys/distributions/{AllocationKeyId}",
+          "method": "GET",
+          "isFrequentlyUsed": false,
+          "title": "Get distributed amount for a given allocation key"
+        },
+        {
+          "endpoint": "/trade/v1/allocationkeys",
+          "method": "POST",
+          "isFrequentlyUsed": false,
+          "title": "Create an allocation key"
+        },
+        {
+          "endpoint": "/trade/v1/allocationkeys/{AllocationKeyId}",
+          "method": "DELETE",
+          "isFrequentlyUsed": false,
+          "title": "Delete allocation key"
+        }
+      ]
+    },
+    {
+      "name": "Coorporate Actions",
+      "articles": "",
+      "endpoints": [
+        {
+          "endpoint": "/ca/v2/elections",
+          "method": "PUT",
+          "isFrequentlyUsed": false,
+          "title": "Send election instruction"
+        },
+        {
+          "endpoint": "/ca/v2/elections/bulk",
+          "method": "PUT",
+          "isFrequentlyUsed": false,
+          "title": "Send bulk election instructions"
+        },
+        {
+          "endpoint": "/ca/v2/events/lookupdata",
+          "method": "GET",
+          "isFrequentlyUsed": false,
+          "title": "Lookup for filters"
+        },
+        {
+          "endpoint": "/ca/v2/events",
+          "method": "GET",
+          "isFrequentlyUsed": false,
+          "title": "Get corporate action events"
+        },
+        {
+          "endpoint": "/ca/v2/events/{EventId}",
+          "method": "GET",
+          "isFrequentlyUsed": false,
+          "title": "Get corporate action event"
+        },
+        {
+          "endpoint": "/ca/v2/holdings",
+          "method": "GET",
+          "isFrequentlyUsed": false,
+          "title": "Get client holdings"
+        },
+        {
+          "endpoint": "/ca/v1/proxyvoting/events",
+          "method": "GET",
+          "isFrequentlyUsed": false,
+          "title": "Get proxy voting events for client"
+        },
+        {
+          "endpoint": "/ca/v2/standinginstructions",
+          "method": "GET",
+          "isFrequentlyUsed": true,
+          "title": "Get standing instructions"
+        },
+        {
+          "endpoint": "/ca/v2/standinginstructions",
+          "method": "POST",
+          "isFrequentlyUsed": false,
+          "title": "Create new standing instruction"
+        },
+        {
+          "endpoint": "/ca/v2/standinginstructions",
+          "method": "DELETE",
+          "isFrequentlyUsed": false,
+          "title": "Delete standing instructions"
+        }
+      ]
+    },
+    {
+      "name": "Debug",
+      "articles": "",
+      "endpoints": [
+        {
+          "endpoint": "/root/v1/features/availability",
+          "method": "GET",
+          "isFrequentlyUsed": true,
+          "title": "Get the availability of all features"
+        },
+        {
+          "endpoint": "/root/v1/features/availability/subscriptions",
+          "method": "POST",
+          "isFrequentlyUsed": false,
+          "title": "Create a feature availability subscription"
+        },
+        {
+          "endpoint": "/root/v1/features/availability/subscriptions/{ContextId}/{ReferenceId}",
+          "method": "DELETE",
+          "isFrequentlyUsed": false,
+          "title": "Remove a feature availability subscription"
+        }
+      ]
+    },
+    {
+      "name": "Documents",
+      "articles": "",
+      "endpoints": [
+        {
+          "endpoint": "/mkt/v1/instruments/{Uic}/{AssetType}/documents/recommended",
+          "method": "GET",
+          "isFrequentlyUsed": true,
+          "title": "Gets list of recommended instrument document information"
+        },
+        {
+          "endpoint": "/mkt/v1/instruments/{Uic}/{AssetType}/documents/pdf",
+          "method": "GET",
+          "isFrequentlyUsed": true,
+          "title": "Gets document related to instrument"
+        }
+      ]
+    },
+    {
+      "name": "Exposure",
+      "articles": "",
+      "endpoints": [
+        {
+          "endpoint": "/port/v1/exposure/instruments/subscriptions",
+          "method": "POST",
+          "isFrequentlyUsed": true,
+          "title": "Create a subscription on a list of instrument exposure and make it active"
+        },
+        {
+          "endpoint": "/port/v1/exposure/instruments/subscriptions/{ContextId}",
+          "method": "DELETE",
+          "isFrequentlyUsed": true,
+          "title": "Remove multiple subscriptions"
+        },
+        {
+          "endpoint": "/port/v1/exposure/instruments/subscriptions/{ContextId}/{ReferenceId}",
+          "method": "DELETE",
+          "isFrequentlyUsed": true,
+          "title": "Remove subscription"
         }
       ]
     },
@@ -1128,36 +1327,43 @@
         {
           "endpoint": "/cm/v1/users/resetpasswordrequest",
           "method": "POST",
+          "isFrequentlyUsed": false,
           "title": "Request a password reset"
         },
         {
           "endpoint": "/port/v1/users/me",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get details about the logged in user"
         },
         {
           "endpoint": "/port/v1/users",
           "method": "GET",
+          "isFrequentlyUsed": false,
           "title": "Get all users under a particular owner"
         },
         {
           "endpoint": "/port/v1/users/{UserKey}",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get the details about a user"
         },
         {
           "endpoint": "/port/v1/users/me",
           "method": "PATCH",
+          "isFrequentlyUsed": true,
           "title": "Update user preferences"
         },
         {
           "endpoint": "/port/v1/users/me/entitlements",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get price subscriptions"
         },
         {
           "endpoint": "/root/v1/user",
           "method": "GET",
+          "isFrequentlyUsed": true,
           "title": "Get information about the active user"
         }
       ]

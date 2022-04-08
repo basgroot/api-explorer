@@ -56,6 +56,9 @@
                     serviceGroup.endpoints.forEach(function (endpoint) {
                         let url = getUrl(endpoint.method, endpoint.endpoint);
                         let link = createLink(endpoint.title, url);
+                        if (!endpoint.isFrequentlyUsed) {
+                            link.style.display = "none";
+                        }
                         links.appendChild(link);
                         links.appendChild(getLineBreak());
                     });
