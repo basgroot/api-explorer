@@ -1,0 +1,53 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="../css/articles.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <script>
+      (function() {
+        var element = document.getElementById("json");
+        if (element != null) {
+          var obj = JSON.parse(element.innerText);
+          element.innerHTML = JSON.stringify(obj, undefined, 2);
+        }})();
+    </script>
+  </head>
+<body>
+  <div class="article">
+          <h1>Prices</h1> <br/>
+          <div class="article-body">
+            <div class ="grey-box">
+              <div class="two-pane">
+                <div class="left-pane-2">
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>                
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <p>Read more here: link.</p>
+              </div>
+                <div class="right-pane-2">
+                  
+                  <div class="code-box-white">
+                    <h2>Endpoints</h2>
+                    <pre class="json">
+    Prices
+    POST /trade/v1/prices/subscriptions
+    PUT /trade/v1/prices/subscriptions/{ContextId}/{ReferenceId}/MarginImpact
+    DELETE /trade/v1/prices/subscriptions/{ContextId}
+
+    Info Prices
+    GET /trade/v1/infoprices
+    GET /trade/v1/infoprices/list
+    POST /trade/v1/infoprices/subscriptions
+    DELETE /trade/v1/infoprices/subscriptions/{ContextId}
+
+    Option Chains
+    POST /trade/v1/optionschain/subscriptions
+    PATCH /trade/v1/optionschain/subscriptions/{ContextId}/{ReferenceId}
+    DELETE /trade/v1/optionschain/subscriptions/{ContextId}/{ReferenceId}
+                    </pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>          
+  </div>  
+</body>
+</html>
