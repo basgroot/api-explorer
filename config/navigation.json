@@ -92,7 +92,7 @@
           "endpoint": "/port/v1/accountgroups/me",
           "method": "GET",
           "isFrequentlyUsed": true,
-          "title": "Get your accounts groups"
+          "title": "Get your account groups"
         },
         {
           "endpoint": "/port/v1/accountgroups/{AccountGroupKey}",
@@ -104,7 +104,7 @@
           "endpoint": "/port/v1/accountgroups",
           "method": "GET",
           "isFrequentlyUsed": false,
-          "title": "Get a list of all accounts groups of a client"
+          "title": "Get a list of all account groups of a client"
         },
         {
           "endpoint": "/port/v1/accountgroups/{AccountGroupKey}",

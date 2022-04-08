@@ -37,6 +37,7 @@
     fetch("https://basgroot.github.io/api-explorer/config/navigation.json").then(function (response) {
         if (response.ok) {
             response.json().then(function (responseJson) {
+                const showFullMenu = getQueryParameter("all", "") === "1";
                 const d = document.getElementById("left-nav-content");
                 responseJson.serviceGroups.forEach(function (serviceGroup) {
                     const tag = createTag(serviceGroup.name);
@@ -54,13 +55,12 @@
                         }
                     });
                     serviceGroup.endpoints.forEach(function (endpoint) {
-                        let url = getUrl(endpoint.method, endpoint.endpoint);
-                        let link = createLink(endpoint.title, url);
-                        if (!endpoint.isFrequentlyUsed) {
-                            link.style.display = "none";
+                        if (endpoint.isFrequentlyUsed || showFullMenu) {
+                            let url = getUrl(endpoint.method, endpoint.endpoint);
+                            let link = createLink(endpoint.title, url);
+                            links.appendChild(link);
+                            links.appendChild(getLineBreak());
                         }
-                        links.appendChild(link);
-                        links.appendChild(getLineBreak());
                     });
                     d.appendChild(tag);
                     d.appendChild(links);
