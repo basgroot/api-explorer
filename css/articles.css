@@ -100,7 +100,7 @@ details summary > * {
 }
 
 .inside-box {
-  padding-left: 10px;
+  padding-left: 20px;
   padding-top: 10px;
   padding-right: 30px;
 }
@@ -111,7 +111,8 @@ h2.inside-box {
 
 h1.black {
   color: black;
-  padding-top: 10px;
+  padding-top: 20px;
+  padding-left: 20px;
 }
 
 

@@ -131,6 +131,8 @@ function loadArticles(mainContentElement) {
             if (response.ok) {
                 response.text().then(function (responseText) {
                     articleElement.innerHTML = responseText;
+                    articleElement.appendChild(document.createElement("br"));
+                    articleElement.appendChild(document.createElement("br"));
                 });
             } else {
                 console.error(response);
