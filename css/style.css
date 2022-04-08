@@ -150,19 +150,20 @@ a.nav-text:active {
   height: 100vh;
   background-color: #fff;
   }
-  
-  
-  
-  .center{
-  width: 50%;
-  height: 100vh;
-  background-color: #fff;
-  }
 
-  .right{
-    width: 30%;
+  .right {
+    width: 80%;
     height: 100vh;
     background-color: #fff;
+    display: flex;
+  }
+
+  .right-inner-1 {
+    width: 70%;
+  }
+
+  .right-inner-2 {
+    width: 30%;
     padding: 25px 10px 10px 10px;
   }
   

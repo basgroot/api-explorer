@@ -254,11 +254,14 @@
         const endpoint = getQueryParameter("endpoint", "");
         const mainContentElement = document.getElementById("idMainContent");
         if (httpMethod === "" && endpoint === "") {
+            console.log("here");
             // Hide Explorer:
             document.getElementById("idExplorer").style.display = "none";
+            document.getElementById("right-inner-2").style.width = "0%";
             // Load article(s):
             loadArticles(mainContentElement);
         } else {
+            console.log("no here");
             yamlUtils.properties.method = httpMethod;
             yamlUtils.properties.endpoint = endpoint;
             // Show Explorer:
