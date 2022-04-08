@@ -5,13 +5,13 @@
     <script>
       (function() {
         var element = document.getElementById("json");
-        var obj = JSON.parse(element.innerText);
-        element.innerHTML = JSON.stringify(obj, undefined, 2);
-        })();
+        if (element != null) {
+          var obj = JSON.parse(element.innerText);
+          element.innerHTML = JSON.stringify(obj, undefined, 2);
+        }})();
     </script>
     <script>
       function ExpandOrCollapse() {
-        console.log(event.target.id);
         let button = document.getElementById(event.target.id);
         let body = document.getElementsByClassName("article-body")[0];
         if (body.style.display == "none") {
@@ -22,9 +22,7 @@
       }
 
       function ExpandOrCollapseTable() {
-        console.log(event.target);
         let button = document.getElementById(event.target.id);
-        console.log(button);
         var content = button.nextElementSibling;
           if (content.style.display === "block") {
             content.style.display = "none";
