@@ -229,7 +229,7 @@
           "title": "Initiate verification process from external vendor"
         },
         {
-          "endpoint": "cs/v2/clientinfo/clients/search",
+          "endpoint": "/cs/v2/clientinfo/clients/search",
           "method": "POST",
           "title": "Search all child counterparts based on ownerId"
         },
@@ -1003,7 +1003,7 @@
           "title": "Close a specific support case"
         },
         {
-          "endpoint": "cs/v1/partner/support/cases/{CaseId}/internalcomment",
+          "endpoint": "/cs/v1/partner/support/cases/{CaseId}/internalcomment",
           "method": "POST",
           "title": "Create internal comment under a case"
         },
