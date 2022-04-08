@@ -116,9 +116,27 @@ function getToken(data, callback) {
     });
 }
 
-function loadArticles() {
+function loadArticles(mainContentElement) {
     const articles = getQueryParameter("art", "welcome.html");
+    mainContentElement.innerHTML = "";
     articles.split(",").forEach(function (article) {
-        //alert(article);
+        const articleElement = document.createElement("div");
+        mainContentElement.appendChild(articleElement);
+        fetch(
+            "articles/" + article,
+            {
+                "method": "GET"
+            }
+        ).then(function (response) {
+            if (response.ok) {
+                response.text().then(function (responseText) {
+                    articleElement.innerHTML = responseText;
+                });
+            } else {
+                console.error(response);
+            }
+        }).catch(function (error) {
+            console.error(error);
+        });
     });
 }

@@ -252,17 +252,17 @@
         yamlUtils.init();  // Reset cache
         const httpMethod = getQueryParameter("method", "").toLowerCase();
         const endpoint = getQueryParameter("endpoint", "");
-        let articles;
+        const mainContentElement = document.getElementById("idMainContent");
         if (httpMethod === "" && endpoint === "") {
             // Hide Explorer:
-            
+            document.getElementById("idExplorer").style.display = "none";
             // Load article(s):
-            document.getElementById("idMainContent").innerHTML = loadArticles();
+            loadArticles(mainContentElement);
         } else {
             yamlUtils.properties.method = httpMethod;
             yamlUtils.properties.endpoint = endpoint;
             // Show Explorer:
-            
+            document.getElementById("idExplorer").style.display = "";
             // Get method from the URL:
             document.getElementById("idHttpMethod").innerText = httpMethod.toUpperCase();
             // Get endpoint from the URL:
@@ -274,7 +274,7 @@
             // Get the request object from the yaml file:
             populateTextArea("idRequestBody", yamlUtils.getRequestBody(endpoint, httpMethod));
             // Get the reference documentation from yaml:
-            document.getElementById("idMainContent").innerHTML = yamlUtils.getRefDoc(endpoint, httpMethod);
+            mainContentElement.innerHTML = yamlUtils.getRefDoc(endpoint, httpMethod);
         }
     }
 
