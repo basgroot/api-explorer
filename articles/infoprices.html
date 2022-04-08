@@ -1,0 +1,33 @@
+<html>
+<body>
+  <div class="article">
+    <h1>Info Prices</h1>
+    <p>A light weight version of the Prices resources without the ability to trade on quotes. Perfect for any application that just needs to display prices either from single requests or continuous streams.</p> <br\>
+    <h2> The Info Price Object</h2>
+    <div class="two-pane">
+      <div class="left">
+        <p>The object contains at least the Quote field group. But it can also hold more information such as display details like x and other stuff like y depending on which field groups you ask for.</p>
+        <p> TABLE PLACE HOLDER</p>
+      </div>
+      <div class="right">
+        <p>ENDPOINTS PLACE HOLDER</p>
+      </div>
+    </div>
+    <h2>Streaming info prices</h2>
+    <p>You have the option to stream info prices via WebSocket. This saves you the energy (and bandwidth) of constantly polling our REST endpoints and helps you avoid hitting our throttling limits. The prerequisite here is of course that you have to be authenticated. When you have a valid access token follow these steps:</p>
+    <p>STEPS PLACE HOLDER</p>
+    <p>For more details and best practice around using our streaming services we advice you to read this article: streaming.</p>
+    <h2>Static Methods</h2>
+    <p class="code">GET /trade/v1/infoprices</p>
+    <p class="code">GET /trade/v1/infoprices/list</p>
+    <p class="code">POST /trade/v1/infoprices/subscriptions</p>
+    <p class="code">DELETE /trade/v1/infoprices/subscriptions/{ContextId}</p>
+    <p class="code">DELETE /trade/v1/infoprices/subscriptions/{ContextId}/{ReferenceId} </p>
+    <h2>Important Parameters</h2>
+    <p>When parsing parameters to get info prices either as snapshots or streaming data, there are some parameters that are important to consider.</p>
+    <p>PLACE HOLDER FOR PARMAETERS</p>
+    <h2>Different types of info prices</h2>
+    <p>Depending on what instrument you are getting prices for and your configuration there are different kinds of prices you can get.</p>
+  </div>
+</body>
+</html>
