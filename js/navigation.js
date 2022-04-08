@@ -29,11 +29,6 @@
         return b;
     }
 
-    function getUrl(method, endpoint) {
-        const url = "index.html#method=" + method + "&endpoint=" + encodeURIComponent(endpoint);
-        return url;
-    }
-
     fetch("https://basgroot.github.io/api-explorer/config/navigation.json").then(function (response) {
         if (response.ok) {
             response.json().then(function (responseJson) {
@@ -42,6 +37,7 @@
                 responseJson.serviceGroups.forEach(function (serviceGroup) {
                     const tag = createTag(serviceGroup.name);
                     const links = getLinkWrapper();
+                    const showAll = createLink("Show all..", "");
                     tag.addEventListener("click", function () {
                         this.classList.toggle("active");
                         const content = this.nextElementSibling;
@@ -56,12 +52,30 @@
                     });
                     serviceGroup.endpoints.forEach(function (endpoint) {
                         if (endpoint.isFrequentlyUsed || showFullMenu) {
-                            let url = getUrl(endpoint.method, endpoint.endpoint);
+                            let url = "index.html#method=" + endpoint.method + "&endpoint=" + encodeURIComponent(endpoint.endpoint);
                             let link = createLink(endpoint.title, url);
                             links.appendChild(link);
                             links.appendChild(getLineBreak());
                         }
                     });
+                    showAll.addEventListener("click", function (evt) {
+                        serviceGroup.endpoints.forEach(function (endpoint) {
+                            // Add the less common endpoints:
+                            if (!endpoint.isFrequentlyUsed && !showFullMenu) {
+                                let url = "index.html#method=" + endpoint.method + "&endpoint=" + encodeURIComponent(endpoint.endpoint);
+                                let link = createLink(endpoint.title, url);
+                                links.appendChild(link);
+                                links.appendChild(getLineBreak());
+                            }
+                            // And hide the showAll:
+                            showAll.style.display = "none";
+                        });
+                        evt.preventDefault();
+                    });
+                    if (!showFullMenu) {
+                        // Only when not all menu items are visible
+                        links.appendChild(showAll);
+                    }
                     d.appendChild(tag);
                     d.appendChild(links);
                 });
