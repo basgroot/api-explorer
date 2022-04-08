@@ -70,16 +70,6 @@ function yaml() {
         });
     }
 
-    function getHttpMethod() {
-        properties.method = getQueryParameter("method", "POST");
-        return properties.method.toLowerCase();
-    }
-
-    function getEndpoint() {
-        properties.endpoint = getQueryParameter("endpoint", "/trade/v1/infoprices/subscriptions");
-        return properties.endpoint;
-    }
-
     function findEndpointInYaml(endpoint, httpMethod) {
         let isPathsSegmentActive = false;
         let isEndpointActive = false;
@@ -403,8 +393,6 @@ function yaml() {
     function setupYaml() {
         return Object.freeze({
             init,
-            getHttpMethod,
-            getEndpoint,
             getParameters,
             getRequestBody,
             getRefDoc,

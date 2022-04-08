@@ -250,21 +250,32 @@
         }
 
         yamlUtils.init();  // Reset cache
-        const httpMethod = yamlUtils.getHttpMethod();
-        const endpoint = yamlUtils.getEndpoint();
-        // Get method from the URL:
-        document.getElementById("idHttpMethod").innerText = httpMethod.toUpperCase();
-        // Get endpoint from the URL:
-        document.getElementById("idEndpoint").innerText = endpoint;
-
-        // Get the path parameters from the yaml file:
-        populateTextArea("idPathParameters", yamlUtils.getParameters(endpoint, httpMethod, "path"));
-        // Get the query parameters from the yaml file:
-        populateTextArea("idQueryParameters", yamlUtils.getParameters(endpoint, httpMethod, "query"));
-        // Get the request object from the yaml file:
-        populateTextArea("idRequestBody", yamlUtils.getRequestBody(endpoint, httpMethod));
-        // Get the reference documentation from yaml:
-        document.getElementById("idRefDoc").innerHTML = yamlUtils.getRefDoc(endpoint, httpMethod);
+        const httpMethod = getQueryParameter("method", "").toLowerCase();
+        const endpoint = getQueryParameter("endpoint", "");
+        let articles;
+        if (httpMethod === "" && endpoint === "") {
+            // Hide Explorer:
+            
+            // Load article(s):
+            document.getElementById("idMainContent").innerHTML = loadArticles();
+        } else {
+            yamlUtils.properties.method = httpMethod;
+            yamlUtils.properties.endpoint = endpoint;
+            // Show Explorer:
+            
+            // Get method from the URL:
+            document.getElementById("idHttpMethod").innerText = httpMethod.toUpperCase();
+            // Get endpoint from the URL:
+            document.getElementById("idEndpoint").innerText = endpoint;
+            // Get the path parameters from the yaml file:
+            populateTextArea("idPathParameters", yamlUtils.getParameters(endpoint, httpMethod, "path"));
+            // Get the query parameters from the yaml file:
+            populateTextArea("idQueryParameters", yamlUtils.getParameters(endpoint, httpMethod, "query"));
+            // Get the request object from the yaml file:
+            populateTextArea("idRequestBody", yamlUtils.getRequestBody(endpoint, httpMethod));
+            // Get the reference documentation from yaml:
+            document.getElementById("idMainContent").innerHTML = yamlUtils.getRefDoc(endpoint, httpMethod);
+        }
     }
 
     setupEvents();

@@ -16,7 +16,6 @@ function getQueryParameter(queryParameter, defaultValue) {
         if (value) {
             return value;
         } else {
-            console.error(queryParameter + " not specified in the query params - defaulting to " + defaultValue);
             return defaultValue;
         }
     } else {
@@ -117,3 +116,9 @@ function getToken(data, callback) {
     });
 }
 
+function loadArticles() {
+    const articles = getQueryParameter("art", "welcome.html");
+    articles.split(",").forEach(function (article) {
+        //alert(article);
+    });
+}
