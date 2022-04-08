@@ -117,13 +117,13 @@ function getToken(data, callback) {
 }
 
 function loadArticles(mainContentElement) {
-    const articles = getQueryParameter("art", "welcome.html");
+    const articles = getQueryParameter("art", "welcome");
     mainContentElement.innerHTML = "";
     articles.split(",").forEach(function (article) {
         const articleElement = document.createElement("div");
         mainContentElement.appendChild(articleElement);
         fetch(
-            "articles/" + article,
+            "articles/" + article + ".html",
             {
                 "method": "GET"
             }

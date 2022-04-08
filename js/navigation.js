@@ -20,7 +20,7 @@
         const l = document.createElement("a");
         l.href = target;
         l.text = title;
-        l.className = "nav-text"
+        l.className = "nav-text";
         return l;
     }
 
@@ -34,41 +34,34 @@
         return url;
     }
 
-    fetch("https://basgroot.github.io/api-explorer/config/navigation_new.json").then(function (response) {
+    fetch("https://basgroot.github.io/api-explorer/config/navigation.json").then(function (response) {
         if (response.ok) {
             response.json().then(function (responseJson) {
                 const d = document.getElementById("left-nav-content");
-                let tagName;
-                let i;
-                for (tagName in responseJson) {
-                    if (tagName !== "Tag") {
-                        const tag = createTag(tagName);
-                        const links = getLinkWrapper();
-                        for (i in responseJson[tagName]) {
-                            let title = responseJson[tagName][i].title;
-                            let method =  responseJson[tagName][i].method;
-                            let endpoint =  responseJson[tagName][i].endpoint;
-                            let url = getUrl(method, endpoint);
-                            let link = createLink(title, url);
-                            links.appendChild(link);
-                            links.appendChild(getLineBreak());
-                        }
-                        d.appendChild(tag);
-                        d.appendChild(links);
-                    }
-                }
-                const coll = document.getElementsByClassName("collapsible");
-                for (i = 0; i < coll.length; i += 1) {
-                    coll[i].addEventListener("click", function() {
+                responseJson.serviceGroups.forEach(function (serviceGroup) {
+                    const tag = createTag(serviceGroup.name);
+                    const links = getLinkWrapper();
+                    tag.addEventListener("click", function () {
                         this.classList.toggle("active");
                         const content = this.nextElementSibling;
-                        if (content.style.maxHeight){
+                        if (content.style.maxHeight) {
                             content.style.maxHeight = null;
                         } else {
                             content.style.maxHeight = content.scrollHeight + "px";
                         }
+                        if (serviceGroup.articles !== "") {
+                            window.location.href = "#art=" + serviceGroup.articles;
+                        }
                     });
-                }
+                    serviceGroup.endpoints.forEach(function (endpoint) {
+                        let url = getUrl(endpoint.method, endpoint.endpoint);
+                        let link = createLink(endpoint.title, url);
+                        links.appendChild(link);
+                        links.appendChild(getLineBreak());
+                    });
+                    d.appendChild(tag);
+                    d.appendChild(links);
+                });
             });
         } else {
             console.error("Error loading navigation: " + response.status + " " + response.statusText);
