@@ -17,6 +17,7 @@ function yaml() {
       "ReferenceId": "MyReferenceId",
       "RefreshRate": 200
     };
+    let lastLoadedFile = "";
 
     function init() {
         properties.method = "";
@@ -48,6 +49,11 @@ function yaml() {
         const endpoint = getQueryParameter("endpoint", "/trade/v1/infoprices/subscriptions");
         const service = endpoint.substring(1, endpoint.indexOf("/", 1));
         const url = "https://basgroot.github.io/api-explorer/oas/" + service + ".yaml";
+        if (lastLoadedFile === url) {
+            // File already downloaded.
+            callback();
+            return;
+        }
         fetch(
             url,
             {
@@ -58,6 +64,7 @@ function yaml() {
         ).then(function (response) {
             if (response.ok) {
                 response.text().then(function (textFile) {
+                    lastLoadedFile = url;
                     properties.file = textFile.replace(/\r/g, "").split(/\n/g);
                     console.log("Download successful: " + url);
                     callback();
