@@ -165,7 +165,8 @@ p {
 }
 
 .logo {
-  height: 70%;
+  height: 35%;
+  padding-left: 20px;
 }
 
 .header-logo {
@@ -173,22 +174,23 @@ p {
 }
 
 .header-search {
-  background-color: #f7f7f7;
-  border: 1px;
-  border-radius: 5px;
+  justify-content: center;
+  padding-top: 15px;
   width: 30%;
-  align-self: center;
-  height: 50%;
 }
 
 .search-text {
+  height: 22px;
+  width: 100%;
+  border: none;
+  border-radius: 10px;
   padding-left: 10px;
 }
 
 .header {
   width: 100%;
   height: 62px;
-  background-color: #f7f7f7;
+  background-color: #f0f0f7;
   display: flex; /* establish flex container */
   flex-direction: row;
 }
