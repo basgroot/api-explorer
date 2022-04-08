@@ -13,19 +13,19 @@
   </head>
 <body>
   <div class="article">
-          <h1>Prices</h1> <br/>
           <div class="article-body">
             <div class ="grey-box">
+              <h1 class="black">Prices</h1> 
               <div class="two-pane">
                 <div class="left-pane-2">
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>                
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                <p>Read more here: link.</p>
+                <p class="inside-box">OpenAPI provides three different resources for getting prices. The resources are called Prices, InfoPrices and OptionChain. A price is a large collection of values and attributes and if possible it's recommended that only those needed are requested. Prices are provided based on instruments which are defined by a combination of a Uic and an AssetType parameter (read more about instruments here).</p>
+                <p class="inside-box">If the purpose is just to get a price, InfoPrices offers a request/response interface for a single price as well as a list of prices for a single AssetType. The Prices are intended for trading and works through setting up a subscription and getting values back on the streaming channel.</p>
+                <p class="inside-box">Read more here: link.</p>
               </div>
                 <div class="right-pane-2">
                   
                   <div class="code-box-white">
-                    <h2>Endpoints</h2>
+                    <h2 class="inside-box ">Endpoints</h2>
                     <pre class="json">
     Prices
     POST /trade/v1/prices/subscriptions

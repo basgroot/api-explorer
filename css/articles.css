@@ -39,11 +39,12 @@
 }
 
 .grey-box {
-  background-color: #DDE0E4;
+  background-color: #F5F7F9;
+  padding-bottom: 50px;
 }
 
 .left-pane-2 {
-  background-color: #DDE0E4;
+  background-color: #F5F7F9;
   width: 70%;
   padding-right: 20px;
 }
@@ -79,10 +80,11 @@ a.code {
 .code-box-white {
   overflow-y: scroll;  
   height: 800px;
-  background-color: #f7f7f7;
+  background-color: #fff;
   border-radius: 10px;
   height: 350px;
-
+  border: #DDE0E4;
+  border-radius: 20px;
 } 
 
 .code-box-small {
@@ -95,6 +97,21 @@ a.code {
 
 details summary > * {
   display: inline;
+}
+
+.inside-box {
+  padding-left: 10px;
+  padding-top: 10px;
+  padding-right: 30px;
+}
+
+h2.inside-box {
+  padding-left: 10px;
+} 
+
+h1.black {
+  color: black;
+  padding-top: 10px;
 }
 
 
