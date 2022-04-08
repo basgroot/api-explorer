@@ -12,12 +12,12 @@
         {
           "endpoint": "/port/v1/accountgroups/me",
           "method": "GET",
-          "title": "Get all accounts groups under a particular client to which the logged in user belongs"
+          "title": "Get all accounts groups for the logged in client"
         },
         {
           "endpoint": "/port/v1/accountgroups",
           "method": "GET",
-          "title": "Get a list of all accounts groups used by the specified client"
+          "title": "Get a list of all accounts groups of a client"
         },
         {
           "endpoint": "/port/v1/accountgroups/{AccountGroupKey}",
@@ -33,17 +33,17 @@
         {
           "endpoint": "/hist/v3/perf/{ClientKey}",
           "method": "GET",
-          "title": "Get account performance."
+          "title": "Get account performance"
         },
         {
           "endpoint": "/hist/v4/performance/timeseries",
           "method": "GET",
-          "title": "Get account performance."
+          "title": "Get account performance"
         },
         {
           "endpoint": "/hist/v4/performance/summary",
           "method": "GET",
-          "title": "Get account summary."
+          "title": "Get account summary"
         },
         {
           "endpoint": "/cm/v2/accounts",
@@ -171,12 +171,12 @@
         {
           "endpoint": "/cm/v1/clientrenewals",
           "method": "GET",
-          "title": "Get Renewal Data for the passed Client/User or logged in user. Priority is given to userKey over clientKey."
+          "title": "Get renewal data"
         },
         {
           "endpoint": "/cm/v1/clientrenewals/{RenewalEntityId}",
           "method": "PATCH",
-          "title": "Update Renewal Data/Documents for the given renewal entity"
+          "title": "Update renewal data/Documents"
         },
         {
           "endpoint": "/cm/v1/signups/attachments/{SignUpId}",
@@ -211,7 +211,7 @@
         {
           "endpoint": "/cm/v1/signups/onboardingpdf/{ClientKey}",
           "method": "GET",
-          "title": "Generate PDF document of DocumentType provided in request for client provided"
+          "title": "Generate PDF document of DocumentType"
         },
         {
           "endpoint": "/cm/v2/signups/attachments/{SignUpId}",
@@ -229,7 +229,7 @@
           "title": "Initiate verification process from external vendor"
         },
         {
-          "endpoint": "/cs/v2/clientinfo/clients/search",
+          "endpoint": "cs/v2/clientinfo/clients/search",
           "method": "POST",
           "title": "Search all child counterparts based on ownerId"
         },
@@ -251,7 +251,7 @@
         {
           "endpoint": "/ens/v1/activities",
           "method": "GET",
-          "title": "Get activities for specified client/Account."
+          "title": "Get activities"
         },
         {
           "endpoint": "/port/v1/clients/me",
@@ -276,7 +276,7 @@
         {
           "endpoint": "/port/v1/clients",
           "method": "PATCH",
-          "title": "Enables IB to switch position netting mode(or netting profile) and change AccountValueProtectionLimit"
+          "title": "Change netting mode and AccountValueProtectionLimit"
         }
       ]
     },
@@ -317,17 +317,17 @@
         {
           "endpoint": "/ca/v1/proxyvoting/events",
           "method": "GET",
-          "title": "Get proxy voting events for client. Requires separate license."
+          "title": "Get proxy voting events for client"
         },
         {
           "endpoint": "/ca/v2/standinginstructions",
           "method": "GET",
-          "title": "Get standing instructions."
+          "title": "Get standing instructions"
         },
         {
           "endpoint": "/ca/v2/standinginstructions",
           "method": "POST",
-          "title": "Create new standing instruction."
+          "title": "Create new standing instruction"
         },
         {
           "endpoint": "/ca/v2/standinginstructions",
@@ -364,12 +364,12 @@
         {
           "endpoint": "/mkt/v1/instruments/{Uic}/{AssetType}/documents/recommended",
           "method": "GET",
-          "title": "Gets list of recommended instrument document information."
+          "title": "Gets list of recommended instrument document information"
         },
         {
           "endpoint": "/mkt/v1/instruments/{Uic}/{AssetType}/documents/pdf",
           "method": "GET",
-          "title": "Gets document related to instrument."
+          "title": "Gets document related to instrument"
         }
       ]
     },
@@ -416,7 +416,7 @@
         {
           "endpoint": "/ref/v1/instruments/contractoptionspaces/{OptionRootId}",
           "method": "GET",
-          "title": "Get option details and options space for specified option root"
+          "title": "Get option details and options space for an option root"
         },
         {
           "endpoint": "/ref/v1/instruments/futuresspaces/{ContinuousFuturesUic}",
@@ -478,7 +478,7 @@
         {
           "endpoint": "/trade/v1/optionschain/subscriptions/{ContextId}/{ReferenceId}",
           "method": "PATCH",
-          "title": "Modify an existing options chain subscription. This replaces the obsolete version subscriptions/active/{contextId}/{referenceId}"
+          "title": "Modify an existing options chain subscription"
         },
         {
           "endpoint": "trade/v1/optionschain/subscriptions/{ContextId}/{ReferenceId}",
@@ -559,7 +559,7 @@
         {
           "endpoint": "/trade/v2/orders/multileg/precheck",
           "method": "POST",
-          "title": "Pre-check a multileg options strategy order."
+          "title": "Pre-check a multileg options strategy order"
         },
         {
           "endpoint": "/trade/v2/orders/multileg",
@@ -837,12 +837,12 @@
         {
           "endpoint": "/ref/v1/algostrategies",
           "method": "GET",
-          "title": "Get all strategies supported by Saxo Bank."
+          "title": "Get all strategies supported by Saxo Bank"
         },
         {
           "endpoint": "/ref/v1/algostrategies/{Name}",
           "method": "GET",
-          "title": "Get details about a specific strategy."
+          "title": "Get details about a specific strategy"
         },
         {
           "endpoint": "/ref/v1/countries",
@@ -903,32 +903,32 @@
         {
           "endpoint": "/cr/v1/reports/Portfolio/{ClientKey}/{Fromdate}/{ToDate}",
           "method": "GET",
-          "title": "Get Portfolio report for the accounts of a specified client"
+          "title": "Get a portfolio report"
         },
         {
           "endpoint": "/cr/v1/reports/Portfolio/me/{Fromdate}/{ToDate}",
           "method": "GET",
-          "title": "Get Portfolio report for the logged in user"
+          "title": "Get portfolio report for the logged in user"
         },
         {
           "endpoint": "/cr/v1/reports/TradeDetails/{ClientKey}",
           "method": "GET",
-          "title": "Get Trade Details report for the accounts of a specified client"
+          "title": "Get a trade details report"
         },
         {
           "endpoint": "/cr/v1/reports/TradesExecuted/{ClientKey}",
           "method": "GET",
-          "title": "Get Trades Executed report for the accounts of a specified client"
+          "title": "Get trades executed report"
         },
         {
           "endpoint": "/cs/v1/audit/activities",
           "method": "GET",
-          "title": "Get activities for specified client"
+          "title": "Get activities"
         },
         {
           "endpoint": "/cs/v1/audit/orderactivities",
           "method": "GET",
-          "title": "Query Order activities history"
+          "title": "Get order activities history"
         },
         {
           "endpoint": "/cs/v1/reports/aggregatedAmounts/{ClientKey}/{FromDate}/{ToDate}",
@@ -938,12 +938,12 @@
         {
           "endpoint": "/cs/v1/reports/bookings/{ClientKey}",
           "method": "GET",
-          "title": "Get all bookings for ClientKey between two dates or by specifying a combination of FilterType and FilterValue."
+          "title": "Get bookings"
         },
         {
           "endpoint": "/cs/v1/reports/trades/{ClientKey}",
           "method": "GET",
-          "title": "Gets all trades for dates or tradeId."
+          "title": "Gets all trades for dates or tradeId"
         }
       ]
     },
@@ -954,17 +954,17 @@
         {
           "endpoint": "/root/v1/sessions/capabilities",
           "method": "GET",
-          "title": "Get the sessions capabilities."
+          "title": "Get the sessions capabilities"
         },
         {
           "endpoint": "/root/v1/sessions/capabilities",
           "method": "PUT",
-          "title": "Change the sessions capabilities."
+          "title": "Change the sessions capabilities"
         },
         {
           "endpoint": "/root/v1/sessions/capabilities",
           "method": "PATCH",
-          "title": "Change the sessions capabilities."
+          "title": "Change the sessions capabilities"
         },
         {
           "endpoint": "/root/v1/sessions/events/subscriptions",
@@ -1003,7 +1003,7 @@
           "title": "Close a specific support case"
         },
         {
-          "endpoint": "/cs/v1/partner/support/cases/{CaseId}/internalcomment",
+          "endpoint": "cs/v1/partner/support/cases/{CaseId}/internalcomment",
           "method": "POST",
           "title": "Create internal comment under a case"
         },
@@ -1036,7 +1036,7 @@
         {
           "endpoint": "/cs/v1/tradingconditions/ContractOptionSpaces/{AccountKey}/{OptionRootId}",
           "method": "GET",
-          "title": "Get trading conditions for a contract option."
+          "title": "Get trading conditions for a contract option"
         },
         {
           "endpoint": "/cs/v1/tradingconditions/cost/{AccountKey}/{Uic}/{AssetType}",
@@ -1062,22 +1062,22 @@
         {
           "endpoint": "/atr/v1/cashmanagement/withdrawallimits",
           "method": "POST",
-          "title": "Get available amount for withdrawal."
+          "title": "Get available amount for withdrawal"
         },
         {
           "endpoint": "/atr/v1/partner/cashtransfers%2\u00a0",
           "method": "POST",
-          "title": "Cash transfer initiated by partner."
+          "title": "Cash transfer initiated by partner"
         },
         {
           "endpoint": "/atr/v1/partner/cashtransfers",
           "method": "GET",
-          "title": "Fetches the latest status of fund transfers."
+          "title": "Fetches the latest status of fund transfers"
         },
         {
           "endpoint": "/atr/v1/partner/cashtransfers",
           "method": "GET",
-          "title": "Fetches a summary of transfers."
+          "title": "Fetches a summary of transfers"
         },
         {
           "endpoint": "/atr/v1/partner/cashtransferlimits",
@@ -1087,7 +1087,7 @@
         {
           "endpoint": "/atr/v1/partner/cashtransferlimits",
           "method": "GET",
-          "title": "Get available amount for transfer."
+          "title": "Get available amount for transfer"
         },
         {
           "endpoint": "/atr/v1/partner/prebookedfunds",
@@ -1107,17 +1107,17 @@
         {
           "endpoint": "/atr/v1/securitiestransfers/transfers",
           "method": "GET",
-          "title": "Get list of Security Transfers executed by client based on list of comma separated transfer ids."
+          "title": "Get list of Security Transfers"
         },
         {
           "endpoint": "/cs/v2/cashmanagement/interaccounttransfers",
           "method": "POST",
-          "title": "Interaccount transfer"
+          "title": "Submit interaccount transfer"
         },
         {
           "endpoint": "/cs/v2/cashmanagement/wiretransfers/instructions",
           "method": "GET",
-          "title": "Get wiretransfer instructions for specified client and account"
+          "title": "Get wiretransfer instructions"
         }
       ]
     },
@@ -1153,12 +1153,12 @@
         {
           "endpoint": "/port/v1/users/me/entitlements",
           "method": "GET",
-          "title": "Get all entitlements"
+          "title": "Get price subscriptions"
         },
         {
           "endpoint": "/root/v1/user",
           "method": "GET",
-          "title": "Get information of current user."
+          "title": "Get information about the active user"
         }
       ]
     }
