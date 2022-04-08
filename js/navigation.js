@@ -37,7 +37,7 @@
                 responseJson.serviceGroups.forEach(function (serviceGroup) {
                     const tag = createTag(serviceGroup.name);
                     const links = getLinkWrapper();
-                    const showAll = createLink("Show all..", "");
+                    const showAll = createLink("Show all…", "");
                     tag.addEventListener("click", function () {
                         this.classList.toggle("active");
                         const content = this.nextElementSibling;
@@ -67,9 +67,11 @@
                                 links.appendChild(link);
                                 links.appendChild(getLineBreak());
                             }
-                            // And hide the showAll:
-                            showAll.style.display = "none";
                         });
+                        // And hide the showAll:
+                        showAll.style.display = "none";
+                        const content = this.nextElementSibling;
+                        content.style.maxHeight = content.scrollHeight + "px";
                         evt.preventDefault();
                     });
                     if (!showFullMenu) {
