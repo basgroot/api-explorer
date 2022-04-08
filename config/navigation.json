@@ -662,7 +662,7 @@
     },
     {
       "name": "Prices",
-      "articles": "infoprices",
+      "articles": "prices,infoprices",
       "endpoints": [
         {
           "endpoint": "/chart/v1/charts",

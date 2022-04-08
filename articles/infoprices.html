@@ -45,8 +45,23 @@
                   <hr>
                 </details>
                 <details>
-                  <summary> MarketDepth</summary>
-                  <p>Lorem Ipsum</p>
+                  <summary>MarketDepth</summary>
+                  <p>Market depth fields are returned in results.</p>
+                  <hr>
+                </details>
+                <details>
+                  <summary>PriceInfo</summary>
+                  <p>Informational price fields are returned in results.</p>
+                  <hr>
+                </details>
+                <details>
+                  <summary>PriceInfoDetails</summary>
+                  <p>Detailed price fields are returned in results.</p>
+                  <hr>
+                </details>
+                <details>
+                  <summary>Quote</summary>
+                  <p> Object holding information about prices. Quote data fields are returned in results.</p>
                   <hr>
                 </details>
               </div>
@@ -171,11 +186,13 @@
             </div>
             <p>For more details and best practice around using our streaming services we advice you to read this article: streaming.</p>
             <h2>Static Methods</h2>
-            <p class="code">GET /trade/v1/infoprices</p>
-            <p class="code">GET /trade/v1/infoprices/list</p>
-            <p class="code">POST /trade/v1/infoprices/subscriptions</p>
-            <p class="code">DELETE /trade/v1/infoprices/subscriptions/{ContextId}</p>
-            <p class="code">DELETE /trade/v1/infoprices/subscriptions/{ContextId}/{ReferenceId} </p>
+            <div class="code-box-small">
+              <p class="code">GET /trade/v1/infoprices</p>
+              <p class="code">GET /trade/v1/infoprices/list</p>
+              <p class="code"> POST /trade/v1/infoprices/subscriptions</p>
+              <p class="code">DELETE /trade/v1/infoprices/subscriptions/{ContextId}</p>
+              <p class="code">DELETE /trade/v1/infoprices/subscriptions/{ContextId}/{ReferenceId} </p>
+            </div>
             <h2>Important Parameters</h2>
             <p>When parsing parameters to get info prices either as snapshots or streaming data, there are some parameters that are important to consider.</p>
             <p>PLACE HOLDER FOR PARMAETERS</p>

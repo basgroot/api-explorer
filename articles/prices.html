@@ -1,0 +1,53 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="../css/articles.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <script>
+      (function() {
+        var element = document.getElementById("json");
+        if (element != null) {
+          var obj = JSON.parse(element.innerText);
+          element.innerHTML = JSON.stringify(obj, undefined, 2);
+        }})();
+    </script>
+  </head>
+<body>
+  <div class="article">
+          <div class="article-body">
+            <div class ="grey-box">
+              <h1 class="black">Prices</h1> 
+              <div class="two-pane">
+                <div class="left-pane-2">
+                <p class="inside-box">OpenAPI provides three different resources for getting prices. The resources are called Prices, InfoPrices and OptionChain. A price is a large collection of values and attributes and if possible it's recommended that only those needed are requested. Prices are provided based on instruments which are defined by a combination of a Uic and an AssetType parameter (read more about instruments here).</p>
+                <p class="inside-box">If the purpose is just to get a price, InfoPrices offers a request/response interface for a single price as well as a list of prices for a single AssetType. The Prices are intended for trading and works through setting up a subscription and getting values back on the streaming channel.</p>
+                <p class="inside-box">Read more here: link.</p>
+              </div>
+                <div class="right-pane-2">
+                  
+                  <div class="code-box-white">
+                    <h2 class="inside-box ">Endpoints</h2>
+                    <pre class="json">
+    Prices
+    POST /trade/v1/prices/subscriptions
+    PUT /trade/v1/prices/subscriptions/{ContextId}/{ReferenceId}/MarginImpact
+    DELETE /trade/v1/prices/subscriptions/{ContextId}
+
+    Info Prices
+    GET /trade/v1/infoprices
+    GET /trade/v1/infoprices/list
+    POST /trade/v1/infoprices/subscriptions
+    DELETE /trade/v1/infoprices/subscriptions/{ContextId}
+
+    Option Chains
+    POST /trade/v1/optionschain/subscriptions
+    PATCH /trade/v1/optionschain/subscriptions/{ContextId}/{ReferenceId}
+    DELETE /trade/v1/optionschain/subscriptions/{ContextId}/{ReferenceId}
+                    </pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>          
+  </div>  
+</body>
+</html>

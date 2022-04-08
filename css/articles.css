@@ -30,11 +30,30 @@
 .left-pane {
   background-color: #fff;
   width: 50%;
+  padding-right: 20px;
 }
 
 .right-pane {
   background-color: #fff;
   width: 50%;
+}
+
+.grey-box {
+  background-color: #F5F7F9;
+  padding-bottom: 50px;
+}
+
+.left-pane-2 {
+  background-color: #F5F7F9;
+  width: 70%;
+  padding-right: 20px;
+}
+
+.right-pane-2 {
+  background-color: #f7f7f7;
+  width: 30%;
+  padding-top: 10px;
+  padding-right: 10px;
 }
 
 h1 {
@@ -43,11 +62,34 @@ h1 {
 
 p.code {
   font-family: Consolas, monaco, monospace;
+  padding-left: 10px;
+}
+
+a.code {
+  font-family: Consolas, monaco, monospace;
+  padding-left: 10px;
 }
 
 .code-box {
   overflow-y: scroll;  
-  height: 400px;
+  height: 800px;
+  background-color: #DDE0E4;
+  border-radius: 10px;
+} 
+
+.code-box-white {
+  overflow-y: scroll;  
+  height: 800px;
+  background-color: #fff;
+  border-radius: 10px;
+  height: 350px;
+  border: #DDE0E4;
+  border-radius: 20px;
+} 
+
+.code-box-small {
+  overflow-y: scroll;  
+  height: 200px;
   background-color: #DDE0E4;
   border-radius: 10px;
 } 
@@ -56,4 +98,20 @@ p.code {
 details summary > * {
   display: inline;
 }
+
+.inside-box {
+  padding-left: 10px;
+  padding-top: 10px;
+  padding-right: 30px;
+}
+
+h2.inside-box {
+  padding-left: 10px;
+} 
+
+h1.black {
+  color: black;
+  padding-top: 10px;
+}
+
 
