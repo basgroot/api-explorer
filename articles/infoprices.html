@@ -189,7 +189,37 @@
       </div>
       <h2>Streaming info prices</h2>
       <p>You have the option to stream info prices via WebSocket. This saves you the energy (and bandwidth) of constantly polling our REST endpoints and helps you avoid hitting our throttling limits. The prerequisite here is of course that you have to be authenticated. When you have a valid access token follow these steps:</p>
-      <p>STEPS PLACE HOLDER</p>
+      <div class="steps">
+        <div class="set-up-stream">
+          <button type="button" onclick="ExpandOrCollapseTable()" class="x-collapsible" id="exp-stream-1">Get a token</button>
+          <div class="x-content">
+            <p>Lorem Ipsum</p>
+            <hr>
+          </div>
+        </div>
+        <div class="set-up-stream">
+          <button type="button" onclick="ExpandOrCollapseTable()" class="x-collapsible" id="exp-stream-2">Create a context id</button>
+          <div class="x-content">
+            <p>Lorem Ipsum</p>
+            <hr>
+          </div>
+        </div>
+        <div class="set-up-stream">
+          <button type="button" onclick="ExpandOrCollapseTable()" class="x-collapsible" id="exp-stream-3">Start a subscription</button>
+          <div class="x-content">
+            <p>Lorem Ipsum</p>
+            <hr>
+          </div>
+        </div>
+        <div class="set-up-stream">
+          <button type="button" onclick="ExpandOrCollapseTable()" class="x-collapsible" id="exp-stream-4">Listen for updates</button>
+          <div class="x-content">
+            <p>Lorem Ipsum</p>
+            <hr>
+          </div>
+        </div>
+      </div>
+      
       <p>For more details and best practice around using our streaming services we advice you to read this article: streaming.</p>
       <h2>Static Methods</h2>
       <p class="code">GET /trade/v1/infoprices</p>
