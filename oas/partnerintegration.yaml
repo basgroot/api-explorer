@@ -1,0 +1,220 @@
+openapi: 3.0.1
+info:
+  title: Services.PartnerIntegration
+  description: PartnerIntegration provide end points for partner integration with saxo.
+  version: 1.1.273+f20d58da65
+  x-framework-version: 22.0.30+b916f2a578
+  x-machine: SATOAWEB27-DK1
+servers:
+  - url: https://gateway.saxobank.com/openapi
+paths:
+  /partnerintegration/v1/InteractiveIdVerification/idnow/complete:
+    post:
+      tags:
+        - InteractiveIdVerification
+      description: 'Webhook to update verification status, it will get called by IdNow once interactive id-verification get completed.'
+      operationId: InteractiveIdVerificationV1IdNowInteractiveVerificationComplete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Object'
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - InvalidModelState
+                    type: string
+                    x-enum-descriptions:
+                      InvalidModelState: One or more properties of the request are invalid!
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  '/partnerintegration/v1/InteractiveIdVerification/verify/{correlationid}':
+    post:
+      tags:
+        - InteractiveIdVerification
+      description: 'Callback endpoint to update verification status, signcat redirects on this endpoint once interactive verification get completed.'
+      operationId: InteractiveIdVerificationV1VerifyInteractiveVerification
+      parameters:
+        - name: correlationid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/StringStringKeyValuePair'
+            example:
+              - Key: keydd205693-f31a-4be2-9099-a63fa6dd5c82
+                Value: value78d077b0-f684-472d-b26d-862abc7b5815
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - InvalidModelState
+                    type: string
+                    x-enum-descriptions:
+                      InvalidModelState: One or more properties of the request are invalid!
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /partnerintegration/v1/InteractiveIdVerification/secureme/verification:
+    post:
+      tags:
+        - InteractiveIdVerification
+      description: 'Webhook to update verification status, it will get called by secureMe once interactive poi-verification get completed.'
+      operationId: InteractiveIdVerificationV1SecureMeInteractiveVerificationComplete
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - InvalidModelState
+                    type: string
+                    x-enum-descriptions:
+                      InvalidModelState: One or more properties of the request are invalid!
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  '/partnerintegration/v1/InteractiveIdVerification/verify/{method}':
+    get:
+      tags:
+        - InteractiveIdVerification
+      description: "Redirect endpoint to update verification status, signcat redirects on this endpoint once Oidc interactive verification get completed.\r\n            This will be used for verification via MITID"
+      operationId: InteractiveIdVerificationV1VerifyInteractiveVerificationOidc
+      parameters:
+        - name: Code
+          in: query
+          description: "This is OIDC authorisation code send after verification is completed. \r\n            This will be used to get auth token to fetch client information"
+          schema:
+            title: "This is OIDC authorisation code send after verification is completed. \r\n            This will be used to get auth token to fetch client information"
+            type: string
+        - name: State
+          in: query
+          description: "State sent in redirect URL. \r\n            This will be used to validate authenticity of redirecton"
+          schema:
+            title: "State sent in redirect URL. \r\n            This will be used to validate authenticity of redirecton"
+            type: string
+        - name: method
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - InvalidModelState
+                    type: string
+                    x-enum-descriptions:
+                      InvalidModelState: One or more properties of the request are invalid!
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+components:
+  schemas:
+    ModelStateDictionary:
+      type: object
+      additionalProperties:
+        type: array
+        items:
+          type: string
+    Object:
+      type: object
+    StringStringKeyValuePair:
+      type: object
+      properties:
+        Key:
+          type: string
+        Value:
+          type: string
+  responses:
+    ServiceUnavailable:
+      description: Service Unavailable.
+    TooManyRequests:
+      description: The request was rejected due to rate limit being exceeded.
+    Unauthorized:
+      description: Indicates that the request was rejected because the 'Authorization' header was missing in the request or contained an invalid security token.
+tags:
+  - name: Assurance Vie
+    description: 'End point for accessing summary information for a specified client, including optional address info.'
+  - name: Banca Generali
+    description: Provides Banca Generali integration related endpoints.
+  - name: InteractiveIdVerification
+    description: InteractiveIdVerificationV1Controller
