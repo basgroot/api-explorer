@@ -40,6 +40,10 @@ function yaml() {
         return line;
     }
 
+    function plainTextToHtml(value) {
+        return value.replace(/\\r\\n/g, "<br />");
+    }
+
     function loadYamlEndpoint(callback) {
         const endpoint = getQueryParameter("endpoint", "/trade/v1/infoprices/subscriptions");
         const service = endpoint.substring(1, endpoint.indexOf("/", 1));
@@ -333,7 +337,7 @@ function yaml() {
                 break;
             }
         }
-        return removeSurroundingQuotes(value.replace(/\\r\\n/g, "<br />"));
+        return removeSurroundingQuotes(plainTextToHtml(value));
     }
 
     function getParameterDocs(startLine, isOnlyRequired) {
@@ -342,7 +346,7 @@ function yaml() {
             if (isOnlyRequired !== isRequired) {
                 return "";
             }
-            return "<p><strong>" + parameterName + "</strong><br />" + description + "</p>";
+            return "<p><strong>" + parameterName + "</strong><br />" + plainTextToHtml(removeSurroundingQuotes(description)) + "</p>";
         }
 
         let i;
