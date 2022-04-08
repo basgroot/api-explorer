@@ -77,3 +77,8 @@ p.code {
   overflow: hidden;
   background-color: #fff;
 }
+
+details summary > * {
+  display: inline;
+}
+
