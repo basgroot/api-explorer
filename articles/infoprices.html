@@ -54,16 +54,37 @@
           <p>The object contains at least the Quote field group. But it can also hold more information such as display details like x and other stuff like y depending on which field groups you ask for.</p>
           <h3>Field Groups</h3>
           <div class="field-group">
-            <button type="button" onclick="ExpandOrCollapseTable()" class="x-collapsible" id="exp-Commissions">Comissions</button>
+            <button type="button" onclick="ExpandOrCollapseTable()" class="x-collapsible" id="exp-commissions">Comissions</button>
             <div class="x-content">
-              <p>An object holding all information on comissions</p>
+              <p>An object holding all information on comissions related to trading on the price.</p>
               <hr>
             </div>
           </div>
           <div class="field-group">
-            <button type="button" onclick="ExpandOrCollapseTable()" class="x-collapsible" id="exp-Commissions">DisplayAndFormat</button>
+            <button type="button" onclick="ExpandOrCollapseTable()" class="x-collapsible" id="exp-displayAndFormat"></button>
             <div class="x-content">
-              <p>An object holding information related to displaying the .</p>
+              <p>An object holding information related to displaying the info prices received like the symbol or formatting.</p>
+              <hr>
+            </div>
+          </div>
+          <div class="field-group">
+            <button type="button" onclick="ExpandOrCollapseTable()" class="x-collapsible" id="exp-historicalChanges">HistoricalChanges</button>
+            <div class="x-content">
+              <p>An object holding information on historical changes based on the current price.</p>
+              <hr>
+            </div>
+          </div>
+          <div class="field-group">
+            <button type="button" onclick="ExpandOrCollapseTable()" class="x-collapsible" id="exp-instrumentPriceDetails">InstrumentPriceDetails</button>
+            <div class="x-content">
+              <p>An object holding fields related to the asset type are returned in results. Fields in this group are only returned when issuing a GET and in the initial snapshot if setting up a subscription.</p>
+              <hr>
+            </div>
+          </div>
+          <div class="field-group">
+            <button type="button" onclick="ExpandOrCollapseTable()" class="x-collapsible" id="exp-Commissions">MarketDepth</button>
+            <div class="x-content">
+              <p>Lorem Ipsum</p>
               <hr>
             </div>
           </div>
