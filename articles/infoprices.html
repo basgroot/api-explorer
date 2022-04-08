@@ -2,36 +2,179 @@
   <head>
     <link rel="stylesheet" href="../css/articles.css">
     <link rel="stylesheet" href="../css/style.css">
+    <script>
+      (function() {
+        var element = document.getElementById("json");
+        var obj = JSON.parse(element.innerText);
+        element.innerHTML = JSON.stringify(obj, undefined, 2);
+        })();
+    </script>
+    <script>
+      function ExpandOrCollapse() {
+        console.log(event.target.id);
+        let button = document.getElementById(event.target.id);
+        let body = document.getElementsByClassName("article-body")[0];
+        if (body.style.display == "none") {
+          body.style.display = "block";
+        } else {
+          body.style.display = "none";
+        }
+      }
+
+      function ExpandOrCollapseTable() {
+        console.log(event.target);
+        let button = document.getElementById(event.target.id);
+        console.log(button);
+        var content = button.nextElementSibling.nextElementSibling;
+          if (content.style.display === "block") {
+            content.style.display = "none";
+          } else {
+            content.style.display = "block";
+          }
+      }
+    </script>
   </head>
 <body>
   <div class="article">
-    <h1>Info Prices</h1>
-    <p>A light weight version of the Prices resources without the ability to trade on quotes. Perfect for any application that just needs to display prices either from single requests or continuous streams.</p> <br\>
-    <h2> The Info Price Object</h2>
-    <div class="two-pane">
-      <div class="left">
-        <p>The object contains at least the Quote field group. But it can also hold more information such as display details like x and other stuff like y depending on which field groups you ask for.</p>
-        <p> TABLE PLACE HOLDER</p>
+    <div class="article-header">
+      <div class="article-header-top">
+        <div class="article-header-top-left">
+          <h1>Info Prices</h1>
+        </div>
+        <div class="article-header-top-right">
+          <button onclick="ExpandOrCollapse()" id="expand-article-button"> Expand</button>
+        </div>
       </div>
-      <div class="right">
-        <p>ENDPOINTS PLACE HOLDER</p>
-      </div>
+      <p>A light weight version of the Prices resources without the ability to trade on quotes. Perfect for any application that just needs to display prices either from single requests or continuous streams.</p> <br\>
     </div>
-    <h2>Streaming info prices</h2>
-    <p>You have the option to stream info prices via WebSocket. This saves you the energy (and bandwidth) of constantly polling our REST endpoints and helps you avoid hitting our throttling limits. The prerequisite here is of course that you have to be authenticated. When you have a valid access token follow these steps:</p>
-    <p>STEPS PLACE HOLDER</p>
-    <p>For more details and best practice around using our streaming services we advice you to read this article: streaming.</p>
-    <h2>Static Methods</h2>
-    <p class="code">GET /trade/v1/infoprices</p>
-    <p class="code">GET /trade/v1/infoprices/list</p>
-    <p class="code">POST /trade/v1/infoprices/subscriptions</p>
-    <p class="code">DELETE /trade/v1/infoprices/subscriptions/{ContextId}</p>
-    <p class="code">DELETE /trade/v1/infoprices/subscriptions/{ContextId}/{ReferenceId} </p>
-    <h2>Important Parameters</h2>
-    <p>When parsing parameters to get info prices either as snapshots or streaming data, there are some parameters that are important to consider.</p>
-    <p>PLACE HOLDER FOR PARMAETERS</p>
-    <h2>Different types of info prices</h2>
-    <p>Depending on what instrument you are getting prices for and your configuration there are different kinds of prices you can get.</p>
-  </div>
+    <div class="article-body">
+      <h2> The Info Price Object</h2>
+      <div class="two-pane">
+        <div class="left-pane">
+          <div class="field-group">
+            <p>The object contains at least the Quote field group. But it can also hold more information such as display details like x and other stuff like y depending on which field groups you ask for.</p>
+            <button type="button" onclick="ExpandOrCollapseTable()" class="x-collapsible" id="exp-Commissions">Comissions</button>
+            <hr>
+            <div class="x-content">
+              <p>An object holding all information on comissions</p>
+              <hr>
+            </div>
+          </div>
+        </div>
+        <div class="right-pane">
+          <div class="code-box">
+            <pre class="json">
+  {
+    "ContextId": "20220331032319347",
+    "Format": "application/json",
+    "InactivityTimeout": 60,
+    "ReferenceId": "IP77194",
+    "RefreshRate": 1000,
+    "Snapshot": {
+      "Data": [
+        {
+          "AssetType": "FxSpot",
+          "DisplayAndFormat": {
+            "Currency": "AUD",
+            "Decimals": 4,
+            "Description": "British Pound/Australian Dollar",
+            "Format": "AllowDecimalPips",
+            "OrderDecimals": 4,
+            "Symbol": "GBPAUD"
+          },
+          "HistoricalChanges": {
+            "PercentChange1Month": 1.21,
+            "PercentChange2Months": 2.95,
+            "PercentChange3Months": 1.85,
+            "PercentChange6Months": -1.83,
+            "PercentChangeDaily": 0.22,
+            "PercentChangeWeekly": 1.67
+          },
+          "InstrumentPriceDetails": {
+            "IsMarketOpen": true,
+            "ShortTradeDisabled": false,
+            "ValueDate": "2017-05-19"
+          },
+          "LastUpdated": "0001-01-01T00:00:00Z",
+          "PriceInfo": {
+            "High": 1.09117,
+            "Low": 1.08853,
+            "NetChange": 0.00048,
+            "PercentChange": 0.04
+          },
+          "PriceInfoDetails": {
+            "AskSize": 1000000.0,
+            "BidSize": 1000000.0,
+            "LastClose": 1.08932,
+            "LastTraded": 0.0,
+            "LastTradedSize": 0.0,
+            "Open": 0.0,
+            "Volume": 0.0
+          },
+          "Quote": {
+            "Amount": 100000,
+            "Ask": 1.74948,
+            "Bid": 1.74858,
+            "DelayedByMinutes": 15,
+            "ErrorCode": "None",
+            "Mid": 1.74903,
+            "PriceTypeAsk": "Indicative",
+            "PriceTypeBid": "Indicative"
+          },
+          "Uic": 22
+        },
+        {
+          "AssetType": "FxSpot",
+          "DisplayAndFormat": {
+            "Currency": "CAD",
+            "Decimals": 4,
+            "Description": "British Pound/Canadian Dollar",
+            "Format": "AllowDecimalPips",
+            "OrderDecimals": 4,
+            "Symbol": "GBPCAD"
+          },
+          "InstrumentPriceDetails": {
+            "IsMarketOpen": true,
+            "ShortTradeDisabled": false,
+            "ValueDate": "2017-05-19"
+          },
+          "LastUpdated": "0001-01-01T00:00:00Z",
+          "Quote": {
+            "Amount": 100000,
+            "Ask": 1.76278,
+            "Bid": 1.76198,
+            "DelayedByMinutes": 15,
+            "ErrorCode": "None",
+            "Mid": 1.76238,
+            "PriceTypeAsk": "Indicative",
+            "PriceTypeBid": "Indicative"
+          },
+          "Uic": 23
+        }
+      ]
+    },
+    "State": "Active"
+  }
+            </pre>
+          </div>
+        </div>
+      </div>
+      <h2>Streaming info prices</h2>
+      <p>You have the option to stream info prices via WebSocket. This saves you the energy (and bandwidth) of constantly polling our REST endpoints and helps you avoid hitting our throttling limits. The prerequisite here is of course that you have to be authenticated. When you have a valid access token follow these steps:</p>
+      <p>STEPS PLACE HOLDER</p>
+      <p>For more details and best practice around using our streaming services we advice you to read this article: streaming.</p>
+      <h2>Static Methods</h2>
+      <p class="code">GET /trade/v1/infoprices</p>
+      <p class="code">GET /trade/v1/infoprices/list</p>
+      <p class="code">POST /trade/v1/infoprices/subscriptions</p>
+      <p class="code">DELETE /trade/v1/infoprices/subscriptions/{ContextId}</p>
+      <p class="code">DELETE /trade/v1/infoprices/subscriptions/{ContextId}/{ReferenceId} </p>
+      <h2>Important Parameters</h2>
+      <p>When parsing parameters to get info prices either as snapshots or streaming data, there are some parameters that are important to consider.</p>
+      <p>PLACE HOLDER FOR PARMAETERS</p>
+      <h2>Different types of info prices</h2>
+      <p>Depending on what instrument you are getting prices for and your configuration there are different kinds of prices you can get.</p>
+    </div>
+  </div>  
 </body>
 </html>
