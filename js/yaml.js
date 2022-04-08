@@ -84,11 +84,13 @@ function yaml() {
             // Start looking for the paths segment:
             if (line === "paths:") {
                 isPathsSegmentActive = true;
-            } else if (line.charAt(0) !== " ") {
-                isPathsSegmentActive = false;
             } else if (isPathsSegmentActive) {
                 // We are in the paths segment. Start looking for the endpoint:
-                if (line === "  " + endpoint + ":" || line === "  '" + endpoint + "':") {
+                if (line.charAt(0) !== " ") {
+                    isPathsSegmentActive = false;
+                    break;  // Stop looking..
+                }
+                if (line.toLowerCase() === "  " + endpoint.toLowerCase() + ":" || line.toLowerCase() === "  '" + endpoint.toLowerCase() + "':") {
                     isEndpointActive = true;
                 } else if (line.charAt(2) !== " ") {
                     isEndpointActive = false;
