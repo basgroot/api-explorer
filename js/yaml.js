@@ -136,7 +136,7 @@ function yaml() {
         if (value !== "") {
             return parseReference(removeSurroundingQuotes(value));
         }
-        window.alert("No reference: " + line);
+        console.error("No reference: " + line);
     }
 
     function returnType(type, startLine, defaultStringValue) {
@@ -153,7 +153,7 @@ function yaml() {
         case "object":
             return {};
         default:
-            window.alert("Unknown type: " + type);
+            console.error("Unknown type: " + type);
         }
     }
 

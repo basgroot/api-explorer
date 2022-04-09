@@ -29,6 +29,15 @@
         const link = createLink(endpoint.title, url);
         details.appendChild(link);
         details.appendChild(document.createElement("br"));
+        link.addEventListener("click", function () {
+            // Make the selected link "Saxo-blue" and reset the color of the others.
+            const messages = document.querySelectorAll(".nav-text");
+            let i;
+            for (i = 0; i < messages.length; i += 1) {
+                messages[i].style.color = "#88909A";
+            }
+            link.style.color = "#0076ff";
+        });
     }
 
     fetch("https://basgroot.github.io/api-explorer/config/navigation.json").then(function (response) {

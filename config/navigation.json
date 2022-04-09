@@ -395,7 +395,7 @@
           "title": "Modify an existing options chain subscription"
         },
         {
-          "endpoint": "trade/v1/optionschain/subscriptions/{ContextId}/{ReferenceId}",
+          "endpoint": "/trade/v1/optionschain/subscriptions/{ContextId}/{ReferenceId}",
           "method": "DELETE",
           "isFrequentlyUsed": true,
           "title": "Remove an options chain subscription"
