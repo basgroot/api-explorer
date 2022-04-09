@@ -1,0 +1,857 @@
+openapi: 3.0.1
+info:
+  title: Services.ValueAdd
+  description: The Value Add service group provides services and end points that adds extra value for the client developer.
+  version: 2.1.269+26d56e38bf
+  x-framework-version: 24.0.21+826409a78a
+  x-machine: SIMOAWEB11-DK2
+servers:
+  - url: https://gateway.saxobank.com/sim/openapi
+paths:
+  /vas/v1/pricealerts/usersettings:
+    get:
+      tags:
+        - Price Alerts
+      summary: Get notification settings
+      description: Returns the current user's price alert notification settings
+      operationId: PriceAlertsV1GetUserSettingsAsync
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PriceAlertUserSettingsResponse'
+              example:
+                EmailAddress: john.doe@broker.com
+                EmailAddressValidated: true
+                NotifyWithMail: true
+                NotifyWithPopup: true
+                Sound: None
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - UserSettingsCacheNothingToFlush
+                    type: string
+                    x-enum-descriptions:
+                      UserSettingsCacheNothingToFlush: There were no user settings to flush from the cache.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+    put:
+      tags:
+        - Price Alerts
+      summary: Update notification settings
+      description: Modifies the current user's price alert notification settings
+      operationId: PriceAlertsV1PutUserSettingsAsync
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PriceAlertUserSettingsRequest'
+            example:
+              EmailAddress: john.doe@broker.com
+              NotifyWithMail: true
+              NotifyWithPopup: true
+              Sound: None
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - UserSettingsCacheNothingToFlush
+                      - UserSettingsNotSupplied
+                      - UserSettingsUpdateFailed
+                    type: string
+                    x-enum-descriptions:
+                      UserSettingsNotSupplied: User settings must be defined.
+                      UserSettingsUpdateFailed: User settings were not updated.
+                      UserSettingsCacheNothingToFlush: There were no user settings to flush from the cache.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  '/vas/v1/pricealerts/definitions/{AlertDefinitionIds}':
+    delete:
+      tags:
+        - Price Alerts
+      summary: Delete price alert definitions
+      description: Deletes the specified price alert definitions
+      operationId: PriceAlertsV1DeleteAlertDefinitionsAsync
+      parameters:
+        - name: AlertDefinitionIds
+          in: path
+          description: A comma separated list of the price alert definition Ids to delete.
+          required: true
+          schema:
+            type: string
+          example: '30834'
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - InvalidInput
+                      - NoAlertDefinitionIds
+                      - UserSettingsCacheNothingToFlush
+                    type: string
+                    x-enum-descriptions:
+                      NoAlertDefinitionIds: At least one alert definition ID must be specified.
+                      InvalidInput: An error was encountered when processing given input parameters.
+                      UserSettingsCacheNothingToFlush: There were no user settings to flush from the cache.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  '/vas/v1/pricealerts/definitions/{AlertDefinitionId}':
+    get:
+      tags:
+        - Price Alerts
+      summary: Get a price alert definition
+      description: Returns a price alert definition if found
+      operationId: PriceAlertsV1GetAlertDefinitionByDefinitionIdAsync
+      parameters:
+        - name: AlertDefinitionId
+          in: path
+          description: The id of the price alert definition.
+          required: true
+          schema:
+            type: integer
+            format: int32
+          example: 30834
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PriceAlertDefinitionResponse'
+              example:
+                AccountId: 13457INET
+                AlertDefinitionId: '30834'
+                AssetType: FxSpot
+                Comment: I believe EURUSD will go up within the next few years!
+                ExpiryDate: '2016-09-30T12:00:00.0000000+00:00'
+                IsRecurring: true
+                Operator: GreaterOrEqual
+                PriceVariable: AskTick
+                State: Enabled
+                TargetValue: 1.34595
+                Uic: 21
+                UserId: '2361528'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - AlertDefinitionIdNotPositive
+                      - NoAccessToAlertDefinitionId
+                      - UserSettingsCacheNothingToFlush
+                    type: string
+                    x-enum-descriptions:
+                      AlertDefinitionIdNotPositive: The alert definition id must be positive.
+                      NoAccessToAlertDefinitionId: Current user does not have access to the alert definition id
+                      UserSettingsCacheNothingToFlush: There were no user settings to flush from the cache.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+    put:
+      tags:
+        - Price Alerts
+      summary: Update a price alert definition
+      description: Updates an existing price alert definition
+      operationId: PriceAlertsV1PutAlertDefinitionAsync
+      parameters:
+        - name: AlertDefinitionId
+          in: path
+          description: Alert definition id to update.
+          required: true
+          schema:
+            type: integer
+            format: int32
+          example: 30834
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PriceAlertDefinitionRequest'
+            example:
+              AccountId: 13457INET
+              AssetType: FxSpot
+              Comment: I believe EURUSD will go up within the next few years!
+              ExpiryDate: '2016-09-30T12:00:00.0000000+00:00'
+              IsRecurring: true
+              Operator: GreaterOrEqual
+              PriceVariable: AskTick
+              State: Enabled
+              TargetValue: 1.34595
+              Uic: 21
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - AlertDefinitionIdNotPositive
+                      - InvalidInput
+                      - InvalidOperatorValue
+                      - NoAccessToAlertDefinitionId
+                      - NoValidInput
+                      - UserSettingsCacheNothingToFlush
+                    type: string
+                    x-enum-descriptions:
+                      InvalidOperatorValue: Invalid Operator value. Operator should be 'GreaterOrEqual' or 'LessOrEqual'
+                      NoValidInput: No valid input values passed.
+                      InvalidInput: An error was encountered when processing given input parameters.
+                      AlertDefinitionIdNotPositive: The alert definition id must be positive.
+                      NoAccessToAlertDefinitionId: Current user does not have access to the alert definition id
+                      UserSettingsCacheNothingToFlush: There were no user settings to flush from the cache.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+  /vas/v1/pricealerts/definitions:
+    get:
+      tags:
+        - Price Alerts
+      summary: Get all price alert definitions
+      description: "Get an unsorted list of all the price alert definitions belonging to the current user where the state matches the specified value. The alerts might belong to different accounts, should the user have more than one\r\n\r\nHad to set the type of state to a string to make the routing work correctly."
+      operationId: PriceAlertsV1GetAlertDefinitionsByStateAsync
+      parameters:
+        - name: $inlinecount
+          in: query
+          schema:
+            enum:
+              - AllPages
+              - None
+            type: string
+        - name: $skip
+          in: query
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+        - name: $top
+          in: query
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+            default: 200
+        - name: State
+          in: query
+          description: Optional state the price alert definitions should match. The values must be one of PriceAlertDefinitionState. The match is case insensitive.
+          schema:
+            $ref: '#/components/schemas/PriceAlertDefinitionState'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PriceAlertDefinitionResponseListResult'
+              example:
+                Data:
+                  - AccountId: 13457INET
+                    AlertDefinitionId: '30834'
+                    AssetType: FxSpot
+                    Comment: I believe EURUSD will go up within the next few years!
+                    ExpiryDate: '2016-09-30T12:00:00.0000000+00:00'
+                    IsRecurring: true
+                    Operator: GreaterOrEqual
+                    PriceVariable: AskTick
+                    State: Enabled
+                    TargetValue: 1.34595
+                    Uic: 21
+                    UserId: '2361528'
+                MaxRows: 134
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - NoValidInput
+                      - UserSettingsCacheNothingToFlush
+                    type: string
+                    x-enum-descriptions:
+                      NoValidInput: No valid input values passed.
+                      UserSettingsCacheNothingToFlush: There were no user settings to flush from the cache.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+    post:
+      tags:
+        - Price Alerts
+      summary: Create a price alert definition
+      description: "Creates a new price alert definition. The created definition is returned with a couple of more properties, the price alert definition id being one of them\r\n\r\nAutomatically generates an ID for the newly added alert and composes its URI and returns that in the 'Location' header."
+      operationId: PriceAlertsV1PostAlertDefinitionAsync
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PriceAlertDefinitionRequest'
+            example:
+              AccountId: 13457INET
+              AssetType: FxSpot
+              Comment: I believe EURUSD will go up within the next few years!
+              ExpiryDate: '2016-09-30T12:00:00.0000000+00:00'
+              IsRecurring: true
+              Operator: GreaterOrEqual
+              PriceVariable: AskTick
+              State: Enabled
+              TargetValue: 1.34595
+              Uic: 21
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PriceAlertDefinitionResponse'
+              example:
+                AccountId: 13457INET
+                AlertDefinitionId: '30834'
+                AssetType: FxSpot
+                Comment: I believe EURUSD will go up within the next few years!
+                ExpiryDate: '2016-09-30T12:00:00.0000000+00:00'
+                IsRecurring: true
+                Operator: GreaterOrEqual
+                PriceVariable: AskTick
+                State: Enabled
+                TargetValue: 1.34595
+                Uic: 21
+                UserId: '2361528'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - InvalidInput
+                      - NoValidInput
+                      - PriceAlertIdsDoNotMatch
+                      - UserSettingsCacheNothingToFlush
+                    type: string
+                    x-enum-descriptions:
+                      NoValidInput: No valid input values passed.
+                      InvalidInput: An error was encountered when processing given input parameters.
+                      PriceAlertIdsDoNotMatch: Given Ids do not match
+                      UserSettingsCacheNothingToFlush: There were no user settings to flush from the cache.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+components:
+  schemas:
+    AlertSound:
+      title: The available sounds to play when showing a popup alert.
+      enum:
+        - Asterisk
+        - Beep
+        - Exclamation
+        - Hand
+        - None
+        - Question
+      type: string
+      x-enum-descriptions:
+        None: No sound.
+        Asterisk: Asterisk sound.
+        Beep: Beep sound.
+        Exclamation: Exclamation sound.
+        Hand: Hand sound.
+        Question: Question sound.
+    AssetType:
+      title: The possible AssetTypes for which you can get a quote or place an order or a trade.
+      enum:
+        - Bond
+        - Cash
+        - CertificateBonus
+        - CertificateCappedBonus
+        - CertificateCappedCapitalProtected
+        - CertificateCappedOutperformance
+        - CertificateConstantLeverage
+        - CertificateDiscount
+        - CertificateExpress
+        - CertificateTracker
+        - CertificateUncappedCapitalProtection
+        - CertificateUncappedOutperformance
+        - CfdIndexOption
+        - CfdOnCompanyWarrant
+        - CfdOnEtc
+        - CfdOnEtf
+        - CfdOnEtn
+        - CfdOnFund
+        - CfdOnFutures
+        - CfdOnIndex
+        - CfdOnRights
+        - CfdOnStock
+        - CompanyWarrant
+        - ContractFutures
+        - Etc
+        - Etf
+        - Etn
+        - Fund
+        - FuturesOption
+        - FuturesStrategy
+        - FxBinaryOption
+        - FxForwards
+        - FxKnockInOption
+        - FxKnockOutOption
+        - FxNoTouchOption
+        - FxOneTouchOption
+        - FxSpot
+        - FxVanillaOption
+        - GuaranteeNote
+        - IpoOnStock
+        - ManagedFund
+        - MiniFuture
+        - MutualFund
+        - PortfolioNote
+        - Rights
+        - SrdOnEtf
+        - SrdOnStock
+        - Stock
+        - StockIndex
+        - StockIndexOption
+        - StockOption
+        - Warrant
+        - WarrantDoubleKnockOut
+        - WarrantKnockOut
+        - WarrantOpenEndKnockOut
+        - WarrantSpread
+      type: string
+      x-enum-descriptions:
+        FxSpot: Forex Spot.
+        FxForwards: Forex Forward.
+        FxVanillaOption: Forex Vanilla Option.
+        FxKnockInOption: Forex Knock In Option.
+        FxKnockOutOption: Forex Knock Out Option.
+        FxBinaryOption: Forex Binary Option.
+        FxOneTouchOption: Forex One Touch Option.
+        FxNoTouchOption: Forex No Touch Option.
+        ContractFutures: Contract Futures.
+        FuturesStrategy: Futures Strategy.
+        Stock: Stock.
+        StockOption: Stock Option.
+        Bond: Bond.
+        FuturesOption: Futures Option.
+        StockIndexOption: Stock Index Option.
+        ManagedFund: 'Obsolete: Managed Fund.'
+        Cash: Cash. Not tradeable!
+        CfdOnStock: Cfd on Stock.
+        CfdOnIndex: Cfd on Stock Index.
+        CfdOnFutures: Cfd on Futures.
+        StockIndex: Stock Index.
+        MutualFund: Mutual Fund.
+        CfdIndexOption: Cfd Index Option.
+        CfdOnEtf: Cfd on Etf
+        CfdOnEtc: Cfd on Etc
+        CfdOnEtn: Cfd on Etn
+        CfdOnFund: Cfd on Fund
+        CfdOnRights: Cfd on Rights
+        CfdOnCompanyWarrant: Cfd on unlisted warrant issued by a corporation.
+        Etf: Exchange traded fund.
+        Etc: Etc
+        Etn: Etn
+        Fund: Fund
+        Rights: Rights
+        Warrant: Warrant
+        MiniFuture: MiniFuture.
+        WarrantSpread: Warrant with built-in spread.
+        WarrantKnockOut: Warrant with a knock-out barrier.
+        WarrantOpenEndKnockOut: Knock-out Warrant with no expiry.
+        WarrantDoubleKnockOut: Warrant with two knock-out barriers.
+        CertificateUncappedCapitalProtection: Guarantees a percentage increase of the underlying asset's value above the issue price at expiry/maturity. Max loss is the amount invested multiplied by the CapitalProtection percentage.
+        CertificateCappedCapitalProtected: Guarantees a capped percentage increase of the underlying asset's value above the issue price at expiry/maturity. Max loss is the amount invested multiplied by the CapitalProtection percentage.
+        CertificateDiscount: 'Yields a capped return if the underlying asset''s value is above the specified cap level at expiry. If the underlying''s value is below the strike at expiry, the investor received the underlying or equivalent value. Offers direct exposure in underlying at a lower price (discount) with a capped potential profit and limited loss.'
+        CertificateCappedOutperformance: Capped Outperformance Certificate.
+        CertificateCappedBonus: Certificate Capped Bonus.
+        CertificateExpress: Certificate Express kick out.
+        CertificateTracker: A certificate that mirrors the price movement of the underlying instrument. Often used to trade movements in indicies. Movements can be a fixed ratio of the underlying and can be inverted for bearish/short speculation. Risk is equivalent to owning the underlying.
+        CertificateUncappedOutperformance: 'Provides leveraged returns when the underlying price exceeds the threshold strike price. The amount leverage is defined by the Participation %. When the underlying is below the strike price, the certificate mirrors the underlying price 1:1.'
+        CertificateBonus: 'Mirrors the price movement of the underlying only if and when the underlying price exceeds the defined barrier. If the certificate expires below the barrier, it offers partial protection/return of investment.'
+        CertificateConstantLeverage: Certificate Constant Leverage.
+        SrdOnStock: SRD. (Service de Règlement Différé) on Stock.
+        SrdOnEtf: SRD. (Service de Règlement Différé) on Etf.
+        IpoOnStock: IPO on Stock
+        CompanyWarrant: 'Unlisted warrant issued by a corporation, often physically settled.'
+        PortfolioNote: Danish pooled investment scheme (“Pulje”). Not online tradeable.
+        GuaranteeNote: Danish investment scheme (“Grantbevis”). Not online tradeable.
+    ModelStateDictionary:
+      type: object
+      additionalProperties:
+        type: array
+        items:
+          type: string
+    PriceAlertComparisonOperator:
+      title: The inequality operator used in a price alert condition.
+      enum:
+        - GreaterOrEqual
+        - LessOrEqual
+      type: string
+      x-enum-descriptions:
+        GreaterOrEqual: "The price is greater than or equal to (&gt;=) the value\r\n            specified in the alert definition."
+        LessOrEqual: "The price is less than or equal to (&lt;=) the value specified\r\n            in the alert definition."
+    PriceAlertDefinitionRequest:
+      title: A price alert definition contains the information needed to know when to trigger an alert. Service clients subscribe to price alert definitions in order to receive the alerts.
+      required:
+        - AccountId
+        - ExpiryDate
+        - AssetType
+        - IsRecurring
+        - Operator
+        - PriceVariable
+        - TargetValue
+        - Uic
+      type: object
+      properties:
+        AccountId:
+          title: The account that owns this price alert definition.
+          type: string
+        AssetType:
+          title: The type of instrument that this alert is monitoring.
+          allOf:
+            - $ref: '#/components/schemas/AssetType'
+        Comment:
+          title: An optional comment associated with the price alert definition. The maximum supported length of the string is 128 characters.
+          maxLength: 128
+          type: string
+        ExpiryDate:
+          title: The UTC date and time that the price alert definition will expire and then be removed from the system. The date and time is specified in Coordinated Universal Time (UTC) and should be formatted as "yyyy-mm-ddThh:mm:ssZ".
+          type: string
+          format: date-time
+          x-type-name: UtcDateTime
+        IsRecurring:
+          title: Is the alert only triggered once or will the alerts keep recurring until the alert expires.
+          type: boolean
+        Operator:
+          title: The boolean operator used to compare the current price with the defined value.
+          allOf:
+            - $ref: '#/components/schemas/PriceAlertComparisonOperator'
+        PriceVariable:
+          title: The aspect of the price that is being monitored.
+          allOf:
+            - $ref: '#/components/schemas/PriceVariable'
+        State:
+          title: 'A price alert definition can be enabled, disabled or suspended. RecentlyTriggered is used for recurring alerts, so that they don''t trigger constantly once the condition has been met.'
+          allOf:
+            - $ref: '#/components/schemas/PriceAlertDefinitionState'
+        TargetValue:
+          title: The value that the current price is compared to.
+          type: number
+        Uic:
+          title: Universal Instrument Code (UIC).
+          type: integer
+          format: int32
+      additionalProperties: false
+      description: 'Using nullable fields an the custom RequiredNullable attribute in order to make the fields appear on the error list, if the value is missing.'
+    PriceAlertDefinitionResponse:
+      title: "A price alert definition contains the information needed to know when to trigger an alert.\r\n            Service clients subscribe to price alert definitions in order to receive the alerts."
+      required:
+        - AccountId
+        - ExpiryDate
+        - AssetType
+        - IsRecurring
+        - Operator
+        - PriceVariable
+        - TargetValue
+        - Uic
+      type: object
+      properties:
+        AccountId:
+          title: The account that owns this price alert definition.
+          type: string
+        AlertDefinitionId:
+          title: The ID of this .
+          type: string
+        AssetType:
+          title: The type of instrument that this alert is monitoring.
+          allOf:
+            - $ref: '#/components/schemas/AssetType'
+        ClientId:
+          title: The client that owns this price alert definition.
+          type: string
+        Comment:
+          title: An optional comment associated with the price alert definition. The maximum supported length of the string is 128 characters.
+          maxLength: 128
+          type: string
+        ExpiryDate:
+          title: The UTC date and time that the price alert definition will expire and then be removed from the system. The date and time is specified in Coordinated Universal Time (UTC) and should be formatted as "yyyy-mm-ddThh:mm:ssZ".
+          type: string
+          format: date-time
+          x-type-name: UtcDateTime
+        IsRecurring:
+          title: Is the alert only triggered once or will the alerts keep recurring until the alert expires.
+          type: boolean
+        Operator:
+          title: The boolean operator used to compare the current price with the defined value.
+          allOf:
+            - $ref: '#/components/schemas/PriceAlertComparisonOperator'
+        PriceVariable:
+          title: The aspect of the price that is being monitored.
+          allOf:
+            - $ref: '#/components/schemas/PriceVariable'
+        State:
+          title: 'A price alert definition can be enabled, disabled or suspended. RecentlyTriggered is used for recurring alerts, so that they don''t trigger constantly once the condition has been met.'
+          allOf:
+            - $ref: '#/components/schemas/PriceAlertDefinitionState'
+        TargetValue:
+          title: The value that the current price is compared to.
+          type: number
+        Uic:
+          title: Universal Instrument Code (UIC).
+          type: integer
+          format: int32
+        UserId:
+          title: The ID of the user that owns this price alert definition.
+          type: string
+      additionalProperties: false
+    PriceAlertDefinitionResponseListResult:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PriceAlertDefinitionResponse'
+          description: The collection of entities for this feed.
+        MaxRows:
+          type: number
+          description: The maximum number of rows that can be returned (if applicable).
+        __count:
+          type: number
+          description: The total count of items in the feed.
+        __next:
+          type: string
+          description: The link for the next page of items in the feed.
+      additionalProperties: false
+    PriceAlertDefinitionState:
+      title: Represents the state of an alert.
+      enum:
+        - Disabled
+        - Enabled
+        - RecentlyTriggered
+      type: string
+      x-enum-descriptions:
+        Enabled: The price alert is enabled and thus may cause notifications to be triggered.
+        Disabled: The price alert is disabled and does not cause notifications to be triggered.
+        RecentlyTriggered: "The price alert is an enabled, recurring alert that was recently triggered, and thus it will not\r\n            be triggered again right away."
+    PriceAlertUserSettingsRequest:
+      title: Contains information about how to notify the user when an alert is triggered.
+      type: object
+      properties:
+        EmailAddress:
+          title: The email address to send alert notifications to.
+          type: string
+        NotifyWithMail:
+          title: Send an email when a notification is triggered.
+          type: boolean
+        NotifyWithPopup:
+          title: Show triggered notifications with pop-ups.
+          type: boolean
+        Sound:
+          title: The sound to play when showing a popup notification.
+          allOf:
+            - $ref: '#/components/schemas/AlertSound'
+      additionalProperties: false
+    PriceAlertUserSettingsResponse:
+      title: Contains information about how to notify the user when an alert is triggered.
+      type: object
+      properties:
+        EmailAddress:
+          title: The email address to send alert notifications to.
+          type: string
+        EmailAddressValidated:
+          title: Set to true if the email address has been validated.
+          type: boolean
+        NotifyWithMail:
+          title: Send an email when a notification is triggered.
+          type: boolean
+        NotifyWithPopup:
+          title: Show triggered notifications with pop-ups.
+          type: boolean
+        Sound:
+          title: The sound to play when showing a popup notification.
+          allOf:
+            - $ref: '#/components/schemas/AlertSound'
+      additionalProperties: false
+    PriceVariable:
+      title: An aspect of a price that can be monitored.
+      enum:
+        - AskTick
+        - BidTick
+        - PercentChange
+        - Traded
+      type: string
+      x-enum-descriptions:
+        AskTick: Ask price tick.
+        BidTick: Bid price tick.
+        Traded: Traded price.
+        PercentChange: Percentage change from last close value.
+  responses:
+    ServiceUnavailable:
+      description: Service Unavailable.
+    TooManyRequests:
+      description: The request was rejected due to rate limit being exceeded.
+    Unauthorized:
+      description: Indicates that the request was rejected because the 'Authorization' header was missing in the request or contained an invalid security token.
+  securitySchemes:
+    OpenApiJWTSecurityScheme:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OpenApiOAuthSecurityScheme:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://sim.logonvalidation.net/authorize
+          tokenUrl: https://sim.logonvalidation.net/token
+          scopes: { }
+tags:
+  - name: Air
+    description: 'Provides endpoints for getting recommendations, as part of the Automated Customer Experience (ACE) program.'
+  - name: Disclaimers
+    description: 'Provides endpoints for getting disclaimers for the loginflow for the calling user, by type, by key matching  and an endpoint to register response'
+  - name: GeoLocation
+    description: Provides endpoints for Geo location info
+  - name: Notifications
+    description: Provides end points for getting available notification combinations for targets to subscribe to.
+  - name: Partner Content - DeepLinks
+    description: 'End points serving public partner trade suggestion links, also known as order ticket deep links.'
+  - name: Partner Content - Documents
+    description: "Public read only end points serving custom partner content pages, including trade suggestions.\r\n            The partner content is specific to the logged-in user's parent partner and content must be available from the user's owner."
+  - name: Partner Content - TradeSuggestions Admin
+    description: "Partner document Trade Suggestions - Restricted endpoints for adding, editing and deleing partner content trade recommendations.\r\n            The partner content is specific to the logged-in user's parent partner and content must be available from the user's owner."
+  - name: Performance Profiler
+    description: Provides endpoint for posting performance profiler for the client
+  - name: Price Alerts
+    description: Provides endpoints for managing price alert definitions and notification settings.
+  - name: Recommender
+    description: "Provides v2 endpoints for getting recommendations for blog posts, financial calendar events, Saxo TV clips\r\n            and marketing compaigns, as part of the Automated Customer Experience (ACE) program."
+  - name: Signals
+    description: Provides endpoints for managing signals and for subscribing to signals.
+  - name: User Settings
+    description: Controller for the /vas/v1/userssettings endpoint.

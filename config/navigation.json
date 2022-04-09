@@ -257,7 +257,7 @@
           "title": "Initiate verification process from external vendor"
         },
         {
-          "endpoint": "cs/v2/clientinfo/clients/search",
+          "endpoint": "/cs/v2/clientinfo/clients/search",
           "method": "POST",
           "isFrequentlyUsed": false,
           "title": "Search all child counterparts based on ownerId"
@@ -356,7 +356,7 @@
           "endpoint": "/trade/v1/messages/seen",
           "method": "PUT",
           "isFrequentlyUsed": true,
-          "title": "Mark trade message as 'seen'"
+          "title": "Mark multiple trade messages as 'seen'"
         },
         {
           "endpoint": "/trade/v1/messages/subscriptions",
@@ -869,7 +869,7 @@
           "title": "Get all supported languages"
         },
         {
-          "endpoint": "ref/v1/standarddates/forwardtenor/{Uic}",
+          "endpoint": "/ref/v1/standarddates/forwardtenor/{Uic}",
           "method": "GET",
           "isFrequentlyUsed": false,
           "title": "Get a list of forward tenor dates"
@@ -977,7 +977,7 @@
           "title": "Create a session capabilities subscription"
         },
         {
-          "endpoint": "root/v1/sessions/events/subscriptions/{ContextId}/{ReferenceId}",
+          "endpoint": "/root/v1/sessions/events/subscriptions/{ContextId}/{ReferenceId}",
           "method": "DELETE",
           "isFrequentlyUsed": true,
           "title": "Remove session capabilities subscription"
@@ -1013,7 +1013,7 @@
           "title": "Close a specific support case"
         },
         {
-          "endpoint": "cs/v1/partner/support/cases/{CaseId}/internalcomment",
+          "endpoint": "/cs/v1/partner/support/cases/{CaseId}/internalcomment",
           "method": "POST",
           "isFrequentlyUsed": false,
           "title": "Create internal comment under a case"
@@ -1127,7 +1127,7 @@
           "title": "Submit Securities Transfer Request"
         },
         {
-          "endpoint": "atr/v1/securitiestransfers/brokers",
+          "endpoint": "/atr/v1/securitiestransfers/brokers",
           "method": "GET",
           "isFrequentlyUsed": false,
           "title": "Get list of brokers for the given ISO Country Code"
