@@ -758,13 +758,13 @@
           "endpoint": "/trade/v1/prices/multileg/subscriptions/{ContextId}",
           "method": "DELETE",
           "isFrequentlyUsed": true,
-          "title": "Remove a multi-leg price subscriptions"
+          "title": "Remove multi-leg price subscription"
         },
         {
           "endpoint": "/trade/v1/prices/multileg/subscriptions/{ContextId}/{ReferenceId}",
           "method": "DELETE",
           "isFrequentlyUsed": true,
-          "title": "Remove a multi-leg price subscription"
+          "title": "Remove a specific multi-leg price subscription"
         },
         {
           "endpoint": "/vas/v1/pricealerts/definitions",

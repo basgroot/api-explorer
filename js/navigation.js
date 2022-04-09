@@ -1,32 +1,34 @@
 /*jslint browser: true, for: true, long: true, unordered: true */
-/*global window console yaml tokenObject getToken */
+/*global window console getQueryParameter */
 
 (function () {
 
-    function createTag(name) {
-        const b = document.createElement("button");
-        b.className = "collapsible";
-        b.innerText = name;
-        return b;
-    }
-
-    function getLinkWrapper() {
-        const d = document.createElement("div");
-        d.className = "content";
-        return d;
-    }
-
     function createLink(title, target) {
-        const l = document.createElement("a");
-        l.href = target;
-        l.text = title;
-        l.className = "nav-text";
-        return l;
+        const link = document.createElement("a");
+        link.href = target;
+        link.text = title;
+        link.className = "nav-text";
+        return link;
     }
 
-    function getLineBreak() {
-        const b = document.createElement("br");
-        return b;
+    function createDetails(title, articles) {
+        const details = document.createElement("details");
+        const summary = document.createElement("summary");
+        if (articles !== "") {
+            summary.addEventListener("click", function () {
+                window.location.href = "#art=" + articles;
+            });
+        }
+        summary.appendChild(document.createTextNode(title));
+        details.appendChild(summary);
+        return details;
+    }
+
+    function createEndpointLink(details, endpoint) {
+        const url = "index.html#method=" + endpoint.method + "&endpoint=" + encodeURIComponent(endpoint.endpoint);
+        const link = createLink(endpoint.title, url);
+        details.appendChild(link);
+        details.appendChild(document.createElement("br"));
     }
 
     fetch("https://basgroot.github.io/api-explorer/config/navigation.json").then(function (response) {
@@ -35,51 +37,32 @@
                 const showFullMenu = getQueryParameter("all", "") === "1";
                 const d = document.getElementById("left-nav-content");
                 responseJson.serviceGroups.forEach(function (serviceGroup) {
-                    const tag = createTag(serviceGroup.name);
-                    const links = getLinkWrapper();
-                    const showAll = createLink("Show all…", "");
-                    tag.addEventListener("click", function () {
-                        this.classList.toggle("active");
-                        const content = this.nextElementSibling;
-                        if (content.style.maxHeight) {
-                            content.style.maxHeight = null;
-                        } else {
-                            content.style.maxHeight = content.scrollHeight + "px";
-                        }
-                        if (serviceGroup.articles !== "") {
-                            window.location.href = "#art=" + serviceGroup.articles;
-                        }
-                    });
+                    const details = createDetails(serviceGroup.name, serviceGroup.articles);
+                    let isEndpointHidden = false;
                     serviceGroup.endpoints.forEach(function (endpoint) {
                         if (endpoint.isFrequentlyUsed || showFullMenu) {
-                            let url = "index.html#method=" + endpoint.method + "&endpoint=" + encodeURIComponent(endpoint.endpoint);
-                            let link = createLink(endpoint.title, url);
-                            links.appendChild(link);
-                            links.appendChild(getLineBreak());
+                            createEndpointLink(details, endpoint);
+                        } else {
+                            isEndpointHidden = true;
                         }
                     });
-                    showAll.addEventListener("click", function (evt) {
-                        serviceGroup.endpoints.forEach(function (endpoint) {
-                            // Add the less common endpoints:
-                            if (!endpoint.isFrequentlyUsed && !showFullMenu) {
-                                let url = "index.html#method=" + endpoint.method + "&endpoint=" + encodeURIComponent(endpoint.endpoint);
-                                let link = createLink(endpoint.title, url);
-                                links.appendChild(link);
-                                links.appendChild(getLineBreak());
-                            }
+                    if (!showFullMenu && isEndpointHidden) {
+                        // Only when not all endpoints are visible
+                        const showAllLink = createLink("Show all…", "");
+                        showAllLink.addEventListener("click", function (evt) {
+                            serviceGroup.endpoints.forEach(function (endpoint) {
+                                // Add the less common endpoints:
+                                if (!endpoint.isFrequentlyUsed && !showFullMenu) {
+                                    createEndpointLink(details, endpoint);
+                                }
+                            });
+                            // And hide the showAllLink:
+                            showAllLink.style.display = "none";
+                            evt.preventDefault();
                         });
-                        // And hide the showAll:
-                        showAll.style.display = "none";
-                        const content = this.nextElementSibling;
-                        content.style.maxHeight = content.scrollHeight + "px";
-                        evt.preventDefault();
-                    });
-                    if (!showFullMenu) {
-                        // Only when not all menu items are visible
-                        links.appendChild(showAll);
+                        details.appendChild(showAllLink);
                     }
-                    d.appendChild(tag);
-                    d.appendChild(links);
+                    d.appendChild(details);
                 });
             });
         } else {
