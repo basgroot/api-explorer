@@ -78,9 +78,18 @@ We use tagging, so endpoints can be moved to the structure we think they belong 
           <!-- Tab content -->
           <div id="idTabRequest" class="tabcontent">
             <div class="input-fields">
-              <textarea id="idPathParameters" rows="3" wrap="off"></textarea><br />
-              <textarea id="idQueryParameters" rows="3" wrap="off"></textarea><br />
-              <textarea id="idRequestBody" rows="13" wrap="off"></textarea><br />
+              <div id="idPathParametersContainer">
+                Path parameters:<br />
+                <pre id="idPathParameters" contenteditable="true"></pre>
+              </div>
+              <div id="idQueryParametersContainer">
+                Query parameters:<br />
+                <pre id="idQueryParameters" contenteditable="true"></pre>
+              </div>
+              <div id="idRequestBodyContainer">
+                Request body:<br />
+                <pre id="idRequestBody" contenteditable="true"></pre>
+              </div>
             </div>
             <button class="sendRequest" id="idBtnSendRequest">Send request</button>
           </div>

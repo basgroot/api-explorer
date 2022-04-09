@@ -71,12 +71,12 @@
                 response.json().then(function (responseJson) {
                     switch (endpoint) {
                     case usersEndpoint:
-                        yamlUtils.defaultFieldValues.ClientKey = responseJson.ClientKey;
-                        yamlUtils.defaultFieldValues.UserKey = responseJson.UserKey;
+                        yamlUtils.defaultFieldValues.clientkey = responseJson.ClientKey;
+                        yamlUtils.defaultFieldValues.userkey = responseJson.UserKey;
                         userLoaded = true;
                         break;
                     case clientsEndpoint:
-                        yamlUtils.defaultFieldValues.AccountKey = responseJson.DefaultAccountKey;
+                        yamlUtils.defaultFieldValues.accountkey = responseJson.DefaultAccountKey;
                         clientLoaded = true;
                         break;
                     default:
@@ -101,7 +101,7 @@
     function sendRequest() {
 
         function getParameters(id) {
-            const value = document.getElementById(id).value;
+            const value = document.getElementById(id).innerText;
             return value.trim().replace(/\r/g, "").split(/\n/g);
         }
 
@@ -135,7 +135,7 @@
 
         function getPostBody() {
             try {
-                return JSON.parse(document.getElementById("idRequestBody").value);
+                return JSON.parse(document.getElementById("idRequestBody").innerText);
             } catch (error) {
                 console.error(error);
                 return {};
@@ -239,13 +239,13 @@
 
     function populateScreen() {
 
-        function populateTextArea(id, value) {
-            const textArea = document.getElementById(id);
-            textArea.value = value;
+        function populateEditableContent(id, parentId, value) {
+            const editableContent = document.getElementById(id);
+            editableContent.innerText = value;
             if (value === "") {
-                textArea.style.display = "none";
+                document.getElementById(parentId).style.display = "none";
             } else {
-                textArea.style.display = "";
+                document.getElementById(parentId).style.display = "";
             }
         }
 
@@ -254,14 +254,12 @@
         const endpoint = getQueryParameter("endpoint", "");
         const mainContentElement = document.getElementById("idMainContent");
         if (httpMethod === "" && endpoint === "") {
-            console.log("here");
             // Hide Explorer:
             document.getElementById("idExplorer").style.display = "none";
             document.getElementById("right-inner-2").style.width = "0%";
             // Load article(s):
             loadArticles(mainContentElement);
         } else {
-            console.log("no here");
             yamlUtils.properties.method = httpMethod;
             yamlUtils.properties.endpoint = endpoint;
             // Show Explorer:
@@ -271,11 +269,11 @@
             // Get endpoint from the URL:
             document.getElementById("idEndpoint").innerText = endpoint;
             // Get the path parameters from the yaml file:
-            populateTextArea("idPathParameters", yamlUtils.getParameters(endpoint, httpMethod, "path"));
+            populateEditableContent("idPathParameters", "idPathParametersContainer", yamlUtils.getParameters(endpoint, httpMethod, "path"));
             // Get the query parameters from the yaml file:
-            populateTextArea("idQueryParameters", yamlUtils.getParameters(endpoint, httpMethod, "query"));
+            populateEditableContent("idQueryParameters", "idQueryParametersContainer", yamlUtils.getParameters(endpoint, httpMethod, "query"));
             // Get the request object from the yaml file:
-            populateTextArea("idRequestBody", yamlUtils.getRequestBody(endpoint, httpMethod));
+            populateEditableContent("idRequestBody", "idRequestBodyContainer", yamlUtils.getRequestBody(endpoint, httpMethod));
             // Get the reference documentation from yaml:
             mainContentElement.innerHTML = yamlUtils.getRefDoc(endpoint, httpMethod);
         }

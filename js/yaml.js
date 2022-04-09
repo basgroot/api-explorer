@@ -9,13 +9,13 @@ function yaml() {
         "lineNumber": 0
     };
     const defaultFieldValues = {
-      "AssetType": "FxSpot",
-      "Uic": 21,
-      "Uics": "21, 22",
-      "Format": "application/json",
-      "ContextId": "MyAppContext_" + Date.now(),  // Some unique value
-      "ReferenceId": "MyReferenceId",
-      "RefreshRate": 200
+      "assettype": "FxSpot",
+      "uic": 21,
+      "uics": "21, 22",
+      "format": "application/json",
+      "contextid": "MyAppContext_" + Date.now(),  // Some unique value
+      "referenceid": "MyReferenceId",
+      "refreshrate": 200
     };
     let lastLoadedFile = "";
 
@@ -256,8 +256,8 @@ function yaml() {
         for (key in resultObject) {
             if (typeof resultObject[key] === "object") {
                 populateDefaultValues(resultObject[key]);
-            } else if (defaultFieldValues[key] !== undefined) {
-                resultObject[key] = defaultFieldValues[key];
+            } else if (defaultFieldValues[key.toLowerCase()] !== undefined) {
+                resultObject[key] = defaultFieldValues[key.toLowerCase()];
             }
         }
     }
@@ -312,11 +312,11 @@ function yaml() {
             } else if (isParametersActive) {
                 paramName = getValue(line, "name");
                 if (paramName !== "" && getValue(properties.file[i + 1], "in") === parameterType) {
-                    if (defaultFieldValues[paramName] === undefined) {
+                    if (defaultFieldValues[paramName.toLowerCase()] === undefined) {
                         // No default - get type:
                         paramValue = getObjectType("            ", i + 2);
                     } else {
-                        paramValue = defaultFieldValues[paramName];
+                        paramValue = defaultFieldValues[paramName.toLowerCase()];
                     }
                     result += paramName + "=" + paramValue + "\n";
                 }
