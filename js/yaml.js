@@ -42,7 +42,8 @@ function yaml() {
     }
 
     function plainTextToHtml(value) {
-        return value.replace(/\\r\\n/g, "<br />");
+        return value.replace(/\\r\\n/g, "<br />")
+            .replace(/\\"/g, '"');
     }
 
     function loadYamlEndpoint(callback) {
@@ -345,6 +346,8 @@ function yaml() {
             if (isOnlyRequired !== isRequired) {
                 return "";
             }
+            // Fix casing:
+            parameterName = parameterName.charAt(0).toUpperCase() + parameterName.substring(1);
             return "<p><strong>" + parameterName + "</strong><br />" + plainTextToHtml(removeSurroundingQuotes(description)) + "</p>";
         }
 
@@ -366,7 +369,8 @@ function yaml() {
                     break;
                 }
                 value = getValue(line, "name");
-                if (value !== "") {
+                // Don't list the params with "x-type-name" in the line:
+                if (value !== "" && getValue(line, "x-type-name") === "") {
                     if (parameterName !== "") {
                         // This is the next param. Add previous to the list.
                         result += addParam(parameterName, description, isRequired);
@@ -394,10 +398,14 @@ function yaml() {
     function getRefDoc(endpoint, httpMethod) {
         const startLine = findEndpointInYaml(endpoint, httpMethod);
         let result = "<h1>" + getEndpointSummary(startLine, "summary") + "</h1>" + getEndpointSummary(startLine, "description");
-        result += "<h2>Required parameters</h2>";
-        result += getParameterDocs(startLine, true);
-        result += "<h2>Optional parameters</h2>";
-        result += getParameterDocs(startLine, false);
+        let requiredParameters = getParameterDocs(startLine, true);
+        let optionalParameters = getParameterDocs(startLine, false);
+        if (requiredParameters !== "") {
+            result += "<h2>Required parameters</h2>" + requiredParameters;
+        }
+        if (optionalParameters !== "") {
+            result += "<h2>Optional parameters</h2>" + optionalParameters;
+        }
         return result;
     }
 

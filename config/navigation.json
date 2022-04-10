@@ -704,7 +704,7 @@
           "endpoint": "/trade/v1/infoprices/subscriptions",
           "method": "POST",
           "isFrequentlyUsed": true,
-          "title": "Create an active info price subscription on an list of instruments"
+          "title": "Create a price subscription on multiple instruments"
         },
         {
           "endpoint": "/trade/v1/infoprices/subscriptions/{ContextId}",

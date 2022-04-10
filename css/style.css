@@ -34,9 +34,6 @@
     border-top: none;
     background-color: #F5F7F9;
     height: 500px;
-}
-
-.tabcontent {
     animation: fadeEffect 1s; /* Fading effect takes 1 second */
 }
 
@@ -147,13 +144,11 @@ a.nav-text {
 
 .left {
     width: 20%;
-    height: 100vh;
     background-color: #fff;
 }
 
 .right {
     width: 80%;
-    height: 100vh;
     background-color: #fff;
     display: flex;
 }
