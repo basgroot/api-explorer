@@ -45,7 +45,9 @@ button.sendRequest {
     border-radius: 4px;
     height: 40px;
     width: 130px;
-    float: right
+    position: absolute;
+    top: 570px;
+    left: 250px;
 }
 
 .input-fields {
@@ -168,8 +170,9 @@ a.nav-text {
 }
 
 .explorer {
-    padding-top: 20px;
-    padding-right: 5px;
+    position: fixed;
+    width: 400px;
+    top: 90px;
 }
 
 @import url('https://rsms.me/inter/inter.css');
