@@ -48,7 +48,20 @@ button.sendRequest {
     position: absolute;
     top: 570px;
     left: 250px;
+    transition-duration: 0.4s;
+    cursor: pointer;
 }
+
+.sendRequest:hover {
+    background-color: #005ECC; /* Green */
+    color: white;
+}
+
+.sendRequest:active {
+    background-color: #1fafff;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+  }
 
 .input-fields {
     padding: 20px 40px 60px 20px;
@@ -235,4 +248,14 @@ p {
 #left-nav-content details[open] summary {
     font-weight: bold;
     color: #0076ff;
+}
+
+.endpoint-method {
+    font-family: Consolas, monaco, monospace;
+    padding-left: 10px;
+}
+
+.endpoint-url {
+    font-family: Consolas, monaco, monospace;
+    padding-left: 10px;
 }
