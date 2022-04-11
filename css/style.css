@@ -35,6 +35,7 @@
     background-color: #F5F7F9;
     height: 500px;
     animation: fadeEffect 1s; /* Fading effect takes 1 second */
+    overflow-y: auto;
 }
 
 button.sendRequest {
