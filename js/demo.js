@@ -262,6 +262,8 @@
         } else {
             yamlUtils.properties.method = httpMethod;
             yamlUtils.properties.endpoint = endpoint;
+            // set width back
+            document.getElementById("right-inner-2").style.width = "30%";
             // Show Explorer:
             document.getElementById("idExplorer").style.display = "";
             // Get method from the URL:
