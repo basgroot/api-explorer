@@ -36,10 +36,32 @@
         }
     }
 
+    function getColoredBox(method) {
+        let d = document.createElement('div');
+        d.style.backgroundColor = getRESTMethodColor(method);
+        d.style.height = "8px";
+        d.style.width = "8px";
+        d.style.position = "relative";
+        d.style.top = "5px";
+        return d;
+    }
+
+    function wrapLinkAndColoredBox(box, link) {
+        let d = document.createElement('div');
+        d.appendChild(link);
+        let outerDiv = document.createElement('div');
+        outerDiv.style.display = "flex";
+        outerDiv.appendChild(box);
+        outerDiv.appendChild(d);
+        outerDiv.style.paddingLeft = "10px";
+        return outerDiv;
+    }
+
     function createEndpointLink(details, endpoint) {
         const url = "index.html#method=" + endpoint.method + "&endpoint=" + encodeURIComponent(endpoint.endpoint);
         const link = createLink(endpoint.title, url, endpoint.method + " " + endpoint.endpoint);
-        details.appendChild(link);
+        let d = wrapLinkAndColoredBox(getColoredBox(endpoint.method), link);
+        details.appendChild(d); 
         details.appendChild(document.createElement("br"));
         link.addEventListener("click", function () {
             // Make the selected link "Saxo-blue" and reset the color of the others.

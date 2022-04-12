@@ -348,7 +348,7 @@ function yaml() {
             }
             // Fix casing:
             parameterName = parameterName.charAt(0).toUpperCase() + parameterName.substring(1);
-            return "<p><strong>" + parameterName + "</strong><br />" + plainTextToHtml(removeSurroundingQuotes(description)) + "</p>";
+            return "<p class=\"param-title\">" + parameterName + "</p>" + "<p class=\"param-description\">" + plainTextToHtml(removeSurroundingQuotes(description)) + "</p>";
         }
 
         let i;
@@ -397,14 +397,14 @@ function yaml() {
 
     function getRefDoc(endpoint, httpMethod) {
         const startLine = findEndpointInYaml(endpoint, httpMethod);
-        let result = "<h1>" + getEndpointSummary(startLine, "summary") + "</h1>" + getEndpointSummary(startLine, "description");
+        let result = "<h1>" + getEndpointSummary(startLine, "summary") + "</h1><p class=\"endpoint-summary\">" + getEndpointSummary(startLine, "description") + "</p>";
         let requiredParameters = getParameterDocs(startLine, true);
         let optionalParameters = getParameterDocs(startLine, false);
         if (requiredParameters !== "") {
-            result += "<h2>Required parameters</h2>" + requiredParameters;
+            result += "<h2 class=\"parameter-titles\">Required Parameters</h2><hr class=\"endpoint-description\">" + requiredParameters;
         }
         if (optionalParameters !== "") {
-            result += "<h2>Optional parameters</h2>" + optionalParameters;
+            result += "<h2 class=\"parameter-titles\">Optional Parameters</h2><hr class=\"endpoint-description\">" + optionalParameters;
         }
         return result;
     }
@@ -420,6 +420,23 @@ function yaml() {
             properties,
             removeEmptyValues
         });
+    }
+
+    function getRESTMethodColor(method) {
+        method = method.toLowerCase();
+        if (method == "get") {
+            return "--color-get";
+        } else if (method == "post") {
+            return "--color-post";
+        } else if (method == "put") {
+            return "--color-put";
+        } else if (method == "patch") {
+            return "--color-patch";
+        } else if (method == "delete") {
+            return "--color-patch";
+        } else {
+            return "--color-black-1";
+        }
     }
 
     return setupYaml();
