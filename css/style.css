@@ -3,10 +3,12 @@
     --color-white-2: #f0f0f7;
     --color-white-3: #F9F9FF;
     --color-white-4: #E9ECEF;
+    --color-white-5: #F5F7F9;
     --color-grey-1: #88909A;
-    --color-grey-2: #F5F7F9;
+    --color-grey-2: #DDE0E4;
+    --color-grey-3: #424E5E;
     --color-blue-1: #1fafff;
-    --color-blue-2: #0076ff;
+    --color-blue-2: #1B73EE;
     --color-blue-3: #005ECC;
     --color-black-1: #000;
     --color-red-1: red;
@@ -34,12 +36,12 @@
 
         /* Change background color of buttons on hover */
         .tab button:hover {
-            background-color: var(--color-grey-2);
+            background-color: var(--color-white-5);
         }
 
         /* Create an active/current tablink class */
         .tab button.active {
-            background-color: var(--color-grey-2);
+            background-color: var(--color-white-5);
             color: var(--color-black-1)
         }
 
@@ -49,7 +51,7 @@
     padding: 6px 12px;
     border: 1px solid var(--color-white-4);
     border-top: none;
-    background-color: var(--color-grey-2);
+    background-color: var(--color-white-5);
     height: 500px;
     animation: fadeEffect 1s; /* Fading effect takes 1 second */
     overflow-y: scroll;
@@ -91,7 +93,7 @@ button.sendRequest {
 }
 
 .endpoint-inner {
-    background-color: var(--color-grey-2);
+    background-color: var(--color-white-5);
     border: 1px;
     border-radius: 10px;
     padding: 10px 10px 10px 5px;
@@ -274,7 +276,7 @@ p {
 
 #left-nav-content details[open] summary {
     font-weight: bold;
-    color: var(--color-blue-2);
+    color: var(--color-blue-3);
 }
 
 .endpoint-method {
@@ -294,7 +296,7 @@ p {
   }
   
   ::-webkit-scrollbar-track {
-    background: var(--color-grey-2); 
+    background: var(--color-white-5); 
   }
 
    
@@ -311,9 +313,25 @@ p {
 
 p.param-title {
     font-weight: bold;
-    color: 6D7A8E
+    color: var(--color-grey-3)
 }
 
 p.param-description {
     font-weight: normal;
+    color: var(--color-grey-3)
+}
+
+p.endpoint-summary {
+    font-weight: normal;
+    color: var(--color-grey-3)
+}
+
+h2.parameter-titles {
+    font-weight: bolder;
+    color: var(--color-grey-3)
+}
+
+hr.endpoint-description {
+    border: 1px solid; 
+    border-color: var(--color-white-5);
 }
