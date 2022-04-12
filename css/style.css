@@ -27,22 +27,24 @@
         border: none;
         outline: none;
         cursor: pointer;
-        padding: 14px 16px;
+        padding: 10px 12px;
         transition: 0.3s;
         border-left: 1px solid var(--color-white-4);
         font-weight: bold;
         color: var(--color-grey-1);
+        height: 30px;
+        width: 96px;
     }
 
         /* Change background color of buttons on hover */
         .tab button:hover {
-            background-color: var(--color-white-5);
+            background-color: var(--color-white-4);
         }
 
         /* Create an active/current tablink class */
         .tab button.active {
             background-color: var(--color-white-5);
-            color: var(--color-black-1)
+            color: var(--color-grey-1)
         }
 
 /* Style the tab content */
@@ -52,7 +54,7 @@
     border: 1px solid var(--color-white-4);
     border-top: none;
     background-color: var(--color-white-5);
-    height: 500px;
+    height: 525px;
     animation: fadeEffect 1s; /* Fading effect takes 1 second */
     overflow-y: scroll;
     word-wrap: normal;
@@ -88,19 +90,28 @@ button.sendRequest {
 }
 
 .endpoint {
-    background-color: var(--color-white-4);
-    padding: 1px 10px 1px 10px;
+    background-color: var(--color-white-4); 
+    padding-left: 10px;
+    padding-right: 10px;
+    height: 50px;
 }
 
 .endpoint-inner {
     background-color: var(--color-white-5);
-    border: 1px;
+    border: solid 1px;
+    border-color: var(--color-white-2);
     border-radius: 10px;
-    padding: 10px 10px 10px 5px;
-    width: 95%;
-    overflow-x: auto;
+    height: 40px;
+    position: relative;
+    top: 4px;
+    overflow-x: auto; 
 }
 
+.endpoint-text{
+    position: relative;
+    top: 10px;
+    display: inline;
+}
 
 /* Go from zero to full opacity */
 @keyframes fadeEffect {
@@ -114,7 +125,7 @@ button.sendRequest {
 }
 
 pre.error {
-    background-color: var(--color-white-1);
+    background-color: var(--color-red-1);
     color: var(--color-white-1);
 }
 
