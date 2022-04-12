@@ -142,3 +142,22 @@ function loadArticles(mainContentElement) {
         });
     });
 }
+
+function getRESTMethodColor(method) {
+    method = method.toLowerCase();
+    console.log("debug", method);
+    if (method == "get") {
+        return "var(--color-get)";
+    } else if (method == "post") {
+        return "var(--color-post)";
+    } else if (method == "put") {
+        return "var(--color-put)";
+    } else if (method == "patch") {
+        return "var(--color-patch)";
+    } else if (method == "delete") {
+        return "var(--color-delete)";
+    } else {
+        console.error("Unrecognized method!", method);
+        return "var(--color-black-1)";
+    }
+}
