@@ -1,7 +1,21 @@
+:root {
+    --color-white-1: #fff;
+    --color-white-2: #f0f0f7;
+    --color-white-3: #F9F9FF;
+    --color-white-4: #E9ECEF;
+    --color-grey-1: #88909A;
+    --color-grey-2: #F5F7F9;
+    --color-blue-1: #1fafff;
+    --color-blue-2: #0076ff;
+    --color-blue-3: #005ECC;
+    --color-black-1: #000;
+    --color-red-1: red;
+  }
+
 /* Style the tab */
 .tab {
     overflow: hidden;
-    background-color: #E9ECEF;
+    background-color: var(--color-white-4);
 }
 
     /* Style the buttons that are used to open the tab content */
@@ -13,29 +27,29 @@
         cursor: pointer;
         padding: 14px 16px;
         transition: 0.3s;
-        border-left: 1px solid #E9ECEF;
+        border-left: 1px solid var(--color-white-4);
         font-weight: bold;
-        color: #88909A;
+        color: var(--color-grey-1);
     }
 
         /* Change background color of buttons on hover */
         .tab button:hover {
-            background-color: #F5F7F9;
+            background-color: var(--color-grey-2);
         }
 
         /* Create an active/current tablink class */
         .tab button.active {
-            background-color: #F5F7F9;
-            color: black
+            background-color: var(--color-grey-2);
+            color: var(--color-black-1)
         }
 
 /* Style the tab content */
 .tabcontent {
     display: none;
     padding: 6px 12px;
-    border: 1px solid #E9ECEF;
+    border: 1px solid var(--color-white-4);
     border-top: none;
-    background-color: #F5F7F9;
+    background-color: var(--color-grey-2);
     height: 500px;
     animation: fadeEffect 1s; /* Fading effect takes 1 second */
     overflow-y: scroll;
@@ -43,8 +57,8 @@
 }
 
 button.sendRequest {
-    background-color: #0076ff;
-    color: #fff;
+    background-color: var(--color-blue-2);
+    color: var(--color-white-1);
     border: none;
     border-radius: 4px;
     height: 40px;
@@ -57,12 +71,12 @@ button.sendRequest {
 }
 
 .sendRequest:hover {
-    background-color: #005ECC; /* Green */
-    color: white;
+    background-color: var(--color-blue-3); 
+    color: var(--color-white-1);
 }
 
 .sendRequest:active {
-    background-color: #1fafff;
+    background-color: var(--color-blue-1);
     box-shadow: 0 5px #666;
     transform: translateY(4px);
   }
@@ -72,12 +86,12 @@ button.sendRequest {
 }
 
 .endpoint {
-    background-color: #E9ECEF;
+    background-color: var(--color-white-4);
     padding: 1px 10px 1px 10px;
 }
 
 .endpoint-inner {
-    background-color: #F5F7F9;
+    background-color: var(--color-grey-2);
     border: 1px;
     border-radius: 10px;
     padding: 10px 10px 10px 5px;
@@ -98,15 +112,15 @@ button.sendRequest {
 }
 
 pre.error {
-    background-color: red;
-    color: white;
+    background-color: var(--color-red-1);
+    color: var(--color-white-1);
 }
 
 
 /* Navigation  */
 .collapsible {
-    background-color: #fff;
-    color: #88909A;
+    background-color: var(--color-white-1);
+    color: var(--color-grey-1);
     cursor: pointer;
     padding: 7px 20px;
     width: 100%;
@@ -118,12 +132,12 @@ pre.error {
 }
 
     .active, .collapsible:hover {
-        background-color: #fff;
-        color: black;
+        background-color: var(--color-white-1);
+        color: var(--color-black-1);
     }
 
     .collapsible a {
-        color: black;
+        color: var(--color-black-1);
     }
 
 .content {
@@ -131,18 +145,18 @@ pre.error {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.2s ease-out;
-    background-color: #fff;
+    background-color: var(--color-white-1);
 }
 
 a.nav-text {
     font-size: 14px;
-    color: #88909A;
+    color: var(--color-grey-1);
     text-decoration: none;
     padding-left: 10px;
 }
 
     a.nav-text:hover {
-        color: black;
+        color: var(--color-black-1);
         text-decoration: underline;
     }
 
@@ -152,7 +166,7 @@ a.nav-text {
     }
 
 .main_container {
-    background-color: #fff;
+    background-color: var(--color-white-1);
     position:absolute;
     top:0px;
     right:0px;
@@ -165,19 +179,19 @@ a.nav-text {
     flex-direction: row; /* default value; can be omitted */
     flex-wrap: nowrap; /* default value; can be omitted */
     justify-content: space-between; /* switched from default (flex-start, see below) */
-    background-color: #fff;
+    background-color: var(--color-white-1);
 }
 
 .left {
     width: 20%;
-    background-color: #fff;
+    background-color: var(--color-white-1);
     position: relative;
     left: 10px;
 }
 
 .right {
     width: 80%;
-    background-color: #fff;
+    background-color: var(--color-white-1);
     display: flex;
     position: relative;
     left: 100px;
@@ -237,13 +251,13 @@ p {
     border: none;
     border-radius: 5px;
     padding-left: 10px;
-    background-color: #F9F9FF;
+    background-color: var(--color-white-3);
 }
 
 .header {
     width: 100%;
     height: 62px;
-    background-color: #f0f0f7;
+    background-color: var(--color-white-2);
     display: flex; /* establish flex container */
     flex-direction: row;
 }
@@ -254,13 +268,13 @@ p {
 
 #left-nav-content summary {
     cursor: pointer;
-    color: #88909A;
+    color: var(--color-grey-1);
     line-height: 220%;
 }
 
 #left-nav-content details[open] summary {
     font-weight: bold;
-    color: #0076ff;
+    color: var(--color-blue-2);
 }
 
 .endpoint-method {
@@ -279,18 +293,27 @@ p {
     height: 5px;
   }
   
-  /* Track */
   ::-webkit-scrollbar-track {
-    background: #F5F7F9; 
+    background: var(--color-grey-2); 
   }
+
    
-  /* Handle */
   ::-webkit-scrollbar-thumb {
     background: #aaa; 
     border-radius: 10px;
   }
   
-  /* Handle on hover */
+
   ::-webkit-scrollbar-thumb:hover {
     background: #555; 
   }
+
+
+p.param-title {
+    font-weight: bold;
+    color: 6D7A8E
+}
+
+p.param-description {
+    font-weight: normal;
+}
