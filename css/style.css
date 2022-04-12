@@ -12,6 +12,11 @@
     --color-blue-3: #005ECC;
     --color-black-1: #000;
     --color-red-1: red;
+    --color-get: #368AFF;
+    --color-post: #28B25F;
+    --color-delete: #EF3A3A;
+    --color-put: #FF8A00;
+    --color-patch: #CD45E5;
   }
 
 /* Style the tab */
@@ -34,6 +39,7 @@
         color: var(--color-grey-1);
         height: 30px;
         width: 96px;
+        font-family: "Inter";
     }
 
         /* Change background color of buttons on hover */
@@ -97,8 +103,8 @@ button.sendRequest {
 }
 
 .endpoint-inner {
-    background-color: var(--color-white-5);
-    border: solid 1px;
+    background-color: var(--color-white-4);
+    border: solid 2px;
     border-color: var(--color-white-2);
     border-radius: 10px;
     height: 40px;
@@ -111,6 +117,18 @@ button.sendRequest {
     position: relative;
     top: 10px;
     display: inline;
+}
+
+.endpoint-method {
+    font-family: Consolas, monaco, monospace;
+    padding-left: 10px;
+    font-weight: bold;
+}
+
+.endpoint-url {
+    font-family: Consolas, monaco, monospace;
+    padding-left: 1px;
+    font-weight: bold;
 }
 
 /* Go from zero to full opacity */
@@ -293,17 +311,6 @@ p {
 #left-nav-content details[open] summary {
     font-weight: bold;
     color: var(--color-blue-2);
-}
-
-.endpoint-method {
-    font-family: Consolas, monaco, monospace;
-    padding-left: 10px;
-}
-
-.endpoint-url {
-    font-family: Consolas, monaco, monospace;
-    padding-left: 10px;
-    font-weight: bold;
 }
 
 ::-webkit-scrollbar {

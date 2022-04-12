@@ -422,5 +422,22 @@ function yaml() {
         });
     }
 
+    function getRESTMethodColor(method) {
+        method = method.toLowerCase();
+        if (method == "get") {
+            return "--color-get";
+        } else if (method == "post") {
+            return "--color-post";
+        } else if (method == "put") {
+            return "--color-put";
+        } else if (method == "patch") {
+            return "--color-patch";
+        } else if (method == "delete") {
+            return "--color-patch";
+        } else {
+            return "--color-black-1";
+        }
+    }
+
     return setupYaml();
 }
