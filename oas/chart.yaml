@@ -2,18 +2,18 @@ openapi: 3.0.1
 info:
   title: Services.Chart
   description: Services for getting chart data for instruments.
-  version: 3.1.289+4232e82002
-  x-framework-version: 22.0.53+2bad7e4dcc
-  x-machine: SATOAWEB41-DK1
+  version: 3.2.7+0962a07c90
+  x-framework-version: 41.0.17+46f32c3eb1
+  x-machine: SIMOAWEB10-DK2
 servers:
-  - url: https://gateway.saxobank.com/openapi
+  - url: https://gateway.saxobank.com/sim/openapi
 paths:
   /chart/chart/ClientConfig:
     get:
       tags:
         - Charts
       summary: OBSOLETE Get the chart client configuration
-      description: "Returns configuration data for the chart client.\r\n                Including:\r\n                Maximum/minimum amount of samples to request\r\n                Request frequency\r\n                Timeout values"
+      description: "Returns configuration data for the chart client.\n                Including:\n                Maximum/minimum amount of samples to request\n                Request frequency\n                Timeout values"
       operationId: ChartGetClientConfig
       responses:
         '200':
@@ -22,16 +22,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClientConfigData'
-              example:
-                CONFIGRATE: 215
-                ERRORREPEAT: 226
-                ERRORTIMEOUT: 9
-                MAXFETCH: 224
-                MINFETCH: 60
-                REQUESTTIMEOUT: 185
-                UPDATERATE: 245
-                WAITREPEAT: 61
-                WAITTIMEOUT: 127
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -43,7 +33,7 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
-  '/chart/chart/{symbol}':
+  '/chart/chart/{Symbol}':
     get:
       tags:
         - Charts
@@ -51,52 +41,50 @@ paths:
       description: Responsible for getting chart data for an instrument from the back end domain.
       operationId: ChartGetChartData
       parameters:
-        - name: count
+        - name: Count
           in: query
           description: 'Optional number of samples. Max. is 1200, default is 0.'
           required: true
           schema:
             type: integer
             format: int32
-        - name: horizon
+        - name: Horizon
           in: query
-          description: "The horizon to get samples from. Values are interpreted in minutes: 1, 5, 10, 15, 30, 60, 120,\r\n                240, 360, 480, 1440, 10080, 43200."
+          description: "The horizon to get samples from. Values are interpreted in minutes: 1, 5, 10, 15, 30, 60, 120,\n                240, 360, 480, 1440, 10080, 43200."
           required: true
           schema:
             type: integer
             format: int32
-        - name: mode
+        - name: Mode
           in: query
-          description: "Defines how to get the data from the chart feed server. Following options are available: START,\r\n                FROM, UPTO"
+          description: "Defines how to get the data from the chart feed server. Following options are available: START,\n                FROM, UPTO"
           required: true
           schema:
             type: string
-        - name: seq
+        - name: Seq
           in: query
-          description: "Optional sequence id that is repeated in the response to help clients correlate responses with\r\n                requests. Must be an integer"
+          description: "Optional sequence id that is repeated in the response to help clients correlate responses with\n                requests. Must be an integer"
           schema:
-            allOf:
-              - type: integer
-                format: int32
-        - name: symbol
+            type: integer
+            format: int32
+        - name: Symbol
           in: path
           description: The symbol of the instrument to retreive data for. NB! Symbol is case sensitive.
           required: true
           schema:
             type: string
-        - name: time
+        - name: Time
           in: query
-          description: "Optional UTC time of the first/last sample. This depends on the MODE parameter. (MODE=FROM => time\r\n                equals first sample, MODE=UPTO => time equals last sample)."
+          description: "Optional UTC time of the first/last sample. This depends on the MODE parameter. (MODE=FROM => time\n                equals first sample, MODE=UPTO => time equals last sample)."
           schema:
-            allOf:
-              - type: integer
-                format: int32
-        - name: tz
+            type: integer
+            format: int32
+        - name: Tz
           in: query
-          description: "Optional time zone to get UTC-offsets for. Must be a zone name from the tz-database\r\n                (http://www.iana.org/time-zones). Example: Australia/Hobart"
+          description: "Optional time zone to get UTC-offsets for. Must be a zone name from the tz-database\n                (http://www.iana.org/time-zones). Example: Australia/Hobart"
           schema:
             type: string
-        - name: version
+        - name: Version
           in: query
           description: Optional protocol version. If not specified the default version 105 will be used.
           schema:
@@ -115,7 +103,7 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
-  '/chart/v1/charts/subscriptions/{contextId}/{referenceId}':
+  '/chart/v1/charts/subscriptions/{ContextId}/{ReferenceId}':
     delete:
       tags:
         - Charts
@@ -123,14 +111,14 @@ paths:
       description: 'Removes subscriptions for the given reference id on this resource, and frees resources on the server.'
       operationId: ChartsDeleteSubscription
       parameters:
-        - name: contextId
+        - name: ContextId
           in: path
           description: Unique streaming context ID part of the streaming session.
           required: true
           schema:
             type: string
           example: '20160204125301453'
-        - name: referenceId
+        - name: ReferenceId
           in: path
           description: The reference id that identifies the subscription (within a streaming session).
           required: true
@@ -153,7 +141,10 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
-  '/chart/v1/charts/subscriptions/{contextId}':
+      x-required-permissions:
+        personal: Subscribe
+        community: Subscribe
+  '/chart/v1/charts/subscriptions/{ContextId}':
     delete:
       tags:
         - Charts
@@ -161,14 +152,14 @@ paths:
       description: 'Removes all subscriptions for the current session on this resource, and frees all resources on the server.'
       operationId: ChartsDeleteSubscriptions
       parameters:
-        - name: contextId
+        - name: ContextId
           in: path
           description: Unique streaming context ID part of the streaming session.
           required: true
           schema:
             type: string
           example: '20160204125301453'
-        - name: tag
+        - name: Tag
           in: query
           description: Tag that subscriptions are marked with.
           schema:
@@ -190,12 +181,15 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
+      x-required-permissions:
+        personal: Subscribe
+        community: Subscribe
   /chart/v1/charts/subscriptions:
     post:
       tags:
         - Charts
       summary: Create a subscription on chart data
-      description: "Sets up a subscription and returns an initial snapshot of most recently completed samples specified by the parameters in the request.\r\n            \r\n\r\n            Subsequent samples are delivered over the streaming channel. Most often a single new sample or sample update is delivered at a time, \r\n            but when a sample closes, you will typcially get two samples: The now closed bar, and the bar just opening.\r\n            \r\n\r\n\r\n            Two events may require that a client application must close the current subscribtion and resubscribe:\r\n            \r\n\r\n\r\n*   The chart has been revised, either due to a correction or a corporate action.\r\n*   The data stream has shifted from real-time to delayed prices or visa versa.\r\n\r\n            In both cases the client application will receive a _resetsubscriptions instruction over the streaming channel."
+      description: "Sets up a subscription and returns an initial snapshot of most recently completed samples specified by the parameters in the request.\n            \n\n            Subsequent samples are delivered over the streaming channel. Most often a single new sample or sample update is delivered at a time, \n            but when a sample closes, you will typcially get two samples: The now closed bar, and the bar just opening.\n            \n\n\n            Two events may require that a client application must close the current subscribtion and resubscribe:\n            \n\n\n*   The chart has been revised, either due to a correction or a corporate action.\n*   The data stream has shifted from real-time to delayed prices or visa versa.\n\n            In both cases the client application will receive a _resetsubscriptions instruction over the streaming channel."
       operationId: ChartsAddSubscriptionAsync
       requestBody:
         content:
@@ -212,9 +206,9 @@ paths:
                   - DisplayAndFormat
                 Horizon: 1
                 Uic: 21
-              ContextId: '20220218015854943'
+              ContextId: '20221029043401185'
               Format: application/json
-              ReferenceId: CH19612
+              ReferenceId: CH11578
               RefreshRate: 1000
       responses:
         '201':
@@ -224,16 +218,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/ChartStreamingResponse'
               example:
-                ContextId: '20220218015854954'
+                ContextId: '20221029043401208'
                 Format: application/json
                 InactivityTimeout: 0
-                ReferenceId: CH57268
+                ReferenceId: CH21848
                 RefreshRate: 1000
                 Snapshot:
                   ChartInfo:
                     DelayedByMinutes: 15
                     ExchangeId: SBFX
-                    FirstSampleTime: '2015-02-02T01:02:03.0000000+00:00'
+                    FirstSampleTime: '2015-02-02T01:02:03Z'
                     Horizon: 1
                   Data:
                     - CloseAsk: 1.3475
@@ -244,7 +238,7 @@ paths:
                       LowBid: 1.2802
                       OpenAsk: 1.3478
                       OpenBid: 1.3476
-                      Time: '2015-02-01T11:45:00.0000000+00:00'
+                      Time: '2015-02-01T11:45:00Z'
                     - CloseAsk: 1.3475
                       CloseBid: 1.3473
                       HighAsk: 1.4003
@@ -253,7 +247,7 @@ paths:
                       LowBid: 1.2802
                       OpenAsk: 1.3478
                       OpenBid: 1.3476
-                      Time: '2015-02-01T11:46:00.0000000+00:00'
+                      Time: '2015-02-01T11:46:00Z'
                   DataVersion: 1892739
                   DisplayAndFormat:
                     Currency: USD
@@ -278,6 +272,7 @@ paths:
                       - InvalidModelState
                       - UnsupportedSubscriptionFormat
                     type: string
+                    example: None
                     x-enum-descriptions:
                       InvalidModelState: Error code returned when model state is invalid.
                       UnsupportedSubscriptionFormat: Error code returned when a subscription format that isn't supported by the publisher is requested.
@@ -299,6 +294,7 @@ paths:
                     enum:
                       - SubscriptionLimitExceeded
                     type: string
+                    example: None
                     x-enum-descriptions:
                       SubscriptionLimitExceeded: 'Error code returned when more than the maximum allowed number of subscriptions for a specified type, is exceeded.'
                   Message:
@@ -314,13 +310,17 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
-      x-streaming-type: '#/components/schemas/ChartResponseDomainEvent'
+      x-required-permissions:
+        personal: Subscribe
+        community: Subscribe
+      x-streaming-type:
+        $ref: '#/components/schemas/ChartResponseDomainEvent'
   /chart/v1/charts/subscriptions/active:
     post:
       tags:
         - Charts
       summary: Obsolete Create a subscription on chart data
-      description: "Sets up a subscription and returns an initial snapshot of most recently completed samples specified by the parameters in the request.\r\n            \r\n\r\n            Subsequent samples are delivered over the streaming channel. Most often a single new sample or sample update is delivered at a time, \r\n            but when a sample closes, you will typcially get two samples: The now closed bar, and the bar just opening.\r\n            \r\n\r\n\r\n            Two events may require that a client application must close the current subscribtion and resubscribe:\r\n            \r\n\r\n\r\n*   The chart has been revised, either due to a correction or a corporate action.\r\n*   The data stream has shifted from real-time to delayed prices or visa versa.\r\n\r\n            In both cases the client application will receive a _resetsubscriptions instruction over the streaming channel."
+      description: "Sets up a subscription and returns an initial snapshot of most recently completed samples specified by the parameters in the request.\n            \n\n            Subsequent samples are delivered over the streaming channel. Most often a single new sample or sample update is delivered at a time, \n            but when a sample closes, you will typcially get two samples: The now closed bar, and the bar just opening.\n            \n\n\n            Two events may require that a client application must close the current subscribtion and resubscribe:\n            \n\n\n*   The chart has been revised, either due to a correction or a corporate action.\n*   The data stream has shifted from real-time to delayed prices or visa versa.\n\n            In both cases the client application will receive a _resetsubscriptions instruction over the streaming channel."
       operationId: ChartsAddSubscriptionActiveAsync
       requestBody:
         content:
@@ -337,9 +337,9 @@ paths:
                   - DisplayAndFormat
                 Horizon: 1
                 Uic: 21
-              ContextId: '20220218015854943'
+              ContextId: '20221029043401185'
               Format: application/json
-              ReferenceId: CH19612
+              ReferenceId: CH11578
               RefreshRate: 1000
       responses:
         '201':
@@ -349,16 +349,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/ChartStreamingResponse'
               example:
-                ContextId: '20220218015854954'
+                ContextId: '20221029043401208'
                 Format: application/json
                 InactivityTimeout: 0
-                ReferenceId: CH57268
+                ReferenceId: CH21848
                 RefreshRate: 1000
                 Snapshot:
                   ChartInfo:
                     DelayedByMinutes: 15
                     ExchangeId: SBFX
-                    FirstSampleTime: '2015-02-02T01:02:03.0000000+00:00'
+                    FirstSampleTime: '2015-02-02T01:02:03Z'
                     Horizon: 1
                   Data:
                     - CloseAsk: 1.3475
@@ -369,7 +369,7 @@ paths:
                       LowBid: 1.2802
                       OpenAsk: 1.3478
                       OpenBid: 1.3476
-                      Time: '2015-02-01T11:45:00.0000000+00:00'
+                      Time: '2015-02-01T11:45:00Z'
                     - CloseAsk: 1.3475
                       CloseBid: 1.3473
                       HighAsk: 1.4003
@@ -378,7 +378,7 @@ paths:
                       LowBid: 1.2802
                       OpenAsk: 1.3478
                       OpenBid: 1.3476
-                      Time: '2015-02-01T11:46:00.0000000+00:00'
+                      Time: '2015-02-01T11:46:00Z'
                   DataVersion: 1892739
                   DisplayAndFormat:
                     Currency: USD
@@ -403,6 +403,7 @@ paths:
                       - InvalidModelState
                       - UnsupportedSubscriptionFormat
                     type: string
+                    example: None
                     x-enum-descriptions:
                       InvalidModelState: Error code returned when model state is invalid.
                       UnsupportedSubscriptionFormat: Error code returned when a subscription format that isn't supported by the publisher is requested.
@@ -424,6 +425,7 @@ paths:
                     enum:
                       - SubscriptionLimitExceeded
                     type: string
+                    example: None
                     x-enum-descriptions:
                       SubscriptionLimitExceeded: 'Error code returned when more than the maximum allowed number of subscriptions for a specified type, is exceeded.'
                   Message:
@@ -440,79 +442,81 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
-      x-streaming-type: '#/components/schemas/ChartResponseDomainEvent'
+      x-required-permissions:
+        personal: Subscribe
+        community: Subscribe
+      x-streaming-type:
+        $ref: '#/components/schemas/ChartResponseDomainEvent'
   /chart/v1/charts:
     get:
       tags:
         - Charts
       summary: Get chart data
-      description: "Returns chart data as specified by the request parameters. Which data samples are returned, is specified by a combination of time, mode and count. \r\n            \r\n\r\n*   If neither time, mode or count are specified, the endpoint returns the most recent 1200 samples.\r\n*   If count is specified, the endpoint returns max of (count, 1200) samples.\r\n*   If Mode==\"Upto\" the endpoint returns a number of samples upto and including the specified Time.\r\n*   If Mode==\"From\" the endpoint returns a number of samples starting from  the specified Time"
+      description: 'Returns timestamped OHLC samples for a single instrument identified by UIC and AssetType. The time period covered by the samples and interval size between them are controlled by the combination of parameters Horizon, Time, Mode and Count.'
       operationId: ChartsGetChartDataAsync
       parameters:
-        - name: assetType
+        - name: AssetType
           in: query
-          description: Assettype of the instrument
+          description: Assettype of the instrument.
           required: true
           schema:
-            title: Assettype of the instrument
+            title: Assettype of the instrument.
             allOf:
               - $ref: '#/components/schemas/AssetType'
           example: FxSpot
-        - name: count
+        - name: Count
           in: query
-          description: 'Optionally specifies maximum number of samples to return, max 1200, default 1200.'
+          description: Specifies maximum number of samples to return. Maximum is 1200. If not specified a default of 1200 samples are returned.
           schema:
-            title: 'Optionally specifies maximum number of samples to return, max 1200, default 1200.'
-            allOf:
-              - type: integer
-                format: int32
-          example: 218
-        - name: fieldGroups
+            title: Specifies maximum number of samples to return. Maximum is 1200. If not specified a default of 1200 samples are returned.
+            type: integer
+            format: int32
+          example: 99
+        - name: FieldGroups
           in: query
-          description: 'Specifies which data to return. Default is [Data]'
+          description: Use FieldGroups to add additional information to the samples like display/formatting details or information about the price source. If FieldGroups are not specified in the request then the response defaults to only hold the bare OHLC samples and nothing else.
           schema:
-            title: 'Specifies which data to return. Default is [Data]'
+            title: Use FieldGroups to add additional information to the samples like display/formatting details or information about the price source. If FieldGroups are not specified in the request then the response defaults to only hold the bare OHLC samples and nothing else.
             type: array
             items:
               $ref: '#/components/schemas/ChartFieldGroupSpec'
           example:
-            - BlockInfo
-        - name: horizon
+            - ChartInfo
+        - name: Horizon
           in: query
-          description: 'The horizon to get samples from. Values are interpreted in minutes: 1, 5, 10, 15, 30, 60, 120, 240, 360, 480, 1440, 10080, 43200.'
+          description: 'The time period that each sample covers. Values are interpreted in minutes: 1, 5, 10, 15, 30, 60, 120, 240, 360, 480, 1440, 10080, 43200.'
           required: true
           schema:
-            title: 'The horizon to get samples from. Values are interpreted in minutes: 1, 5, 10, 15, 30, 60, 120, 240, 360, 480, 1440, 10080, 43200.'
+            title: 'The time period that each sample covers. Values are interpreted in minutes: 1, 5, 10, 15, 30, 60, 120, 240, 360, 480, 1440, 10080, 43200.'
             type: integer
             format: int32
-          example: 178
-        - name: mode
+          example: 99
+        - name: Mode
           in: query
           description: 'If Time is supplied, mode specifies if the endpoint should returns samples "UpTo" (and including) or "From" (and including) the specified time.'
           schema:
             title: 'If Time is supplied, mode specifies if the endpoint should returns samples "UpTo" (and including) or "From" (and including) the specified time.'
             allOf:
-              - $ref: '#/components/schemas/ChartRequestModeNullable'
-          example: From
-        - name: time
+              - $ref: '#/components/schemas/ChartRequestMode'
+          example: UpTo
+        - name: Time
           in: query
           description: 'Specifies the time of a sample, which must either be the first (If Mode=="From") or the last (if Mode=="UpTo") in the returned data.'
           schema:
             title: 'Specifies the time of a sample, which must either be the first (If Mode=="From") or the last (if Mode=="UpTo") in the returned data.'
-            allOf:
-              - type: string
-                format: date-time
-                x-type-name: UtcDateTime
-          example: '2022-06-29T03:52:15.722983Z'
-        - name: uic
+            type: string
+            format: date-time
+            x-type-name: UtcDateTime
+          example: '9999-12-31T23:59:59.9999990+00:00'
+        - name: Uic
           in: query
-          description: Uic of the instrument.
+          description: UIC (Universal Instrument Code) of the instrument.
           required: true
           schema:
-            title: Uic of the instrument.
+            title: UIC (Universal Instrument Code) of the instrument.
             type: integer
             format: int32
-          example: 178
+          example: 99
       responses:
         '200':
           description: OK
@@ -524,7 +528,7 @@ paths:
                 ChartInfo:
                   DelayedByMinutes: 15
                   ExchangeId: SBFX
-                  FirstSampleTime: '2015-02-02T01:02:03.0000000+00:00'
+                  FirstSampleTime: '2015-02-02T01:02:03Z'
                   Horizon: 1
                 Data:
                   - CloseAsk: 1.3475
@@ -535,7 +539,7 @@ paths:
                     LowBid: 1.2802
                     OpenAsk: 1.3478
                     OpenBid: 1.3476
-                    Time: '2015-02-01T11:45:00.0000000+00:00'
+                    Time: '2015-02-01T11:45:00Z'
                   - CloseAsk: 1.3475
                     CloseBid: 1.3473
                     HighAsk: 1.4003
@@ -544,7 +548,7 @@ paths:
                     LowBid: 1.2802
                     OpenAsk: 1.3478
                     OpenBid: 1.3476
-                    Time: '2015-02-01T11:46:00.0000000+00:00'
+                    Time: '2015-02-01T11:46:00Z'
                 DataVersion: 1892739
                 DisplayAndFormat:
                   Currency: USD
@@ -563,6 +567,10 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
+      x-required-permissions:
+        personal: Read
+        restricted: Read
+        community: Read
 components:
   schemas:
     AssetType:
@@ -625,6 +633,7 @@ components:
         - WarrantOpenEndKnockOut
         - WarrantSpread
       type: string
+      example: FxSpot
       x-enum-descriptions:
         FxSpot: Forex Spot.
         FxForwards: Forex Forward.
@@ -690,11 +699,14 @@ components:
         - Data
         - DisplayAndFormat
       type: string
+      example: BlockInfo
+      x-enum-deprecated:
+        - BlockInfo
       x-enum-descriptions:
-        BlockInfo: Return information about previous blocks
-        ChartInfo: Return information about the time series
-        Data: Return the chart data samples
-        DisplayAndFormat: Return information about the instrument
+        BlockInfo: Obsolete. Return information about previous blocks.
+        ChartInfo: Add field group ChartInfo to get additional information about the OHLC samples.
+        Data: Add FieldGroup Data to include the OHLC samples. If omitted while other field groups are included then the samples are not included in the response.
+        DisplayAndFormat: Add FieldGroup DisplayAndFormat to include formatting and display information about the instrument.
     ChartInfo:
       title: Holds basic information about this chart time series
       type: object
@@ -703,52 +715,111 @@ components:
           title: 'If the pricefeed is delayed, this field will be returned indicating the delay in minutes.'
           type: integer
           format: int32
+          example: 99
         ExchangeId:
           title: Id of the Exchange. Go to the ReferenceData/Exhanges endpoint to get exchange session info.
           type: string
+          example: stringValue
         FirstSampleTime:
           title: The time of the first (oldest) available sample available for this instrument. Useful for the client when calculating the size of the horizontal slider.
-          allOf:
-            - type: string
-              format: date-time
-              x-type-name: UtcDateTime
+          type: string
+          format: date-time
+          x-type-name: UtcDateTime
         Horizon:
           title: Horizon in minutes.
           type: integer
           format: int32
+          example: 99
+      additionalProperties: false
+      example:
+        DelayedByMinutes: 15
+        ExchangeId: SBFX
+        FirstSampleTime: '2015-02-02T01:02:03.0000000+00:00'
+        Horizon: 1
     ChartRequestMode:
       title: Denotes in what mode chart data is requested.
       enum:
         - From
         - UpTo
       type: string
+      example: From
       x-enum-descriptions:
         From: From
         UpTo: Up to
-    ChartRequestModeNullable:
-      allOf:
-        - $ref: '#/components/schemas/ChartRequestMode'
     ChartResponse:
       title: The response to a subscription request. Should contain a snapshot of the data matching the subscription request.
       type: object
       properties:
         ChartInfo:
-          title: Chart info.
+          title: 'Object holding information about the OHLC samples such as the exchange id of the price source, when the first sample begins, the horizon in minutes and how long the samples are delayed by.'
           allOf:
             - $ref: '#/components/schemas/ChartInfo'
         Data:
-          title: The response to a chart subscription.
+          title: Array holding the individual OHLC samples. For Forex Instruments both Bid and Ask values are returned. For other instruments the values are the last traded values.
           type: array
           items:
             $ref: '#/components/schemas/ChartSample'
+          example:
+            - CloseAsk: 1.3475
+              CloseBid: 1.3473
+              HighAsk: 1.4003
+              HighBid: 1.4001
+              LowAsk: 1.2804
+              LowBid: 1.2802
+              OpenAsk: 1.3478
+              OpenBid: 1.3476
+              Time: '2015-02-01T11:45:00Z'
+            - CloseAsk: 1.3475
+              CloseBid: 1.3473
+              HighAsk: 1.4003
+              HighBid: 1.4001
+              LowAsk: 1.2804
+              LowBid: 1.2802
+              OpenAsk: 1.3478
+              OpenBid: 1.3476
+              Time: '2015-02-01T11:46:00Z'
         DataVersion:
-          title: Version info.
+          title: This field holds a version number of the data.
           type: integer
           format: int32
+          example: 99
         DisplayAndFormat:
-          title: Display info.
+          title: 'Object holding information relevant to displaying the instrument and formatting the samples for charting it. Currently holds the symbol of the instrument, how many decimals samples have, a description of the instrument and what currency it is traded in.'
           allOf:
             - $ref: '#/components/schemas/DisplayAndFormat'
+      additionalProperties: false
+      example:
+        ChartInfo:
+          DelayedByMinutes: 15
+          ExchangeId: SBFX
+          FirstSampleTime: '2015-02-02T01:02:03Z'
+          Horizon: 1
+        Data:
+          - CloseAsk: 1.3475
+            CloseBid: 1.3473
+            HighAsk: 1.4003
+            HighBid: 1.4001
+            LowAsk: 1.2804
+            LowBid: 1.2802
+            OpenAsk: 1.3478
+            OpenBid: 1.3476
+            Time: '2015-02-01T11:45:00Z'
+          - CloseAsk: 1.3475
+            CloseBid: 1.3473
+            HighAsk: 1.4003
+            HighBid: 1.4001
+            LowAsk: 1.2804
+            LowBid: 1.2802
+            OpenAsk: 1.3478
+            OpenBid: 1.3476
+            Time: '2015-02-01T11:46:00Z'
+        DataVersion: 1892739
+        DisplayAndFormat:
+          Currency: USD
+          Decimals: 4
+          Description: Euro/US Dollar
+          Format: AllowDecimalPips
+          Symbol: EURUSD
     ChartResponseDomainEvent:
       type: object
       properties:
@@ -758,12 +829,13 @@ components:
             - $ref: '#/components/schemas/ChartResponse'
         PartitionNumber:
           title: The partition number if this DomainEvent is a partition.
-          allOf:
-            - type: integer
-              format: int32
+          type: integer
+          format: int32
+          example: 99
         ReferenceId:
           title: 'Client specified id, which is sent back to the client with every data update.'
           type: string
+          example: stringValue
         Timestamp:
           title: The UTC date and time of the event.
           type: string
@@ -771,69 +843,71 @@ components:
           x-type-name: UtcDateTime
         TotalPartitions:
           title: The total number of partitions if this DomainEvent is a partition.
-          allOf:
-            - type: integer
-              format: int32
+          type: integer
+          format: int32
+          example: 99
+      additionalProperties: false
+      example: 
     ChartSample:
       title: Information pertaining to a specific chart sample interval.
       type: object
       properties:
         Close:
           title: Close
-          allOf:
-            - type: number
+          type: number
+          example: 10
         CloseAsk:
           title: CloseAsk
-          allOf:
-            - type: number
+          type: number
+          example: 10
         CloseBid:
           title: CloseBid
-          allOf:
-            - type: number
+          type: number
+          example: 10
         Growth:
           title: Growth
-          allOf:
-            - type: number
+          type: number
+          example: 10
         High:
           title: High
-          allOf:
-            - type: number
+          type: number
+          example: 10
         HighAsk:
           title: HighAsk
-          allOf:
-            - type: number
+          type: number
+          example: 10
         HighBid:
           title: HighBid
-          allOf:
-            - type: number
+          type: number
+          example: 10
         Interest:
           title: Interest
-          allOf:
-            - type: number
+          type: number
+          example: 10
         Low:
           title: Low
-          allOf:
-            - type: number
+          type: number
+          example: 10
         LowAsk:
           title: LowAsk
-          allOf:
-            - type: number
+          type: number
+          example: 10
         LowBid:
           title: LowBid
-          allOf:
-            - type: number
+          type: number
+          example: 10
         Open:
           title: Open
-          allOf:
-            - type: number
+          type: number
+          example: 10
         OpenAsk:
           title: OpenAsk
-          allOf:
-            - type: number
+          type: number
+          example: 10
         OpenBid:
           title: OpenBid
-          allOf:
-            - type: number
+          type: number
+          example: 10
         Time:
           title: Time
           type: string
@@ -841,8 +915,26 @@ components:
           x-type-name: UtcDateTime
         Volume:
           title: Volume
-          allOf:
-            - type: number
+          type: number
+          example: 10
+      additionalProperties: false
+      example:
+        Close: 10
+        CloseAsk: 10
+        CloseBid: 10
+        Growth: 10
+        High: 10
+        HighAsk: 10
+        HighBid: 10
+        Interest: 10
+        Low: 10
+        LowAsk: 10
+        LowBid: 10
+        Open: 10
+        OpenAsk: 10
+        OpenBid: 10
+        Time: '9999-12-31T23:59:59.9999990+00:00'
+        Volume: 10
     ChartStreamingRequest:
       title: Public contract for setting up a subscription to chart data.
       required:
@@ -851,35 +943,56 @@ components:
       type: object
       properties:
         ContextId:
-          title: "The streaming context id that this request is associated with.\r\n            This parameter must only contain letters (a-z) and numbers (0-9) as well as - (dash) and _ (underscore). It is case insensitive. Max length is 50 characters."
+          title: "The streaming context id that this request is associated with.\n            This parameter must only contain letters (a-z) and numbers (0-9) as well as - (dash) and _ (underscore). It is case insensitive. Max length is 50 characters."
           pattern: '^[a-zA-Z0-9_-]{1,50}$'
           type: string
+          example: ContextId-1
           x-display-order: 1
         ReferenceId:
-          title: "Mandatory client specified reference id for the subscription.\r\n            This parameter must only contain alphanumberic characters as well as - (dash) and _ (underscore). Cannot start with _. It is case insensitive. Max length is 50 characters."
+          title: "Mandatory client specified reference id for the subscription.\n            This parameter must only contain alphanumberic characters as well as - (dash) and _ (underscore). Cannot start with _. It is case insensitive. Max length is 50 characters."
           pattern: '^[a-zA-Z0-9-][a-zA-Z0-9_-]{0,49}$'
           type: string
+          example: ReferenceId-1
           x-display-order: 2
         Arguments:
           title: Arguments for the subscription request.
           allOf:
             - $ref: '#/components/schemas/ChartSubscriptionRequest'
         Format:
-          title: "Optional Media type (RFC 2046) of the serialized data updates that are streamed to the client.\r\n            Currently only application/json and application/x-protobuf is supported.\r\n            If an unrecognized format is specified, the subscription end point will return HTTP status code 400 - Bad format."
+          title: "Optional Media type (RFC 2046) of the serialized data updates that are streamed to the client.\n            Currently only application/json and application/x-protobuf is supported.\n            If an unrecognized format is specified, the subscription end point will return HTTP status code 400 - Bad format."
           type: string
+          example: application/json
         RefreshRate:
-          title: "Optional custom refresh rate, measured in milliseconds, between each data update.\r\n            Note that it is not possible to get a refresh rate lower than the rate specified in the\r\n            customer service level agreement (SLA)."
+          title: "Optional custom refresh rate, measured in milliseconds, between each data update.\n            Note that it is not possible to get a refresh rate lower than the rate specified in the\n            customer service level agreement (SLA)."
           maximum: 2147483647
           minimum: 0
           type: integer
           format: int32
+          example: 0
         ReplaceReferenceId:
           title: Reference id of the subscription that should be replaced.
           pattern: '^[a-zA-Z0-9-][a-zA-Z0-9_-]{0,49}$'
           type: string
+          example: ReplaceReferenceId-1
         Tag:
           title: Optional client specified tag used for grouping subscriptions.
           type: string
+          example: ClientTag
+      additionalProperties: false
+      example:
+        Arguments:
+          AssetType: FxSpot
+          Count: 2
+          FieldGroups:
+            - ChartInfo
+            - Data
+            - DisplayAndFormat
+          Horizon: 1
+          Uic: 21
+        ContextId: '20221029043401185'
+        Format: application/json
+        ReferenceId: CH11578
+        RefreshRate: 1000
     ChartStreamingResponse:
       title: Subscription response.
       type: object
@@ -887,26 +1000,27 @@ components:
         ContextId:
           title: The streaming context id that this response is associated with.
           type: string
-          deprecated: true
-          x-deprecated-date: '2022-11-01T00:00:00.0000000+00:00'
+          example: ContextId-1
           x-display-order: 1
         ReferenceId:
           title: The reference id that (along with streaming context id and session id) identifies the subscription (within the context of a specific service/subscription type)
           type: string
-          deprecated: true
-          x-deprecated-date: '2022-11-01T00:00:00.0000000+00:00'
+          example: ReferenceId-1
           x-display-order: 2
         Format:
           title: 'The media type (RFC 2046), of the serialized data updates that are streamed to the client.'
           type: string
+          example: application/json
         InactivityTimeout:
           title: The time (in seconds) that the client should accept the subscription to be inactive before considering it invalid.
           type: integer
           format: int32
+          example: 0
         RefreshRate:
           title: Actual refresh rate assigned to the subscription according to the customers SLA.
           type: integer
           format: int32
+          example: 0
         Snapshot:
           title: 'Snapshot of the current data on hand, when subscription was created.'
           allOf:
@@ -915,11 +1029,52 @@ components:
           title: The value "Active".
           type: string
           description: This property is kept for backwards compatibility.
-          deprecated: true
-          x-deprecated-date: '2022-11-01T00:00:00.0000000+00:00'
+          example: Active
         Tag:
           title: 'Client specified tag assigned to the subscription, if specified in the request.'
           type: string
+          example: ClientTag
+      additionalProperties: false
+      example:
+        ContextId: '20221029043401208'
+        Format: application/json
+        InactivityTimeout: 0
+        ReferenceId: CH21848
+        RefreshRate: 1000
+        Snapshot:
+          ChartInfo:
+            DelayedByMinutes: 15
+            ExchangeId: SBFX
+            FirstSampleTime: '2015-02-02T01:02:03Z'
+            Horizon: 1
+          Data:
+            - CloseAsk: 1.3475
+              CloseBid: 1.3473
+              HighAsk: 1.4003
+              HighBid: 1.4001
+              LowAsk: 1.2804
+              LowBid: 1.2802
+              OpenAsk: 1.3478
+              OpenBid: 1.3476
+              Time: '2015-02-01T11:45:00Z'
+            - CloseAsk: 1.3475
+              CloseBid: 1.3473
+              HighAsk: 1.4003
+              HighBid: 1.4001
+              LowAsk: 1.2804
+              LowBid: 1.2802
+              OpenAsk: 1.3478
+              OpenBid: 1.3476
+              Time: '2015-02-01T11:46:00Z'
+          DataVersion: 1892739
+          DisplayAndFormat:
+            Currency: USD
+            Decimals: 4
+            Description: Euro/US Dollar
+            Format: AllowDecimalPips
+            Symbol: EURUSD
+        State: Active
+        Tag: Tag01
     ChartSubscriptionRequest:
       title: Specifies which chart data to subscribe to.
       required:
@@ -929,57 +1084,79 @@ components:
       type: object
       properties:
         AssetType:
-          title: Assettype of the instrument
+          title: Assettype of the instrument.
           allOf:
             - $ref: '#/components/schemas/AssetType'
         Count:
-          title: 'Optionally specifies maximum number of samples to return, max 1200, default 1200.'
-          allOf:
-            - type: integer
-              format: int32
+          title: Specifies maximum number of samples in the snapshot to return. Maximum is 1200. If not specified a default of 1200 samples are returned.
+          type: integer
+          format: int32
+          example: 99
         FieldGroups:
-          title: 'Specifies which data to return. Default is [Data]'
+          title: Use FieldGroups to add additional information to the snapshot samples like display/formatting details or information about the price source. If FieldGroups are not specified in the request then the response defaults to only hold the bare OHLC samples and nothing else.
           type: array
           items:
             $ref: '#/components/schemas/ChartFieldGroupSpec'
+          example:
+            - ChartInfo
         Horizon:
-          title: 'The horizon to get samples from. Values are interpreted in minutes: 1, 5, 10, 15, 30, 60, 120, 240, 360, 480, 1440, 10080, 43200.'
+          title: 'The time period that each sample covers. Values are interpreted in minutes: 1, 5, 10, 15, 30, 60, 120, 240, 360, 480, 1440, 10080, 43200.'
           type: integer
           format: int32
+          example: 99
         Uic:
-          title: Uic of the instrument.
+          title: UIC (Universal Instrument Code) of the instrument.
           type: integer
           format: int32
+          example: 99
+      additionalProperties: false
+      example:
+        AssetType: FxVanillaOption
+        Count: 99
+        FieldGroups:
+          - DisplayAndFormat
+        Horizon: 99
+        Uic: 99
     ClientConfigData:
       type: object
       properties:
         ConfigRate:
           type: integer
           format: int32
+          example: 99
         ErrorRepeat:
           type: integer
           format: int32
+          example: 99
         ErrorTimeout:
           type: integer
           format: int32
+          example: 99
         MaxFetch:
           type: integer
           format: int32
+          example: 99
         MinFetch:
           type: integer
           format: int32
+          example: 99
         RequestTimeout:
           type: integer
           format: int32
+          example: 99
         UpdateRate:
           type: integer
           format: int32
+          example: 99
         WaitRepeat:
           type: integer
           format: int32
+          example: 99
         WaitTimeout:
           type: integer
           format: int32
+          example: 99
+      additionalProperties: false
     DisplayAndFormat:
       title: Display information for chart data.
       type: object
@@ -987,25 +1164,36 @@ components:
         Currency:
           title: The currency in which the data is displayed.
           type: string
+          example: stringValue
         Decimals:
           title: The number of decimals in the chart data.
           type: integer
           format: int32
+          example: 99
         Description:
           title: Description of the data.
           type: string
+          example: stringValue
         Format:
           title: The format in which data is delivered.
           allOf:
             - $ref: '#/components/schemas/PriceDisplayFormatType'
         NumeratorDecimals:
           title: Provided when format is either fractions or ModernFractions. Indicates how many decimals are shown in the numerator value in a fraction.
-          allOf:
-            - type: integer
-              format: int32
+          type: integer
+          format: int32
+          example: 99
         Symbol:
           title: The symbol of the instrument.
           type: string
+          example: stringValue
+      additionalProperties: false
+      example:
+        Currency: USD
+        Decimals: 4
+        Description: Euro/US Dollar
+        Format: AllowDecimalPips
+        Symbol: EURUSD
     ModelStateDictionary:
       type: object
       additionalProperties:
@@ -1021,11 +1209,12 @@ components:
         - Normal
         - Percentage
       type: string
+      example: Normal
       x-enum-descriptions:
         Normal: Standard decimal formatting is used with the Decimals field indicating the number of decimals.
-        Fractions: "Display as regular fraction i.e. 3 1/4 The Decimals field indicates the fraction demoninator as 1/(2^x).\r\n            So if Decimals is 2, the value should represent the number of 1/4'ths."
-        ModernFractions: "Display as modern faction, e.g. 1’07.5. The Decimals field indicates the fraction demoninator as 1/(2^x).\r\n            So if Decimals is 5, the value should represent the number of 1/32'ths"
-        AllowDecimalPips: "Display the last digit as a smaller than the rest of the numbers. Note that this digit is not included in the number of decimals,\r\n            effectively increasing the number of decimals by one. E.g. 12.345 when Decimals is 2 and DisplayFormat is AllowDecimalPips."
+        Fractions: "Display as regular fraction i.e. 3 1/4 The Decimals field indicates the fraction demoninator as 1/(2^x).\n            So if Decimals is 2, the value should represent the number of 1/4'ths."
+        ModernFractions: "Display as modern faction, e.g. 1’07.5. The Decimals field indicates the fraction demoninator as 1/(2^x).\n            So if Decimals is 5, the value should represent the number of 1/32'ths"
+        AllowDecimalPips: "Display the last digit as a smaller than the rest of the numbers. Note that this digit is not included in the number of decimals,\n            effectively increasing the number of decimals by one. E.g. 12.345 when Decimals is 2 and DisplayFormat is AllowDecimalPips."
         Percentage: 'Display as percentage, e.g. 12.34%. The Decimals field indicates the number of decimals to show.'
   responses:
     BadRequest:
@@ -1042,6 +1231,7 @@ components:
                 enum:
                   - InvalidRequest
                 type: string
+                example: None
                 x-enum-descriptions:
                   InvalidRequest: Default error code returned when it cannot be determined which part of the request is malformed.
               Message:
@@ -1063,8 +1253,8 @@ components:
       type: oauth2
       flows:
         authorizationCode:
-          authorizationUrl: https://live.logonvalidation.net/authorize
-          tokenUrl: https://live.logonvalidation.net/token
+          authorizationUrl: https://sim.logonvalidation.net/authorize
+          tokenUrl: https://sim.logonvalidation.net/token
           scopes: { }
 tags:
   - name: Charts

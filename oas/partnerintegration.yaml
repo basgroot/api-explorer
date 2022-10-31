@@ -2,23 +2,18 @@ openapi: 3.0.1
 info:
   title: Services.PartnerIntegration
   description: PartnerIntegration provide end points for partner integration with saxo.
-  version: 1.1.273+f20d58da65
-  x-framework-version: 22.0.30+b916f2a578
-  x-machine: SATOAWEB27-DK1
+  version: 2.0.24+857498a42e
+  x-framework-version: 43.0.5+65c0bdc8ab
+  x-machine: SIMOAWEB10-DK1
 servers:
-  - url: https://gateway.saxobank.com/openapi
+  - url: https://gateway.saxobank.com/sim/openapi
 paths:
-  /partnerintegration/v1/InteractiveIdVerification/idnow/complete:
+  /partnerintegration/v1/InteractiveIdVerification/trustdock/complete:
     post:
       tags:
         - InteractiveIdVerification
-      description: 'Webhook to update verification status, it will get called by IdNow once interactive id-verification get completed.'
-      operationId: InteractiveIdVerificationV1IdNowInteractiveVerificationComplete
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Object'
+      description: Webhook to get response from TrustDock after verification completed.
+      operationId: InteractiveIdVerificationV1TrustDockInteractiveVerificationComplete
       responses:
         '201':
           description: Created
@@ -36,6 +31,7 @@ paths:
                     enum:
                       - InvalidModelState
                     type: string
+                    example: None
                     x-enum-descriptions:
                       InvalidModelState: One or more properties of the request are invalid!
                   Message:
@@ -48,31 +44,32 @@ paths:
           $ref: '#/components/responses/ServiceUnavailable'
         '429':
           $ref: '#/components/responses/TooManyRequests'
-  '/partnerintegration/v1/InteractiveIdVerification/verify/{correlationid}':
-    post:
+  /partnerintegration/v1/InteractiveIdVerification/myinfo/ib/complete:
+    get:
       tags:
         - InteractiveIdVerification
-      description: 'Callback endpoint to update verification status, signcat redirects on this endpoint once interactive verification get completed.'
-      operationId: InteractiveIdVerificationV1VerifyInteractiveVerification
+      description: MyInfo redirect endpoint to update verification status. MyInfo redirects on this endpoint once the interactive verification is complete.
+      operationId: InteractiveIdVerificationV1MyInfoInteractiveVerificationComplete
       parameters:
-        - name: correlationid
-          in: path
+        - name: Code
+          in: query
+          description: Verification code that will be used to fetch result from MyInfo
           required: true
+          style: form
+          explode: false
           schema:
             type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/StringStringKeyValuePair'
-            example:
-              - Key: keydd205693-f31a-4be2-9099-a63fa6dd5c82
-                Value: value78d077b0-f684-472d-b26d-862abc7b5815
+        - name: State
+          in: query
+          description: State returned by MyInfo. It is the same state which was sent in the start verification request to MyInfo
+          required: true
+          style: form
+          explode: false
+          schema:
+            type: string
       responses:
-        '201':
-          description: Created
+        '200':
+          description: OK
         '400':
           description: Bad Request
           content:
@@ -87,6 +84,86 @@ paths:
                     enum:
                       - InvalidModelState
                     type: string
+                    example: None
+                    x-enum-descriptions:
+                      InvalidModelState: One or more properties of the request are invalid!
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  '/partnerintegration/v1/InteractiveIdVerification/verify/{Method}':
+    get:
+      tags:
+        - InteractiveIdVerification
+      description: "Redirect endpoint to update verification status, signcat redirects on this endpoint once Oidc interactive verification get completed.\n            This will be used for verification via MITID"
+      operationId: InteractiveIdVerificationV1VerifyInteractiveVerificationOidc
+      parameters:
+        - name: Code
+          in: query
+          description: "This is OIDC authorisation code send after verification is completed. \n            This will be used to get auth token to fetch client information"
+          style: form
+          explode: false
+          schema:
+            title: "This is OIDC authorisation code send after verification is completed. \n            This will be used to get auth token to fetch client information"
+            type: string
+          example: stringValue
+        - name: Error
+          in: query
+          description: Error code returned from Signicat
+          style: form
+          explode: false
+          schema:
+            title: Error code returned from Signicat
+            type: string
+          example: stringValue
+        - name: Error_Description
+          in: query
+          description: Error description returned from Signicat
+          style: form
+          explode: false
+          schema:
+            title: Error description returned from Signicat
+            type: string
+          example: stringValue
+        - name: Method
+          in: path
+          required: true
+          style: simple
+          schema:
+            type: string
+        - name: State
+          in: query
+          description: "State sent in redirect URL. \n            This will be used to validate authenticity of redirecton"
+          style: form
+          explode: false
+          schema:
+            title: "State sent in redirect URL. \n            This will be used to validate authenticity of redirecton"
+            type: string
+          example: stringValue
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - InvalidModelState
+                    type: string
+                    example: None
                     x-enum-descriptions:
                       InvalidModelState: One or more properties of the request are invalid!
                   Message:
@@ -122,6 +199,7 @@ paths:
                     enum:
                       - InvalidModelState
                     type: string
+                    example: None
                     x-enum-descriptions:
                       InvalidModelState: One or more properties of the request are invalid!
                   Message:
@@ -134,33 +212,35 @@ paths:
           $ref: '#/components/responses/ServiceUnavailable'
         '429':
           $ref: '#/components/responses/TooManyRequests'
-  '/partnerintegration/v1/InteractiveIdVerification/verify/{method}':
-    get:
+  '/partnerintegration/v1/InteractiveIdVerification/verify/{Correlationid}':
+    post:
       tags:
         - InteractiveIdVerification
-      description: "Redirect endpoint to update verification status, signcat redirects on this endpoint once Oidc interactive verification get completed.\r\n            This will be used for verification via MITID"
-      operationId: InteractiveIdVerificationV1VerifyInteractiveVerificationOidc
+      description: 'Callback endpoint to update verification status, signcat redirects on this endpoint once interactive verification get completed.'
+      operationId: InteractiveIdVerificationV1VerifyInteractiveVerification
       parameters:
-        - name: Code
-          in: query
-          description: "This is OIDC authorisation code send after verification is completed. \r\n            This will be used to get auth token to fetch client information"
-          schema:
-            title: "This is OIDC authorisation code send after verification is completed. \r\n            This will be used to get auth token to fetch client information"
-            type: string
-        - name: State
-          in: query
-          description: "State sent in redirect URL. \r\n            This will be used to validate authenticity of redirecton"
-          schema:
-            title: "State sent in redirect URL. \r\n            This will be used to validate authenticity of redirecton"
-            type: string
-        - name: method
+        - name: Correlationid
           in: path
           required: true
+          style: simple
           schema:
             type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/StringStringKeyValuePair'
+              example:
+                - Key: stringValue
+                  Value: stringValue
+            example:
+              - Key: stringValue
+                Value: stringValue
       responses:
-        '200':
-          description: OK
+        '201':
+          description: Created
         '400':
           description: Bad Request
           content:
@@ -175,6 +255,7 @@ paths:
                     enum:
                       - InvalidModelState
                     type: string
+                    example: None
                     x-enum-descriptions:
                       InvalidModelState: One or more properties of the request are invalid!
                   Message:
@@ -187,8 +268,539 @@ paths:
           $ref: '#/components/responses/ServiceUnavailable'
         '429':
           $ref: '#/components/responses/TooManyRequests'
+  /partnerintegration/v1/InteractiveIdVerification/idnow/complete:
+    post:
+      tags:
+        - InteractiveIdVerification
+      description: 'Webhook to update verification status, it will get called by IdNow once interactive id-verification get completed.'
+      operationId: InteractiveIdVerificationV1IdNowInteractiveVerificationComplete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Object'
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - InvalidModelState
+                    type: string
+                    example: None
+                    x-enum-descriptions:
+                      InvalidModelState: One or more properties of the request are invalid!
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  '/partnerintegration/v1/bulkbookings/{RequestReferenceNumber}/status':
+    get:
+      tags:
+        - Partner Bulk Bookings
+      summary: Get the overall status of bookings uploaded via CSV file
+      description: Get the overall status of the uploaded CSV file after its published successfully.
+      operationId: BulkBookingsBulkBookingPublishStatus
+      parameters:
+        - name: RequestReferenceNumber
+          in: path
+          description: Booking request reference number.
+          required: true
+          style: simple
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Indicates that the request processed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingPublishStatus'
+              example:
+                Errors:
+                  - Error info
+                RequestReferenceNumber: 123456
+                Status: Pending
+        '404':
+          description: Indicates that the record is not found for given reference number.
+        '401':
+          description: Indicates that the request is not authorize to perform operation.
+        '500':
+          description: Indicates that the internal error occurred due to unhandled exception while processing request.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-required-permissions:
+        personal: Read
+  '/partnerintegration/v1/bulkbookings/{RequestReferenceNumber}/validations':
+    get:
+      tags:
+        - Partner Bulk Bookings
+      summary: Get details/validation status for booking using RequestReferenceNumber
+      description: "Get the bulk booking validation status for all records in CSV file :\n            \n1. Validation Status : Working, Failed and Success.\n\nOR\n\n2. Validation error code and description with row numbers."
+      operationId: BulkBookingsBulkBookingValidationStatus
+      parameters:
+        - name: RequestReferenceNumber
+          in: path
+          description: Booking request reference number.
+          required: true
+          style: simple
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Indicates that the request processed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingValidationStatus'
+              example:
+                Errors:
+                  - Errors:
+                      - Error info
+                    Id: 1
+                RequestReferenceNumber: 123456
+                Status: Failed
+        '404':
+          description: Indicates that the record is not found for given reference number.
+        '401':
+          description: Indicates that the request is not authorize to perform operation.
+        '500':
+          description: Indicates that the internal error occurred due to unhandled exception while processing request.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-required-permissions:
+        personal: Read
+  /partnerintegration/v1/bulkbookings:
+    post:
+      tags:
+        - Partner Bulk Bookings
+      summary: CSV File Upload For BulkBookings
+      description: "This endpoint would allow WLCs to book trades using external Instruments via uploading a CSV File. The given endpoint asynchronously uploads the file and the booking's status can be retrieved later through other Get endpoints.\n\n\n\n  Note : \n\n\n\n1. Please upload single bulk booking file with.csv extension and max file size should not be greater than 15MB or max 200,000 record in single file.\n\n\n2. Refer the below column headers Name and Type and their order, Also please ensure to align the column and records in the specified order.\n\n\n3. Data/headers column should exactly match with the specified columns list.\n\n\n4. Each file upload to be tagged with a Booking Reference ID for future use.\n\n\n5. File name should be unique and multiple file uploads are not supported.\n\n\n6. Only WLC/WLP/Partner/IB allowed to upload file on its client's behalf.\n\n\n\n  Details for CSV File Headers/Columns:\n\n\n\n\n  BookingDate (Utcdatetime) - BookingDate cannot be in the past, must be today or in the future.\n\n\n\n  UIC (Integer) - Unique Id of the instrument.\n\n\n\n  AssetType (Enum) - Supported Asset Types: Portfolio Note, Guarantee Note.\n\n\n\n  PartnerBookingType (String) - Supported Booking Types: Cash Posting Positive, Cash Posting Negative, Provider Cost, Administration, Correction, Other Fees, Return, Accrued Provider Cost, Accrued Administrative Cost, Accrued Return, Accrued Return in PCT, Accrued Provided Cost in PCT, Accrued Administration Cost in PCT, Total PNL in PCT.\n\n\n\n  BookingText (String) - Allowed max up to 200 characters.\n\n\n\n  Amount (Decimal) - Any amount (negative, positive or zero).\n\n\n\n  AccountId (String) - Account for clients of the logged in WLC/IB.\n\n\n\n  PartnerAccountId (String) - Account for the logged in WLC/IB."
+      operationId: BulkBookingsUploadMultiParts
+      responses:
+        '201':
+          description: Indicates that the request is added successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisteredBulkBooking'
+              example:
+                BookingReference: 12345
+        '401':
+          description: Indicates that the request is not authorize to perform operation.
+        '400':
+          description: Indicates that uploaded file with extension other than CSV(supported format).
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - InvalidRequest
+                    type: string
+                    example: None
+                    x-enum-descriptions:
+                      InvalidRequest: Default error code returned when it cannot be determined which part of the request is malformed.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '415':
+          description: Indicates that the request is an unsupported type.
+        '500':
+          description: Indicates that the internal error occurred due to unhandled exception while processing request.
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-required-permissions:
+        personal: Write
+  /partnerintegration/v1/instrumentprices:
+    get:
+      tags:
+        - Update pricing
+      description: "Get the prices for unlisted instruments\n\nThis endpoint supports OData query operators: $top and $skip.\n             Default value of query operator $top is 1000 records and maximum value is 1000 records."
+      operationId: UpdatePricingGetPrices
+      parameters:
+        - name: $skip
+          in: query
+          description: The number of entries to skip from the beginning of the collection
+          style: form
+          explode: false
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+          example: 1
+        - name: $top
+          in: query
+          description: The number of entries to return from the beginning of the collection
+          style: form
+          explode: false
+          schema:
+            maximum: 1000
+            minimum: 0
+            type: integer
+            format: int32
+            default: 1000
+          example: 1
+      responses:
+        '200':
+          description: Indicates that the request is processed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PriceDetailListResult'
+              example:
+                __next: /openapi/....../?$top=1&$skip=1
+                Data:
+                  - AssetType: Stock
+                    Currency: USD
+                    Description: Apple Inc.
+                    LastUpdated: '2022-10-31T03:45:12.167463Z'
+                    Price: 10
+                    Uic: 122
+        '404':
+          description: Indicates that the request is not authorize to perform operation Or given client has not been configured for any feedbproviderid.
+        '500':
+          description: Indicates that the internal error occurred due to unhandled exception while processing request.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-required-permissions:
+        personal: Read
+    post:
+      tags:
+        - Update pricing
+      description: "Update pricing\n\nEndpoint update the prices for unlisted uics."
+      operationId: UpdatePricingUpdatePrices
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PriceUpdateRequest'
+            example:
+              PriceUpdates:
+                - AssetType: Bond
+                  LastUpdated: '2022-10-31T03:45:12.156462Z'
+                  Price: 100
+                  Uic: 211
+      responses:
+        '201':
+          description: Created
+        '404':
+          description: Indicates that the request is not authorize to perform operation.
+        '200':
+          description: Indicates that the request is processed successfully.
+        '400':
+          description: Indicates that the request is invalid data content
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - InvalidRequest
+                    type: string
+                    example: None
+                    x-enum-descriptions:
+                      InvalidRequest: Default error code returned when it cannot be determined which part of the request is malformed.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '500':
+          description: Indicates that the internal error occurred due to unhandled exception while processing request.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-required-permissions:
+        personal: Read
 components:
   schemas:
+    AssetType:
+      title: The possible AssetTypes for which you can get a quote or place an order or a trade.
+      enum:
+        - Bond
+        - Cash
+        - CertificateBonus
+        - CertificateCappedBonus
+        - CertificateCappedCapitalProtected
+        - CertificateCappedOutperformance
+        - CertificateConstantLeverage
+        - CertificateDiscount
+        - CertificateExpress
+        - CertificateTracker
+        - CertificateUncappedCapitalProtection
+        - CertificateUncappedOutperformance
+        - CfdIndexOption
+        - CfdOnCompanyWarrant
+        - CfdOnEtc
+        - CfdOnEtf
+        - CfdOnEtn
+        - CfdOnFund
+        - CfdOnFutures
+        - CfdOnIndex
+        - CfdOnRights
+        - CfdOnStock
+        - CompanyWarrant
+        - ContractFutures
+        - Etc
+        - Etf
+        - Etn
+        - Fund
+        - FuturesOption
+        - FuturesStrategy
+        - FxBinaryOption
+        - FxForwards
+        - FxKnockInOption
+        - FxKnockOutOption
+        - FxNoTouchOption
+        - FxOneTouchOption
+        - FxSpot
+        - FxVanillaOption
+        - GuaranteeNote
+        - IpoOnStock
+        - ManagedFund
+        - MiniFuture
+        - MutualFund
+        - PortfolioNote
+        - Rights
+        - SrdOnEtf
+        - SrdOnStock
+        - Stock
+        - StockIndex
+        - StockIndexOption
+        - StockOption
+        - Warrant
+        - WarrantDoubleKnockOut
+        - WarrantKnockOut
+        - WarrantOpenEndKnockOut
+        - WarrantSpread
+      type: string
+      example: FxKnockOutOption
+      x-enum-descriptions:
+        FxSpot: Forex Spot.
+        FxForwards: Forex Forward.
+        FxVanillaOption: Forex Vanilla Option.
+        FxKnockInOption: Forex Knock In Option.
+        FxKnockOutOption: Forex Knock Out Option.
+        FxBinaryOption: Forex Binary Option.
+        FxOneTouchOption: Forex One Touch Option.
+        FxNoTouchOption: Forex No Touch Option.
+        ContractFutures: Contract Futures.
+        FuturesStrategy: Futures Strategy.
+        Stock: Stock.
+        StockOption: Stock Option.
+        Bond: Bond.
+        FuturesOption: Futures Option.
+        StockIndexOption: Stock Index Option.
+        ManagedFund: 'Obsolete: Managed Fund.'
+        Cash: Cash. Not tradeable!
+        CfdOnStock: Cfd on Stock.
+        CfdOnIndex: Cfd on Stock Index.
+        CfdOnFutures: Cfd on Futures.
+        StockIndex: Stock Index.
+        MutualFund: Mutual Fund.
+        CfdIndexOption: Cfd Index Option.
+        CfdOnEtf: Cfd on Etf
+        CfdOnEtc: Cfd on Etc
+        CfdOnEtn: Cfd on Etn
+        CfdOnFund: Cfd on Fund
+        CfdOnRights: Cfd on Rights
+        CfdOnCompanyWarrant: Cfd on unlisted warrant issued by a corporation.
+        Etf: Exchange traded fund.
+        Etc: Etc
+        Etn: Etn
+        Fund: Fund
+        Rights: Rights
+        Warrant: Warrant
+        MiniFuture: MiniFuture.
+        WarrantSpread: Warrant with built-in spread.
+        WarrantKnockOut: Warrant with a knock-out barrier.
+        WarrantOpenEndKnockOut: Knock-out Warrant with no expiry.
+        WarrantDoubleKnockOut: Warrant with two knock-out barriers.
+        CertificateUncappedCapitalProtection: Guarantees a percentage increase of the underlying asset's value above the issue price at expiry/maturity. Max loss is the amount invested multiplied by the CapitalProtection percentage.
+        CertificateCappedCapitalProtected: Guarantees a capped percentage increase of the underlying asset's value above the issue price at expiry/maturity. Max loss is the amount invested multiplied by the CapitalProtection percentage.
+        CertificateDiscount: 'Yields a capped return if the underlying asset''s value is above the specified cap level at expiry. If the underlying''s value is below the strike at expiry, the investor received the underlying or equivalent value. Offers direct exposure in underlying at a lower price (discount) with a capped potential profit and limited loss.'
+        CertificateCappedOutperformance: Capped Outperformance Certificate.
+        CertificateCappedBonus: Certificate Capped Bonus.
+        CertificateExpress: Certificate Express kick out.
+        CertificateTracker: A certificate that mirrors the price movement of the underlying instrument. Often used to trade movements in indicies. Movements can be a fixed ratio of the underlying and can be inverted for bearish/short speculation. Risk is equivalent to owning the underlying.
+        CertificateUncappedOutperformance: 'Provides leveraged returns when the underlying price exceeds the threshold strike price. The amount leverage is defined by the Participation %. When the underlying is below the strike price, the certificate mirrors the underlying price 1:1.'
+        CertificateBonus: 'Mirrors the price movement of the underlying only if and when the underlying price exceeds the defined barrier. If the certificate expires below the barrier, it offers partial protection/return of investment.'
+        CertificateConstantLeverage: Certificate Constant Leverage.
+        SrdOnStock: SRD. (Service de Règlement Différé) on Stock.
+        SrdOnEtf: SRD. (Service de Règlement Différé) on Etf.
+        IpoOnStock: IPO on Stock
+        CompanyWarrant: 'Unlisted warrant issued by a corporation, often physically settled.'
+        PortfolioNote: Danish pooled investment scheme (“Pulje”). Not online tradeable.
+        GuaranteeNote: Danish investment scheme (“Grantbevis”). Not online tradeable.
+    BookingError:
+      title: Booking error class.
+      type: object
+      properties:
+        Errors:
+          title: List of errors.
+          type: array
+          items:
+            type: string
+            example: stringValue
+          example:
+            - stringValue
+        Id:
+          title: Record Id.
+          type: integer
+          format: int32
+          example: 99
+      additionalProperties: false
+      example:
+        Errors:
+          - stringValue
+        Id: 99
+    BookingPublishStatus:
+      title: Model class for booking publish status from backoffice.
+      type: object
+      properties:
+        Errors:
+          title: List of error info
+          type: array
+          items:
+            type: string
+            example: stringValue
+          example:
+            - stringValue
+        RequestReferenceNumber:
+          title: RequestReferenceNo
+          type: integer
+          format: int64
+          example: 37
+        Status:
+          title: File processing status
+          allOf:
+            - $ref: '#/components/schemas/Enumerations.BookingPublishStatus'
+      additionalProperties: false
+      example:
+        Errors:
+          - Error info
+        RequestReferenceNumber: 123456
+        Status: Pending
+    BookingStatus:
+      title: Bulk booking file validation status
+      enum:
+        - Failed
+        - Success
+        - Working
+      type: string
+      example: Working
+      x-enum-descriptions:
+        Working: Initial status
+        Failed: If any validation failed
+        Success: When all validation passed/succeeded
+    BookingValidationStatus:
+      title: Model class for booking validation status.
+      type: object
+      properties:
+        Errors:
+          title: List of error info
+          type: array
+          items:
+            $ref: '#/components/schemas/BookingError'
+          example:
+            - Errors:
+                - stringValue
+              Id: 99
+        RequestReferenceNumber:
+          title: RequestReferenceNo
+          type: integer
+          format: int64
+          example: 37
+        Status:
+          title: File processing status
+          allOf:
+            - $ref: '#/components/schemas/BookingStatus'
+      additionalProperties: false
+      example:
+        Errors:
+          - Errors:
+              - Error info
+            Id: 1
+        RequestReferenceNumber: 123456
+        Status: Failed
+    Enumerations.BookingPublishStatus:
+      title: Bulk booking file publish status from backoffice
+      enum:
+        - Active
+        - Cancelled
+        - Error
+        - Hold
+        - Pending
+        - Processed
+      type: string
+      example: Pending
+      x-enum-descriptions:
+        Pending: Receive the signal from Signal Topic
+        Hold: If any validation failed
+        Active: When all validation passed/succeeded
+        Processed: This status will be marked when all requests processed.
+        Error: This will be set once processing has been done with some errors.
+        Cancelled: Cancel the batch
     ModelStateDictionary:
       type: object
       additionalProperties:
@@ -197,24 +809,194 @@ components:
           type: string
     Object:
       type: object
+      additionalProperties: false
+    PriceDetail:
+      title: Price detail info
+      type: object
+      properties:
+        AssetType:
+          title: Instrument's asset type
+          allOf:
+            - $ref: '#/components/schemas/AssetType'
+        Currency:
+          title: Instrument's currency
+          type: string
+          example: stringValue
+        Description:
+          title: Instrument's description
+          type: string
+          example: stringValue
+        LastUpdated:
+          title: Instrument's last price updated date
+          type: string
+          format: date-time
+          x-type-name: UtcDateTime
+        Price:
+          title: Instrument's price
+          type: number
+          example: 10
+        Uic:
+          title: Instrument's uic
+          type: integer
+          format: int32
+          example: 99
+      additionalProperties: false
+      example:
+        AssetType: FxNoTouchOption
+        Currency: stringValue
+        Description: stringValue
+        LastUpdated: '9999-12-31T23:59:59.9999990+00:00'
+        Price: 10
+        Uic: 99
+    PriceDetailListResult:
+      type: object
+      properties:
+        Data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PriceDetail'
+          description: The collection of entities for this feed.
+        MaxRows:
+          type: number
+          description: The maximum number of rows that can be returned (if applicable).
+        __count:
+          type: number
+          description: The total count of items in the feed.
+        __next:
+          type: string
+          description: The link for the next page of items in the feed.
+      additionalProperties: false
+      example:
+        __next: /openapi/....../?$top=1&$skip=1
+        Data:
+          - AssetType: Stock
+            Currency: USD
+            Description: Apple Inc.
+            LastUpdated: '2022-10-31T03:45:12.167463Z'
+            Price: 10
+            Uic: 122
+    PriceUpdate:
+      title: Price update
+      required:
+        - AssetType
+        - LastUpdated
+        - Price
+        - Uic
+      type: object
+      properties:
+        AssetType:
+          title: Asset type for instrument
+          allOf:
+            - $ref: '#/components/schemas/AssetType'
+        LastUpdated:
+          title: Last updated date for instrument
+          type: string
+          format: date-time
+          x-type-name: UtcDateTime
+        Price:
+          title: Instrument's price
+          type: number
+          example: 10
+        Uic:
+          title: Instrument's uic
+          type: integer
+          format: int32
+          example: 99
+      additionalProperties: false
+      example:
+        AssetType: FxBinaryOption
+        LastUpdated: '9999-12-31T23:59:59.9999990+00:00'
+        Price: 10
+        Uic: 99
+    PriceUpdateRequest:
+      title: Class for price update request
+      type: object
+      properties:
+        PriceUpdates:
+          title: List of price update
+          type: array
+          items:
+            $ref: '#/components/schemas/PriceUpdate'
+          example:
+            - AssetType: FxOneTouchOption
+              LastUpdated: '9999-12-31T23:59:59.999999Z'
+              Price: 10
+              Uic: 99
+      additionalProperties: false
+      example:
+        PriceUpdates:
+          - AssetType: Bond
+            LastUpdated: '2022-10-31T03:45:12.156462Z'
+            Price: 100
+            Uic: 211
+    RegisteredBulkBooking:
+      type: object
+      properties:
+        BookingReference:
+          title: Request reference id generated for the uploaded file to get the booking status.
+          type: integer
+          format: int64
+          example: 37
+      additionalProperties: false
+      example:
+        BookingReference: 12345
     StringStringKeyValuePair:
       type: object
       properties:
         Key:
           type: string
+          example: stringValue
         Value:
           type: string
+          example: stringValue
+      additionalProperties: false
+      example:
+        Key: stringValue
+        Value: stringValue
   responses:
+    BadRequest:
+      description: One or more of the provided parameters are invalid.
+      content:
+        application/json:
+          schema:
+            required:
+              - ErrorCode
+              - Message
+            type: object
+            properties:
+              ErrorCode:
+                enum:
+                  - InvalidRequest
+                type: string
+                example: None
+                x-enum-descriptions:
+                  InvalidRequest: Default error code returned when it cannot be determined which part of the request is malformed.
+              Message:
+                type: string
+              ModelState:
+                $ref: '#/components/schemas/ModelStateDictionary'
     ServiceUnavailable:
       description: Service Unavailable.
     TooManyRequests:
       description: The request was rejected due to rate limit being exceeded.
     Unauthorized:
       description: Indicates that the request was rejected because the 'Authorization' header was missing in the request or contained an invalid security token.
+  securitySchemes:
+    OpenApiJWTSecurityScheme:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    OpenApiOAuthSecurityScheme:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://sim.logonvalidation.net/authorize
+          tokenUrl: https://sim.logonvalidation.net/token
+          scopes: { }
 tags:
-  - name: Assurance Vie
-    description: 'End point for accessing summary information for a specified client, including optional address info.'
-  - name: Banca Generali
-    description: Provides Banca Generali integration related endpoints.
   - name: InteractiveIdVerification
     description: InteractiveIdVerificationV1Controller
+  - name: Partner Bulk Bookings
+    description: Provides partner bulk booking related endpoints.
+  - name: Update pricing
+    description: Provides non stream price update endpoint

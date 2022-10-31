@@ -2,39 +2,37 @@ openapi: 3.0.1
 info:
   title: Services.ClientReporting
   description: The Client Reporting service group provides endpoints to retrieve various reports in .pdf/.xls format.
-  version: 1.1.448+27f242c8dd
-  x-framework-version: 22.0.28+8a9c9a332b
-  x-machine: SATOAWEB22-DK1
+  version: 1.1.569+f90df94324
+  x-framework-version: 40.0.1+2386a0aaff
+  x-machine: SIMOAWEB9-DK1
 servers:
-  - url: https://gateway.saxobank.com/openapi
+  - url: https://gateway.saxobank.com/sim/openapi
 paths:
-  '/cr/v1/reports/AccountStatement/{clientKey}':
+  '/cr/v1/reports/TradesExecuted/{ClientKey}':
     get:
       tags:
-        - Historical Report Data - Account Statement
-      summary: Get Account statement report for the accounts of a Specified client
-      description: "Get an account statement report for the accounts of a Specified client.\r\n            \r\nThis report is available in the following formats:\r\n\r\n\r\n*   PDF\r\n*   Excel\r\n\r\nTo request a specific format, please set the 'Accept' header on your request to one of the following:\r\n\r\n\r\n*   For PDF : application/pdf\r\n*   For Excel : application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-      operationId: AccountStatementGetAsync
+        - Historical Report Data - Trades Executed
+      summary: Get Trades Executed report for the accounts of a specified client
+      description: "Get Trades Executed report for the accounts of a specified client.\r\n            \r\nThis report is available in the following formats:\r\n\r\n\r\n*   PDF\r\n*   Excel\r\n\r\nTo request a specific format, please set the 'Accept' header on your request to one of the following:\r\n\r\n\r\n*   For PDF : application/pdf\r\n*   For Excel : application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      operationId: TradesExecutedGetAsync
       parameters:
-        - name: accountGroupKey
+        - name: AccountGroupKey
           in: query
           description: The account group id.
           schema:
-            allOf:
-              - minLength: 1
-                type: string
-                x-type-name: AccountGroupKey
+            minLength: 1
+            type: string
+            x-type-name: AccountGroupKey
           example: LZTc7DdejXODf-WSl2aCyQ==
-        - name: accountKey
+        - name: AccountKey
           in: query
           description: The account key.
           schema:
-            allOf:
-              - minLength: 1
-                type: string
-                x-type-name: AccountKey
+            minLength: 1
+            type: string
+            x-type-name: AccountKey
           example: LZTc7DdejXODf-WSl2aCyQ==
-        - name: clientKey
+        - name: ClientKey
           in: path
           description: Unique id of the client.
           required: true
@@ -43,24 +41,22 @@ paths:
             type: string
             x-type-name: ClientKey
           example: 5DG7K1P5cqYBZ77tl7Af4w==
-        - name: fromDate
+        - name: FromDate
           in: query
-          description: Include Account statement from this date. By default returns the previous date report.
+          description: Include TradesExecuted from this date. By default returns the previous date report.
           schema:
-            allOf:
-              - type: string
-                format: date
-                x-type-name: Date
-          example: '2016-10-10T00:00:00.0000000+00:00'
-        - name: toDate
+            type: string
+            format: date
+            x-type-name: Date
+          example: '2016-10-10'
+        - name: ToDate
           in: query
-          description: Include Account statement till this date. By default returns the previous date report.
+          description: Include TradesExecuted till this date. By default returns the previous date report.
           schema:
-            allOf:
-              - type: string
-                format: date
-                x-type-name: Date
-          example: '2017-10-10T00:00:00.0000000+00:00'
+            type: string
+            format: date
+            x-type-name: Date
+          example: '2017-10-10'
       responses:
         '200':
           description: Indicates that the request was performed correctly.
@@ -135,280 +131,9 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
-  '/cr/v1/reports/Portfolio/{clientKey}/{fromDate}/{toDate}':
-    get:
-      tags:
-        - Historical Report Data - Portfolio Management
-      summary: Get Portfolio report for the accounts of a specified client
-      description: "Get Portfolio report for the accounts of a specified client.\r\n            \r\nThis report is available in the following formats:\r\n\r\n\r\n*   PDF\r\n\r\nTo request a PDF format, please set the 'Accept' header on your request as follows:\r\n\r\n\r\n*   For PDF : application/pdf"
-      operationId: PortfolioGetAsync
-      parameters:
-        - name: IncludeYTDInformation
-          in: query
-          description: Include additional information about performance Year To Date.
-          schema:
-            type: boolean
-          example: true
-        - name: accountGroupKey
-          in: query
-          description: The account group id.
-          schema:
-            allOf:
-              - minLength: 1
-                type: string
-                x-type-name: AccountGroupKey
-          example: LZTc7DdejXODf-WSl2aCyQ==
-        - name: accountKey
-          in: query
-          description: The account key.
-          schema:
-            allOf:
-              - minLength: 1
-                type: string
-                x-type-name: AccountKey
-          example: LZTc7DdejXODf-WSl2aCyQ==
-        - name: clientKey
-          in: path
-          description: Unique id of the client.
-          required: true
-          schema:
-            minLength: 1
-            type: string
-            x-type-name: ClientKey
-          example: 5DG7K1P5cqYBZ77tl7Af4w==
-        - name: fromDate
-          in: path
-          description: From date in UTC
-          required: true
-          schema:
-            type: string
-            format: date
-            x-type-name: Date
-          example: '2016-10-10T00:00:00.0000000'
-        - name: optionalReportSections
-          in: query
-          description: Whether any optional section is needed in the report
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/OptionalReportSection'
-          example: Trasactions
-        - name: toDate
-          in: path
-          description: To date in UTC
-          required: true
-          schema:
-            type: string
-            format: date
-            x-type-name: Date
-          example: '2017-10-10T00:00:00.0000000'
-      responses:
-        '200':
-          description: Indicates that the request was performed correctly.
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                required:
-                  - ErrorCode
-                  - Message
-                type: object
-                properties:
-                  ErrorCode:
-                    enum:
-                      - NotFoundError
-                    type: string
-                    x-enum-descriptions:
-                      NotFoundError: Not found.
-                  Message:
-                    type: string
-                  ModelState:
-                    $ref: '#/components/schemas/ModelStateDictionary'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                required:
-                  - ErrorCode
-                  - Message
-                type: object
-                properties:
-                  ErrorCode:
-                    enum:
-                      - BadRequestError
-                    type: string
-                    x-enum-descriptions:
-                      BadRequestError: Bad request.
-                  Message:
-                    type: string
-                  ModelState:
-                    $ref: '#/components/schemas/ModelStateDictionary'
-        '500':
-          description: Internal Server Error
-        '406':
-          description: Not Acceptable
-          content:
-            application/json:
-              schema:
-                required:
-                  - ErrorCode
-                  - Message
-                type: object
-                properties:
-                  ErrorCode:
-                    enum:
-                      - RequestedFormatNotSupported
-                    type: string
-                    x-enum-descriptions:
-                      RequestedFormatNotSupported: Request format not supported.
-                  Message:
-                    type: string
-                  ModelState:
-                    $ref: '#/components/schemas/ModelStateDictionary'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
-      security:
-        - OpenApiOAuthSecurityScheme: [ ]
-        - OpenApiJWTSecurityScheme: [ ]
-  '/cr/v1/reports/Portfolio/me/{fromDate}/{toDate}':
-    get:
-      tags:
-        - Historical Report Data - Portfolio Management
-      summary: Get Portfolio report for the logged in user
-      description: "Get Portfolio report for the logged in user.\r\n            \r\nThis report is available in the following formats:\r\n\r\n\r\n*   PDF\r\n\r\nTo request a PDF format, please set the 'Accept' header on your request as follows:\r\n\r\n\r\n*   For PDF : application/pdf"
-      operationId: PortfolioGetMeAsync
-      parameters:
-        - name: IncludeYTDInformation
-          in: query
-          description: Include additional information about performance Year To Date.
-          schema:
-            type: boolean
-          example: true
-        - name: accountGroupKey
-          in: query
-          description: The account group id.
-          schema:
-            allOf:
-              - minLength: 1
-                type: string
-                x-type-name: AccountGroupKey
-          example: LZTc7DdejXODf-WSl2aCyQ==
-        - name: accountKey
-          in: query
-          description: The account key.
-          schema:
-            allOf:
-              - minLength: 1
-                type: string
-                x-type-name: AccountKey
-          example: LZTc7DdejXODf-WSl2aCyQ==
-        - name: fromDate
-          in: path
-          description: From date in UTC
-          required: true
-          schema:
-            type: string
-            format: date
-            x-type-name: Date
-          example: '2016-10-10T00:00:00.0000000'
-        - name: optionalReportSections
-          in: query
-          description: Parameter specifing if any optional section is needed in the report
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/OptionalReportSection'
-          example: Trasactions
-        - name: toDate
-          in: path
-          description: To date in UTC
-          required: true
-          schema:
-            type: string
-            format: date
-            x-type-name: Date
-          example: '2017-10-10T00:00:00.0000000'
-      responses:
-        '200':
-          description: Indicates that the request was performed correctly.
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                required:
-                  - ErrorCode
-                  - Message
-                type: object
-                properties:
-                  ErrorCode:
-                    enum:
-                      - NotFoundError
-                    type: string
-                    x-enum-descriptions:
-                      NotFoundError: Not found.
-                  Message:
-                    type: string
-                  ModelState:
-                    $ref: '#/components/schemas/ModelStateDictionary'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                required:
-                  - ErrorCode
-                  - Message
-                type: object
-                properties:
-                  ErrorCode:
-                    enum:
-                      - BadRequestError
-                    type: string
-                    x-enum-descriptions:
-                      BadRequestError: Bad request.
-                  Message:
-                    type: string
-                  ModelState:
-                    $ref: '#/components/schemas/ModelStateDictionary'
-        '500':
-          description: Internal Server Error
-        '406':
-          description: Not Acceptable
-          content:
-            application/json:
-              schema:
-                required:
-                  - ErrorCode
-                  - Message
-                type: object
-                properties:
-                  ErrorCode:
-                    enum:
-                      - RequestedFormatNotSupported
-                    type: string
-                    x-enum-descriptions:
-                      RequestedFormatNotSupported: Request format not supported.
-                  Message:
-                    type: string
-                  ModelState:
-                    $ref: '#/components/schemas/ModelStateDictionary'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
-      security:
-        - OpenApiOAuthSecurityScheme: [ ]
-        - OpenApiJWTSecurityScheme: [ ]
-  '/cr/v1/reports/TradeDetails/{clientKey}':
+      x-required-permissions:
+        personal: Read
+  '/cr/v1/reports/TradeDetails/{ClientKey}':
     get:
       tags:
         - Historical Report Data - Trade Details
@@ -416,7 +141,7 @@ paths:
       description: "Get Trade Details report for the accounts of a specified client.\r\n            \r\nThis report is available in the following formats:\r\n\r\n\r\n*   PDF\r\n\r\nTo request a PDF format, please set the 'Accept' header on your request as follows:\r\n\r\n\r\n*   For PDF : application/pdf"
       operationId: TradeDetailsGetAsync
       parameters:
-        - name: accountKey
+        - name: AccountKey
           in: query
           description: The account key.
           required: true
@@ -425,7 +150,7 @@ paths:
             type: string
             x-type-name: AccountKey
           example: LZTc7DdejXODf-WSl2aCyQ==
-        - name: clientKey
+        - name: ClientKey
           in: path
           description: Unique id of the client.
           required: true
@@ -434,19 +159,19 @@ paths:
             type: string
             x-type-name: ClientKey
           example: 5DG7K1P5cqYBZ77tl7Af4w==
-        - name: filterType
+        - name: FilterType
           in: query
           description: Values which gets included in the request
           required: true
           schema:
             $ref: '#/components/schemas/BookingRequestType'
-        - name: filterValue
+        - name: FilterValue
           in: query
           description: Id for the specified filter type.
           required: true
           schema:
             type: string
-        - name: tradeId
+        - name: TradeId
           in: query
           description: Trade id
           required: true
@@ -527,59 +252,64 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
-  '/cr/v1/reports/TradesExecuted/{clientKey}':
+      x-required-permissions:
+        personal: Read
+  '/cr/v1/reports/Portfolio/me/{FromDate}/{ToDate}':
     get:
       tags:
-        - Historical Report Data - Trades Executed
-      summary: Get Trades Executed report for the accounts of a specified client
-      description: "Get Trades Executed report for the accounts of a specified client.\r\n            \r\nThis report is available in the following formats:\r\n\r\n\r\n*   PDF\r\n*   Excel\r\n\r\nTo request a specific format, please set the 'Accept' header on your request to one of the following:\r\n\r\n\r\n*   For PDF : application/pdf\r\n*   For Excel : application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-      operationId: TradesExecutedGetAsync
+        - Historical Report Data - Portfolio Management
+      summary: Get Portfolio report for the logged in user
+      description: "Get Portfolio report for the logged in user.\r\n            \r\nThis report is available in the following formats:\r\n\r\n\r\n*   PDF\r\n\r\nTo request a PDF format, please set the 'Accept' header on your request as follows:\r\n\r\n\r\n*   For PDF : application/pdf"
+      operationId: PortfolioGetMeAsync
       parameters:
-        - name: accountGroupKey
+        - name: AccountGroupKey
           in: query
           description: The account group id.
           schema:
-            allOf:
-              - minLength: 1
-                type: string
-                x-type-name: AccountGroupKey
+            minLength: 1
+            type: string
+            x-type-name: AccountGroupKey
           example: LZTc7DdejXODf-WSl2aCyQ==
-        - name: accountKey
+        - name: AccountKey
           in: query
           description: The account key.
           schema:
-            allOf:
-              - minLength: 1
-                type: string
-                x-type-name: AccountKey
-          example: LZTc7DdejXODf-WSl2aCyQ==
-        - name: clientKey
-          in: path
-          description: Unique id of the client.
-          required: true
-          schema:
             minLength: 1
             type: string
-            x-type-name: ClientKey
-          example: 5DG7K1P5cqYBZ77tl7Af4w==
-        - name: fromDate
-          in: query
-          description: Include TradesExecuted from this date. By default returns the previous date report.
+            x-type-name: AccountKey
+          example: LZTc7DdejXODf-WSl2aCyQ==
+        - name: FromDate
+          in: path
+          description: From date in UTC
+          required: true
           schema:
-            allOf:
-              - type: string
-                format: date
-                x-type-name: Date
-          example: '2016-10-10T00:00:00.0000000+00:00'
-        - name: toDate
+            type: string
+            format: date
+            x-type-name: Date
+          example: '2016-10-10'
+        - name: IncludeYTDInformation
           in: query
-          description: Include TradesExecuted till this date. By default returns the previous date report.
+          description: Include additional information about performance Year To Date.
           schema:
-            allOf:
-              - type: string
-                format: date
-                x-type-name: Date
-          example: '2017-10-10T00:00:00.0000000+00:00'
+            type: boolean
+          example: true
+        - name: OptionalReportSections
+          in: query
+          description: Parameter specifing if any optional section is needed in the report
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/OptionalReportSection'
+          example: Trasactions
+        - name: ToDate
+          in: path
+          description: To date in UTC
+          required: true
+          schema:
+            type: string
+            format: date
+            x-type-name: Date
+          example: '2017-10-10'
       responses:
         '200':
           description: Indicates that the request was performed correctly.
@@ -654,6 +384,274 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
+      x-required-permissions:
+        personal: Read
+  '/cr/v1/reports/Portfolio/{ClientKey}/{FromDate}/{ToDate}':
+    get:
+      tags:
+        - Historical Report Data - Portfolio Management
+      summary: Get Portfolio report for the accounts of a specified client
+      description: "Get Portfolio report for the accounts of a specified client.\r\n            \r\nThis report is available in the following formats:\r\n\r\n\r\n*   PDF\r\n\r\nTo request a PDF format, please set the 'Accept' header on your request as follows:\r\n\r\n\r\n*   For PDF : application/pdf"
+      operationId: PortfolioGetAsync
+      parameters:
+        - name: AccountGroupKey
+          in: query
+          description: The account group id.
+          schema:
+            minLength: 1
+            type: string
+            x-type-name: AccountGroupKey
+          example: LZTc7DdejXODf-WSl2aCyQ==
+        - name: AccountKey
+          in: query
+          description: The account key.
+          schema:
+            minLength: 1
+            type: string
+            x-type-name: AccountKey
+          example: LZTc7DdejXODf-WSl2aCyQ==
+        - name: ClientKey
+          in: path
+          description: Unique id of the client.
+          required: true
+          schema:
+            minLength: 1
+            type: string
+            x-type-name: ClientKey
+          example: 5DG7K1P5cqYBZ77tl7Af4w==
+        - name: FromDate
+          in: path
+          description: From date in UTC
+          required: true
+          schema:
+            type: string
+            format: date
+            x-type-name: Date
+          example: '2016-10-10'
+        - name: IncludeYTDInformation
+          in: query
+          description: Include additional information about performance Year To Date.
+          schema:
+            type: boolean
+          example: true
+        - name: OptionalReportSections
+          in: query
+          description: Whether any optional section is needed in the report
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/OptionalReportSection'
+          example: Trasactions
+        - name: ToDate
+          in: path
+          description: To date in UTC
+          required: true
+          schema:
+            type: string
+            format: date
+            x-type-name: Date
+          example: '2017-10-10'
+      responses:
+        '200':
+          description: Indicates that the request was performed correctly.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - NotFoundError
+                    type: string
+                    x-enum-descriptions:
+                      NotFoundError: Not found.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - BadRequestError
+                    type: string
+                    x-enum-descriptions:
+                      BadRequestError: Bad request.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '500':
+          description: Internal Server Error
+        '406':
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - RequestedFormatNotSupported
+                    type: string
+                    x-enum-descriptions:
+                      RequestedFormatNotSupported: Request format not supported.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-required-permissions:
+        personal: Read
+  '/cr/v1/reports/AccountStatement/{ClientKey}':
+    get:
+      tags:
+        - Historical Report Data - Account Statement
+      summary: Get Account statement report for the accounts of a Specified client
+      description: "Get an account statement report for the accounts of a Specified client.\r\n            \r\nThis report is available in the following formats:\r\n\r\n\r\n*   PDF\r\n*   Excel\r\n\r\nTo request a specific format, please set the 'Accept' header on your request to one of the following:\r\n\r\n\r\n*   For PDF : application/pdf\r\n*   For Excel : application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      operationId: AccountStatementGetAsync
+      parameters:
+        - name: AccountGroupKey
+          in: query
+          description: The account group id.
+          schema:
+            minLength: 1
+            type: string
+            x-type-name: AccountGroupKey
+          example: LZTc7DdejXODf-WSl2aCyQ==
+        - name: AccountKey
+          in: query
+          description: The account key.
+          schema:
+            minLength: 1
+            type: string
+            x-type-name: AccountKey
+          example: LZTc7DdejXODf-WSl2aCyQ==
+        - name: ClientKey
+          in: path
+          description: Unique id of the client.
+          required: true
+          schema:
+            minLength: 1
+            type: string
+            x-type-name: ClientKey
+          example: 5DG7K1P5cqYBZ77tl7Af4w==
+        - name: FromDate
+          in: query
+          description: Include Account statement from this date. By default returns the previous date report.
+          schema:
+            type: string
+            format: date
+            x-type-name: Date
+          example: '2016-10-10'
+        - name: ToDate
+          in: query
+          description: Include Account statement till this date. By default returns the previous date report.
+          schema:
+            type: string
+            format: date
+            x-type-name: Date
+          example: '2017-10-10'
+      responses:
+        '200':
+          description: Indicates that the request was performed correctly.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - NotFoundError
+                    type: string
+                    x-enum-descriptions:
+                      NotFoundError: Not found.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - BadRequestError
+                    type: string
+                    x-enum-descriptions:
+                      BadRequestError: Bad request.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '500':
+          description: Internal Server Error
+        '406':
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - RequestedFormatNotSupported
+                    type: string
+                    x-enum-descriptions:
+                      RequestedFormatNotSupported: Request format not supported.
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-required-permissions:
+        personal: Read
 components:
   schemas:
     BookingRequestType:
@@ -696,87 +694,15 @@ components:
       type: oauth2
       flows:
         authorizationCode:
-          authorizationUrl: https://live.logonvalidation.net/authorize
-          tokenUrl: https://live.logonvalidation.net/token
+          authorizationUrl: https://sim.logonvalidation.net/authorize
+          tokenUrl: https://sim.logonvalidation.net/token
           scopes: { }
 tags:
-  - name: Client Personal Details
-    description: Client Personal Details Report.
-  - name: ConvertedData
-    description: End points for converting data from one format to another.
-  - name: Corporate Action - Narratives
-    description: Corporate action narratives.
   - name: Historical Report Data - Account Statement
     description: Account Statement Report.
-  - name: Historical Report Data - Account Valuations
-    description: Account Valuations Report
-  - name: Historical Report Data - Audit Request
-    description: Audit Request Report.
-  - name: Historical Report Data - Bond Coupon Payments
-    description: Bond Coupon Payments Report.
-  - name: Historical Report Data - CFD Cash Adjustments
-    description: CFD Cash Adjustments.
-  - name: Historical Report Data - Carrying Cost Details
-    description: CarryingCostDetailsController
-  - name: Historical Report Data - Cfd Finance Details
-    description: Cfd Finance Details Report
-  - name: Historical Report Data - Closed Position Details
-    description: ClosedPositionDetailsController
-  - name: Historical Report Data - Closed Positions
-    description: Closed Positions Report.
-  - name: Historical Report Data - Closeout Overview
-    description: CloseoutOverviewController
-  - name: Historical Report Data - Consolidated Fee Schedule
-    description: Consolidated Fee Schedule Report.
-  - name: Historical Report Data - Financial Statement
-    description: AIBFinancialStatementController
-  - name: Historical Report Data - Forex Commissions
-    description: ForexCommissionsController
-  - name: Historical Report Data - Forex Options
-    description: FxOptionsController
-  - name: Historical Report Data - Forex Rollover
-    description: ForexRolloverController
-  - name: Historical Report Data - Holding Fee Details
-    description: HoldingFeeDetailsController
-  - name: Historical Report Data - Holdings
-    description: Holding Details Report
-  - name: Historical Report Data - IPO Finance Details
-    description: IPO Finance Details Report
-  - name: Historical Report Data - Interest Details
-    description: Interest Details Report.
-  - name: Historical Report Data - Margin Lending Interest Details
-    description: Margin Lending Interest Details Report
-  - name: Historical Report Data - Order Activities
-    description: Order Activities report
-  - name: Historical Report Data - Pension account summary
-    description: Generate pension account summary report
   - name: Historical Report Data - Portfolio Management
     description: Portfolio Report
-  - name: Historical Report Data - SRD Finance Details
-    description: SRD Finance Details Report
-  - name: Historical Report Data - SRD Historical Instructions
-    description: SRD Historical Instructions Report
-  - name: Historical Report Data - Securities Lending Details
-    description: Securities Lending Details Report
-  - name: Historical Report Data - Share Dividends
-    description: Share Dividends Report.
-  - name: Historical Report Data - Srd Cash Adjustments
-    description: Srd Cash Adjustments.
-  - name: Historical Report Data - Subscription Billing History
-    description: SubscriptionBillingHistoryController
-  - name: Historical Report Data - Trade Corrections
-    description: TradeCorrectionsController
   - name: Historical Report Data - Trade Details
     description: Trade Details Report.
   - name: Historical Report Data - Trades Executed
     description: Trades Executed Report.
-  - name: Historical Report Data - Transaction Balance
-    description: Transaction Balance Controller
-  - name: Historical Report Data - Transactions
-    description: Transactions report
-  - name: Historical Report Data - quarterly Portfolio Management
-    description: Quarterly Portfolio Report
-  - name: InvestmentPlan
-    description: Transactions report
-  - name: Security Transfer
-    description: SecurityTransferController

@@ -1,0 +1,10 @@
+openapi: 3.0.1
+info:
+  title: Services.BackOfficeServices
+  description: 'BackOffice<div class=well style=''border: 1px solid rgb(204, 82, 0); border-image: none; background-color: rgb(255, 209, 179);padding:1px;''> <strong>NOTE: </strong> This is an early developer preview. At this point, all data may not be correct, complete or available in the live environment.</div>'
+  version: 1.1.225+8c201fc29b
+  x-framework-version: 34.0.7+63b93bcb3a
+  x-machine: SIMOAWEB11-DK1
+servers:
+  - url: https://gateway.saxobank.com/sim/openapi
+paths: { }

@@ -2,11 +2,11 @@ openapi: 3.0.1
 info:
   title: Services.Root
   description: The root service group provides endpoints for central subscription management and session capabilities.
-  version: 2.3.151+9196d3ab0a
-  x-framework-version: 23.0.7+00747832fc
-  x-machine: SATOAWEB19-DK2
+  version: 2.3.192+a048287b46
+  x-framework-version: 43.0.5+65c0bdc8ab
+  x-machine: SIMOAWEB10-DK2
 servers:
-  - url: https://gateway.saxobank.com/openapi
+  - url: https://gateway.saxobank.com/sim/openapi
 paths:
   '/root/v1/subscriptions/{ContextId}':
     delete:
@@ -20,12 +20,15 @@ paths:
           in: path
           description: Unique streaming context ID part of the streaming session.
           required: true
+          style: simple
           schema:
             type: string
           example: '20160204125301453'
         - name: Tag
           in: query
           description: Tag that subscriptions are marked with.
+          style: form
+          explode: false
           schema:
             type: string
           example: TAB9
@@ -43,7 +46,10 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
-  '/root/v1/user}':
+      x-required-permissions:
+        personal: Subscribe
+        community: Subscribe
+  /root/v1/user:
     get:
       tags:
         - User
@@ -64,11 +70,10 @@ paths:
                   CanTrade: true
                   CanViewAnyClient: true
                 AccountAccessMode: All
-                ClientId: 1110796393
-                EmployeeId: '1674910310'
+                ClientId: 441532926
                 Roles:
                   - OAPI.Roles.RetailClient
-                UserId: 2062140880
+                UserId: 690261150
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -80,7 +85,9 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
-  '/root/v1/diagnostics/options':
+      x-required-permissions:
+        personal: Read
+  /root/v1/diagnostics/options:
     options:
       tags:
         - Diagnostics
@@ -98,7 +105,7 @@ paths:
           $ref: '#/components/responses/ServiceUnavailable'
         '429':
           $ref: '#/components/responses/TooManyRequests'
-  '/root/v1/diagnostics/head':
+  /root/v1/diagnostics/head:
     head:
       tags:
         - Diagnostics
@@ -116,7 +123,7 @@ paths:
           $ref: '#/components/responses/ServiceUnavailable'
         '429':
           $ref: '#/components/responses/TooManyRequests'
-  '/root/v1/diagnostics/patch':
+  /root/v1/diagnostics/patch:
     patch:
       tags:
         - Diagnostics
@@ -134,7 +141,7 @@ paths:
           $ref: '#/components/responses/ServiceUnavailable'
         '429':
           $ref: '#/components/responses/TooManyRequests'
-  '/root/v1/diagnostics/delete':
+  /root/v1/diagnostics/delete:
     delete:
       tags:
         - Diagnostics
@@ -152,7 +159,7 @@ paths:
           $ref: '#/components/responses/ServiceUnavailable'
         '429':
           $ref: '#/components/responses/TooManyRequests'
-  '/root/v1/diagnostics/put':
+  /root/v1/diagnostics/put:
     put:
       tags:
         - Diagnostics
@@ -170,7 +177,7 @@ paths:
           $ref: '#/components/responses/ServiceUnavailable'
         '429':
           $ref: '#/components/responses/TooManyRequests'
-  '/root/v1/diagnostics/post':
+  /root/v1/diagnostics/post:
     post:
       tags:
         - Diagnostics
@@ -188,7 +195,7 @@ paths:
           $ref: '#/components/responses/ServiceUnavailable'
         '429':
           $ref: '#/components/responses/TooManyRequests'
-  '/root/v1/diagnostics/get':
+  /root/v1/diagnostics/get:
     get:
       tags:
         - Diagnostics
@@ -206,7 +213,7 @@ paths:
           $ref: '#/components/responses/ServiceUnavailable'
         '429':
           $ref: '#/components/responses/TooManyRequests'
-  '/root/v1/sessions/events/subscriptions/{ContextId/{ReferenceId}':
+  '/root/v1/sessions/events/subscriptions/{ContextId}/{ReferenceId}':
     delete:
       tags:
         - Sessions
@@ -218,6 +225,7 @@ paths:
           in: path
           description: The context id part of the streaming session (used to identify the subscription within a streaming session).
           required: true
+          style: simple
           schema:
             type: string
           example: '20180204125301453'
@@ -225,6 +233,7 @@ paths:
           in: path
           description: The reference id that identifies the subscription (within a streaming session).
           required: true
+          style: simple
           schema:
             type: string
           example: C04
@@ -242,7 +251,7 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
-  '/root/v1/sessions/events/subscriptions':
+  /root/v1/sessions/events/subscriptions:
     post:
       tags:
         - Sessions
@@ -255,8 +264,8 @@ paths:
             schema:
               $ref: '#/components/schemas/SessionSubscriptionRequest'
             example:
-              ContextId: '20220222112143196'
-              ReferenceId: S01916
+              ContextId: '20221029043400336'
+              ReferenceId: S37523
               RefreshRate: 1000
               Tag: PAGE1
       responses:
@@ -267,10 +276,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/SessionSubscriptionResponse'
               example:
-                ContextId: '20220222112143196'
+                ContextId: '20221029043400336'
                 Format: application/json
                 InactivityTimeout: 120
-                ReferenceId: S01916
+                ReferenceId: S37523
                 RefreshRate: 1000
                 Snapshot:
                   AuthenticationLevel: Authenticated
@@ -292,6 +301,7 @@ paths:
                       - InvalidModelState
                       - UnsupportedSubscriptionFormat
                     type: string
+                    example: None
                     x-enum-descriptions:
                       InvalidModelState: Error code returned when model state is invalid.
                       UnsupportedSubscriptionFormat: Error code returned when a subscription format that isn't supported by the publisher is requested.
@@ -313,6 +323,7 @@ paths:
                     enum:
                       - SubscriptionLimitExceeded
                     type: string
+                    example: None
                     x-enum-descriptions:
                       SubscriptionLimitExceeded: 'Error code returned when more than the maximum allowed number of subscriptions for a specified type, is exceeded.'
                   Message:
@@ -328,8 +339,9 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
-      x-streaming-type: '#/components/schemas/SessionSubscriptionStreamedState'
-  '/root/v1/sessions/events/subscriptions/active':
+      x-streaming-type:
+        $ref: '#/components/schemas/SessionSubscriptionStreamedState'
+  /root/v1/sessions/events/subscriptions/active:
     post:
       tags:
         - Sessions
@@ -342,8 +354,8 @@ paths:
             schema:
               $ref: '#/components/schemas/SessionSubscriptionRequest'
             example:
-              ContextId: '20220222112143196'
-              ReferenceId: S01916
+              ContextId: '20221029043400336'
+              ReferenceId: S37523
               RefreshRate: 1000
               Tag: PAGE1
       responses:
@@ -354,10 +366,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/SessionSubscriptionResponse'
               example:
-                ContextId: '20220222112143196'
+                ContextId: '20221029043400336'
                 Format: application/json
                 InactivityTimeout: 120
-                ReferenceId: S01916
+                ReferenceId: S37523
                 RefreshRate: 1000
                 Snapshot:
                   AuthenticationLevel: Authenticated
@@ -379,6 +391,7 @@ paths:
                       - InvalidModelState
                       - UnsupportedSubscriptionFormat
                     type: string
+                    example: None
                     x-enum-descriptions:
                       InvalidModelState: Error code returned when model state is invalid.
                       UnsupportedSubscriptionFormat: Error code returned when a subscription format that isn't supported by the publisher is requested.
@@ -400,6 +413,7 @@ paths:
                     enum:
                       - SubscriptionLimitExceeded
                     type: string
+                    example: None
                     x-enum-descriptions:
                       SubscriptionLimitExceeded: 'Error code returned when more than the maximum allowed number of subscriptions for a specified type, is exceeded.'
                   Message:
@@ -416,8 +430,9 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
-      x-streaming-type: '#/components/schemas/SessionSubscriptionStreamedState'
-  '/root/v1/sessions/capabilities':
+      x-streaming-type:
+        $ref: '#/components/schemas/SessionSubscriptionStreamedState'
+  /root/v1/sessions/capabilities:
     get:
       tags:
         - Sessions
@@ -449,6 +464,7 @@ paths:
                     enum:
                       - InvalidRequest
                     type: string
+                    example: None
                     x-enum-descriptions:
                       InvalidRequest: Default error code returned when it cannot be determined which part of the request is malformed.
                   Message:
@@ -464,6 +480,8 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
+      x-required-permissions:
+        personal: Read
     put:
       tags:
         - Sessions
@@ -494,6 +512,7 @@ paths:
                     enum:
                       - InvalidRequest
                     type: string
+                    example: None
                     x-enum-descriptions:
                       InvalidRequest: Default error code returned when it cannot be determined which part of the request is malformed.
                   Message:
@@ -509,6 +528,8 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
+      x-required-permissions:
+        personal: Read
     patch:
       tags:
         - Sessions
@@ -539,6 +560,7 @@ paths:
                     enum:
                       - InvalidRequest
                     type: string
+                    example: None
                     x-enum-descriptions:
                       InvalidRequest: Default error code returned when it cannot be determined which part of the request is malformed.
                   Message:
@@ -554,7 +576,9 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
-  '/root/v1/features/availability/subscriptions/{ContextId/{ReferenceId}':
+      x-required-permissions:
+        personal: Read
+  '/root/v1/features/availability/subscriptions/{ContextId}/{ReferenceId}':
     delete:
       tags:
         - Features
@@ -566,6 +590,7 @@ paths:
           in: path
           description: The context id part of the streaming session (used to identify the subscription within a streaming session).
           required: true
+          style: simple
           schema:
             type: string
           example: '20180204125301453'
@@ -573,6 +598,7 @@ paths:
           in: path
           description: The reference id that identifies the subscription (within a streaming session).
           required: true
+          style: simple
           schema:
             type: string
           example: C04
@@ -590,7 +616,11 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
-  '/root/v1/features/availability/subscriptions':
+      x-required-permissions:
+        personal: Subscribe
+        restricted: Subscribe
+        community: Subscribe
+  /root/v1/features/availability/subscriptions:
     post:
       tags:
         - Features
@@ -603,7 +633,7 @@ paths:
             schema:
               $ref: '#/components/schemas/FeatureAvailabilitySubscriptionRequest'
             example:
-              ContextId: '20220222112143496'
+              ContextId: '20221029043400381'
               ReferenceId: Features
               RefreshRate: 1000
       responses:
@@ -614,7 +644,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/FeatureAvailabilitySubscriptionResponse'
               example:
-                ContextId: '20220222112143496'
+                ContextId: '20221029043400381'
                 Format: application/json
                 InactivityTimeout: 120
                 ReferenceId: Features
@@ -638,6 +668,7 @@ paths:
                       - InvalidModelState
                       - UnsupportedSubscriptionFormat
                     type: string
+                    example: None
                     x-enum-descriptions:
                       InvalidModelState: Error code returned when model state is invalid.
                       UnsupportedSubscriptionFormat: Error code returned when a subscription format that isn't supported by the publisher is requested.
@@ -659,6 +690,7 @@ paths:
                     enum:
                       - SubscriptionLimitExceeded
                     type: string
+                    example: None
                     x-enum-descriptions:
                       SubscriptionLimitExceeded: 'Error code returned when more than the maximum allowed number of subscriptions for a specified type, is exceeded.'
                   Message:
@@ -674,8 +706,13 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
-      x-streaming-type: '#/components/schemas/FeatureAvailabilityArray'
-  '/root/v1/features/availability':
+      x-required-permissions:
+        personal: Subscribe
+        restricted: Subscribe
+        community: Subscribe
+      x-streaming-type:
+        $ref: '#/components/schemas/FeatureAvailabilityArray'
+  /root/v1/features/availability:
     get:
       tags:
         - Features
@@ -691,6 +728,9 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/FeatureAvailability'
+                example:
+                  - Available: true
+                    Feature: Chart
               example:
                 - Available: true
                   Feature: Chart
@@ -705,6 +745,10 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
+      x-required-permissions:
+        personal: Read
+        restricted: Read
+        community: Read
 components:
   schemas:
     AccessRights:
@@ -714,18 +758,30 @@ components:
         CanManageCashTransfers:
           title: True when the user is allowed to manage cash transfers.
           type: boolean
+          example: true
         CanTakePriceSession:
           title: True when the user is allowed to take the premium price feed.
           type: boolean
+          example: true
         CanTakeTradeSession:
           title: True when the user is allowed to take the primary trading session.
           type: boolean
+          example: true
         CanTrade:
           title: True when the user is allowed to trade.
           type: boolean
+          example: true
         CanViewAnyClient:
           title: True when the user is allowed to view any client.
           type: boolean
+          example: true
+      additionalProperties: false
+      example:
+        CanManageCashTransfers: true
+        CanTakePriceSession: false
+        CanTakeTradeSession: false
+        CanTrade: true
+        CanViewAnyClient: true
     AccountAccessMode:
       title: Account access mode indicating the maximum aggregation level of data for accounts.
       enum:
@@ -733,8 +789,9 @@ components:
         - Restricted
         - ViewAll
       type: string
+      example: All
       x-enum-descriptions:
-        All: "User has no explicit restriction for operating on accounts, which means\r\n            it may operate on all accounts under its client only depending on its roles and operations."
+        All: "User has no explicit restriction for operating on accounts, which means\n            it may operate on all accounts under its client only depending on its roles and operations."
         ViewAll: 'The user can view all accounts under its client, but have limited rights to interact with them.'
         Restricted: Some accounts are not visible to user.
     AuthenticationLevel:
@@ -743,6 +800,7 @@ components:
         - Authenticated
         - Elevated
       type: string
+      example: Authenticated
       x-enum-descriptions:
         Authenticated: Indicates that the user does not have elevated authentication.
         Elevated: Indicates that step-up authentication applies to the user and that authentication is elevated.
@@ -762,24 +820,28 @@ components:
           title: Determines ability to trade on quote and receive real time data.
           allOf:
             - $ref: '#/components/schemas/TradeLevel'
+      additionalProperties: false
+      example:
+        AuthenticationLevel: Authenticated
+        DataLevel: Standard
+        TradeLevel: OrdersOnly
     DataLevel:
       title: Enumeration of allowed data levels for a user using a client application.
       enum:
         - Premium
         - Standard
       type: string
+      example: Standard
       x-enum-descriptions:
         Standard: 'Default trade level, where average prices are served.'
         Premium: Live up-to-date prices are served.
-    DataLevelNullable:
-      allOf:
-        - $ref: '#/components/schemas/Domain.DataLevel'
     Domain.DataLevel:
       title: Enumeration of allowed data levels for a user using a client application.
       enum:
         - Premium
         - Standard
       type: string
+      example: Standard
       x-enum-descriptions:
         Standard: 'Default trade level, where average prices are served.'
         Premium: Live up-to-date prices are served.
@@ -789,6 +851,7 @@ components:
         - FullTradingAndChat
         - OrdersOnly
       type: string
+      example: OrdersOnly
       x-enum-descriptions:
         OrdersOnly: Orders only.
         FullTradingAndChat: Full Trading.
@@ -800,13 +863,22 @@ components:
         Available:
           title: Indicates whether the feature is available.
           type: boolean
+          example: true
         Feature:
           title: The name identifying the feature.
           type: string
+          example: stringValue
+      additionalProperties: false
+      example:
+        Available: true
+        Feature: Chart
     FeatureAvailabilityArray:
       type: array
       items:
         $ref: '#/components/schemas/FeatureAvailability'
+      example:
+        - Available: true
+          Feature: Chart
     FeatureAvailabilitySubscriptionRequest:
       required:
         - ContextId
@@ -814,77 +886,104 @@ components:
       type: object
       properties:
         ContextId:
-          title: "The streaming context id that this request is associated with.\r\n            This parameter must only contain letters (a-z) and numbers (0-9) as well as - (dash) and _ (underscore). It is case insensitive. Max length is 50 characters."
+          title: "The streaming context id that this request is associated with.\n            This parameter must only contain letters (a-z) and numbers (0-9) as well as - (dash) and _ (underscore). It is case insensitive. Max length is 50 characters."
           pattern: '^[a-zA-Z0-9_-]{1,50}$'
           type: string
+          example: ContextId-1
           x-display-order: 1
         ReferenceId:
-          title: "Mandatory client specified reference id for the subscription.\r\n            This parameter must only contain alphanumberic characters as well as - (dash) and _ (underscore). Cannot start with _. It is case insensitive. Max length is 50 characters."
+          title: "Mandatory client specified reference id for the subscription.\n            This parameter must only contain alphanumberic characters as well as - (dash) and _ (underscore). Cannot start with _. It is case insensitive. Max length is 50 characters."
           pattern: '^[a-zA-Z0-9-][a-zA-Z0-9_-]{0,49}$'
           type: string
+          example: ReferenceId-1
           x-display-order: 2
         Format:
-          title: "Optional Media type (RFC 2046) of the serialized data updates that are streamed to the client.\r\n            Currently only application/json and application/x-protobuf is supported.\r\n            If an unrecognized format is specified, the subscription end point will return HTTP status code 400 - Bad format."
+          title: "Optional Media type (RFC 2046) of the serialized data updates that are streamed to the client.\n            Currently only application/json and application/x-protobuf is supported.\n            If an unrecognized format is specified, the subscription end point will return HTTP status code 400 - Bad format."
           type: string
+          example: application/json
         RefreshRate:
-          title: "Optional custom refresh rate, measured in milliseconds, between each data update.\r\n            Note that it is not possible to get a refresh rate lower than the rate specified in the\r\n            customer service level agreement (SLA)."
+          title: "Optional custom refresh rate, measured in milliseconds, between each data update.\n            Note that it is not possible to get a refresh rate lower than the rate specified in the\n            customer service level agreement (SLA)."
           maximum: 2147483647
           minimum: 0
           type: integer
           format: int32
+          example: 0
         ReplaceReferenceId:
           title: Reference id of the subscription that should be replaced.
           pattern: '^[a-zA-Z0-9-][a-zA-Z0-9_-]{0,49}$'
           type: string
+          example: ReplaceReferenceId-1
         Tag:
           title: Optional client specified tag used for grouping subscriptions.
           type: string
+          example: ClientTag
+      additionalProperties: false
+      example:
+        ContextId: '20221029043400381'
+        ReferenceId: Features
+        RefreshRate: 1000
     FeatureAvailabilitySubscriptionResponse:
       type: object
       properties:
         ContextId:
           title: The streaming context id that this response is associated with.
           type: string
-          deprecated: true
-          x-deprecated-date: '2022-11-01T00:00:00.0000000+00:00'
+          example: ContextId-1
           x-display-order: 1
         ReferenceId:
           title: The reference id that (along with streaming context id and session id) identifies the subscription (within the context of a specific service/subscription type)
           type: string
-          deprecated: true
-          x-deprecated-date: '2022-11-01T00:00:00.0000000+00:00'
+          example: ReferenceId-1
           x-display-order: 2
         Format:
           title: 'The media type (RFC 2046), of the serialized data updates that are streamed to the client.'
           type: string
+          example: application/json
         InactivityTimeout:
           title: The time (in seconds) that the client should accept the subscription to be inactive before considering it invalid.
           type: integer
           format: int32
+          example: 0
         RefreshRate:
           title: Actual refresh rate assigned to the subscription according to the customers SLA.
           type: integer
           format: int32
+          example: 0
         Snapshot:
           title: 'Snapshot of the current data on hand, when subscription was created.'
           type: array
           items:
             $ref: '#/components/schemas/FeatureAvailability'
+          example:
+            - Available: true
+              Feature: Chart
         State:
           title: The value "Active".
           type: string
           description: This property is kept for backwards compatibility.
-          deprecated: true
-          x-deprecated-date: '2022-11-01T00:00:00.0000000+00:00'
+          example: Active
         Tag:
           title: 'Client specified tag assigned to the subscription, if specified in the request.'
           type: string
+          example: ClientTag
+      additionalProperties: false
+      example:
+        ContextId: '20221029043400381'
+        Format: application/json
+        InactivityTimeout: 120
+        ReferenceId: Features
+        RefreshRate: 1000
+        Snapshot:
+          - Available: true
+            Feature: Chart
+        State: Active
     Model.AuthenticationLevel:
       title: Represents levels of authentication
       enum:
         - Authenticated
         - Elevated
       type: string
+      example: Authenticated
       x-enum-descriptions:
         Authenticated: Indicates that the user is authenticated but does not have elevated authentication.
         Elevated: Indicates that step-up authentication applies to the user and that authentication is elevated.
@@ -922,16 +1021,38 @@ components:
           type: array
           items:
             type: string
+            example: stringValue
+          example:
+            - stringValue
         Operations:
           title: List of operations the user can perform.
           type: array
           items:
             type: string
+            example: stringValue
+          example:
+            - stringValue
         Roles:
           title: List of roles assigned to user.
           type: array
           items:
             type: string
+            example: stringValue
+          example:
+            - stringValue
+      additionalProperties: false
+      example:
+        AccessRights:
+          CanManageCashTransfers: true
+          CanTakePriceSession: true
+          CanTakeTradeSession: true
+          CanTrade: true
+          CanViewAnyClient: true
+        AccountAccessMode: All
+        ClientId: 441532926
+        Roles:
+          - OAPI.Roles.RetailClient
+        UserId: 690261150
     PatchCapabilitiesRequest:
       title: Represents a request to change session capabilities.
       type: object
@@ -939,7 +1060,10 @@ components:
         TradeLevel:
           title: Determines ability to trade on quote and receive real time data.
           allOf:
-            - $ref: '#/components/schemas/TradeLevelNullable'
+            - $ref: '#/components/schemas/TradeLevel'
+      additionalProperties: false
+      example:
+        TradeLevel: OrdersOnly
     PutCapabilitiesRequest:
       title: Represents a request to set all session capabilities.
       type: object
@@ -948,6 +1072,9 @@ components:
           title: Determines ability to trade on quote and receive real time data.
           allOf:
             - $ref: '#/components/schemas/TradeLevel'
+      additionalProperties: false
+      example:
+        TradeLevel: OrdersOnly
     SessionSubscriptionRequest:
       title: The request object required to setup a session wide subscription.
       required:
@@ -956,31 +1083,43 @@ components:
       type: object
       properties:
         ContextId:
-          title: "The streaming context id that this request is associated with.\r\n            This parameter must only contain letters (a-z) and numbers (0-9) as well as - (dash) and _ (underscore). It is case insensitive. Max length is 50 characters."
+          title: "The streaming context id that this request is associated with.\n            This parameter must only contain letters (a-z) and numbers (0-9) as well as - (dash) and _ (underscore). It is case insensitive. Max length is 50 characters."
           pattern: '^[a-zA-Z0-9_-]{1,50}$'
           type: string
+          example: ContextId-1
           x-display-order: 1
         ReferenceId:
-          title: "Mandatory client specified reference id for the subscription.\r\n            This parameter must only contain alphanumberic characters as well as - (dash) and _ (underscore). Cannot start with _. It is case insensitive. Max length is 50 characters."
+          title: "Mandatory client specified reference id for the subscription.\n            This parameter must only contain alphanumberic characters as well as - (dash) and _ (underscore). Cannot start with _. It is case insensitive. Max length is 50 characters."
           pattern: '^[a-zA-Z0-9-][a-zA-Z0-9_-]{0,49}$'
           type: string
+          example: ReferenceId-1
           x-display-order: 2
         Format:
-          title: "Optional Media type (RFC 2046) of the serialized data updates that are streamed to the client.\r\n            Currently only application/json and application/x-protobuf is supported.\r\n            If an unrecognized format is specified, the subscription end point will return HTTP status code 400 - Bad format."
+          title: "Optional Media type (RFC 2046) of the serialized data updates that are streamed to the client.\n            Currently only application/json and application/x-protobuf is supported.\n            If an unrecognized format is specified, the subscription end point will return HTTP status code 400 - Bad format."
           type: string
+          example: application/json
         RefreshRate:
-          title: "Optional custom refresh rate, measured in milliseconds, between each data update.\r\n            Note that it is not possible to get a refresh rate lower than the rate specified in the\r\n            customer service level agreement (SLA)."
+          title: "Optional custom refresh rate, measured in milliseconds, between each data update.\n            Note that it is not possible to get a refresh rate lower than the rate specified in the\n            customer service level agreement (SLA)."
           maximum: 2147483647
           minimum: 0
           type: integer
           format: int32
+          example: 0
         ReplaceReferenceId:
           title: Reference id of the subscription that should be replaced.
           pattern: '^[a-zA-Z0-9-][a-zA-Z0-9_-]{0,49}$'
           type: string
+          example: ReplaceReferenceId-1
         Tag:
           title: Optional client specified tag used for grouping subscriptions.
           type: string
+          example: ClientTag
+      additionalProperties: false
+      example:
+        ContextId: '20221029043400336'
+        ReferenceId: S37523
+        RefreshRate: 1000
+        Tag: PAGE1
     SessionSubscriptionResponse:
       title: Response returned when creating a new subscription for broken data.
       type: object
@@ -988,26 +1127,27 @@ components:
         ContextId:
           title: The streaming context id that this response is associated with.
           type: string
-          deprecated: true
-          x-deprecated-date: '2022-11-01T00:00:00.0000000+00:00'
+          example: ContextId-1
           x-display-order: 1
         ReferenceId:
           title: The reference id that (along with streaming context id and session id) identifies the subscription (within the context of a specific service/subscription type)
           type: string
-          deprecated: true
-          x-deprecated-date: '2022-11-01T00:00:00.0000000+00:00'
+          example: ReferenceId-1
           x-display-order: 2
         Format:
           title: 'The media type (RFC 2046), of the serialized data updates that are streamed to the client.'
           type: string
+          example: application/json
         InactivityTimeout:
           title: The time (in seconds) that the client should accept the subscription to be inactive before considering it invalid.
           type: integer
           format: int32
+          example: 0
         RefreshRate:
           title: Actual refresh rate assigned to the subscription according to the customers SLA.
           type: integer
           format: int32
+          example: 0
         Snapshot:
           title: 'Snapshot of the current data on hand, when subscription was created.'
           allOf:
@@ -1016,11 +1156,23 @@ components:
           title: The value "Active".
           type: string
           description: This property is kept for backwards compatibility.
-          deprecated: true
-          x-deprecated-date: '2022-11-01T00:00:00.0000000+00:00'
+          example: Active
         Tag:
           title: 'Client specified tag assigned to the subscription, if specified in the request.'
           type: string
+          example: ClientTag
+      additionalProperties: false
+      example:
+        ContextId: '20221029043400336'
+        Format: application/json
+        InactivityTimeout: 120
+        ReferenceId: S37523
+        RefreshRate: 1000
+        Snapshot:
+          AuthenticationLevel: Authenticated
+          DataLevel: Standard
+          TradeLevel: OrdersOnly
+        State: Active
     SessionSubscriptionStreamedState:
       title: Data class that cannot be serialized.
       type: object
@@ -1032,26 +1184,26 @@ components:
         DataLevel:
           title: Gets or sets the data L evel.
           allOf:
-            - $ref: '#/components/schemas/DataLevelNullable'
+            - $ref: '#/components/schemas/Domain.DataLevel'
         TradeLevel:
           title: Gets or sets the trade level.
           allOf:
-            - $ref: '#/components/schemas/System.TradeLevelNullable'
-    System.TradeLevelNullable:
-      allOf:
-        - $ref: '#/components/schemas/Domain.TradeLevel'
+            - $ref: '#/components/schemas/Domain.TradeLevel'
+      additionalProperties: false
+      example:
+        AuthenticationLevel: Elevated
+        DataLevel: Premium
+        TradeLevel: FullTradingAndChat
     TradeLevel:
       title: Enumeration of allowed trade levels for a user using a client application.
       enum:
         - FullTradingAndChat
         - OrdersOnly
       type: string
+      example: OrdersOnly
       x-enum-descriptions:
         OrdersOnly: Orders only.
         FullTradingAndChat: Full Trading and access to real time data.
-    TradeLevelNullable:
-      allOf:
-        - $ref: '#/components/schemas/TradeLevel'
     UserId:
       minimum: 1
       type: integer
@@ -1071,6 +1223,7 @@ components:
                 enum:
                   - InvalidRequest
                 type: string
+                example: None
                 x-enum-descriptions:
                   InvalidRequest: Default error code returned when it cannot be determined which part of the request is malformed.
               Message:
@@ -1092,17 +1245,17 @@ components:
       type: oauth2
       flows:
         authorizationCode:
-          authorizationUrl: https://live.logonvalidation.net/authorize
-          tokenUrl: https://live.logonvalidation.net/token
+          authorizationUrl: https://sim.logonvalidation.net/authorize
+          tokenUrl: https://sim.logonvalidation.net/token
           scopes: { }
 tags:
   - name: Diagnostics
-    description: Endpoints for probing streaming connections.
+    description: "This collection provides endpoints for client diagnostics and can be used to verify HTTP methods. \n            \n             An access token is not required for requests to any of the below endpoints. However, if a token is provided it will be validated accordingly."
   - name: Features
     description: Provides endpoints for querying availability of features.
   - name: Sessions
     description: Session management endpoints.
   - name: Subscriptions
-    description: "Central Subscriptions Management (CSM) providing broadcast commanding such as delete\r\n            of multiple subscriptions in a single request."
+    description: "Central Subscriptions Management (CSM) providing broadcast commanding such as delete\n            of multiple subscriptions in a single request."
   - name: User
     description: Endpoints for users.

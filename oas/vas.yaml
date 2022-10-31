@@ -2,9 +2,9 @@ openapi: 3.0.1
 info:
   title: Services.ValueAdd
   description: The Value Add service group provides services and end points that adds extra value for the client developer.
-  version: 2.1.269+26d56e38bf
-  x-framework-version: 24.0.21+826409a78a
-  x-machine: SIMOAWEB11-DK2
+  version: 2.1.293+703c0d4008
+  x-framework-version: 43.0.5+65c0bdc8ab
+  x-machine: SIMOAWEB11-DK1
 servers:
   - url: https://gateway.saxobank.com/sim/openapi
 paths:
@@ -42,6 +42,7 @@ paths:
                     enum:
                       - UserSettingsCacheNothingToFlush
                     type: string
+                    example: None
                     x-enum-descriptions:
                       UserSettingsCacheNothingToFlush: There were no user settings to flush from the cache.
                   Message:
@@ -57,6 +58,8 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
+      x-required-permissions:
+        restricted: Read
     put:
       tags:
         - Price Alerts
@@ -92,6 +95,7 @@ paths:
                       - UserSettingsNotSupplied
                       - UserSettingsUpdateFailed
                     type: string
+                    example: None
                     x-enum-descriptions:
                       UserSettingsNotSupplied: User settings must be defined.
                       UserSettingsUpdateFailed: User settings were not updated.
@@ -109,6 +113,8 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
+      x-required-permissions:
+        personal: Write
   '/vas/v1/pricealerts/definitions/{AlertDefinitionIds}':
     delete:
       tags:
@@ -121,6 +127,7 @@ paths:
           in: path
           description: A comma separated list of the price alert definition Ids to delete.
           required: true
+          style: simple
           schema:
             type: string
           example: '30834'
@@ -143,6 +150,7 @@ paths:
                       - NoAlertDefinitionIds
                       - UserSettingsCacheNothingToFlush
                     type: string
+                    example: None
                     x-enum-descriptions:
                       NoAlertDefinitionIds: At least one alert definition ID must be specified.
                       InvalidInput: An error was encountered when processing given input parameters.
@@ -160,6 +168,8 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
+      x-required-permissions:
+        personal: Write
   '/vas/v1/pricealerts/definitions/{AlertDefinitionId}':
     get:
       tags:
@@ -172,6 +182,7 @@ paths:
           in: path
           description: The id of the price alert definition.
           required: true
+          style: simple
           schema:
             type: integer
             format: int32
@@ -188,7 +199,7 @@ paths:
                 AlertDefinitionId: '30834'
                 AssetType: FxSpot
                 Comment: I believe EURUSD will go up within the next few years!
-                ExpiryDate: '2016-09-30T12:00:00.0000000+00:00'
+                ExpiryDate: '2016-09-30T12:00:00Z'
                 IsRecurring: true
                 Operator: GreaterOrEqual
                 PriceVariable: AskTick
@@ -212,6 +223,7 @@ paths:
                       - NoAccessToAlertDefinitionId
                       - UserSettingsCacheNothingToFlush
                     type: string
+                    example: None
                     x-enum-descriptions:
                       AlertDefinitionIdNotPositive: The alert definition id must be positive.
                       NoAccessToAlertDefinitionId: Current user does not have access to the alert definition id
@@ -229,6 +241,8 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
+      x-required-permissions:
+        restricted: Read
     put:
       tags:
         - Price Alerts
@@ -240,6 +254,7 @@ paths:
           in: path
           description: Alert definition id to update.
           required: true
+          style: simple
           schema:
             type: integer
             format: int32
@@ -253,7 +268,7 @@ paths:
               AccountId: 13457INET
               AssetType: FxSpot
               Comment: I believe EURUSD will go up within the next few years!
-              ExpiryDate: '2016-09-30T12:00:00.0000000+00:00'
+              ExpiryDate: '2016-09-30T12:00:00Z'
               IsRecurring: true
               Operator: GreaterOrEqual
               PriceVariable: AskTick
@@ -282,6 +297,7 @@ paths:
                       - NoValidInput
                       - UserSettingsCacheNothingToFlush
                     type: string
+                    example: None
                     x-enum-descriptions:
                       InvalidOperatorValue: Invalid Operator value. Operator should be 'GreaterOrEqual' or 'LessOrEqual'
                       NoValidInput: No valid input values passed.
@@ -302,37 +318,56 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
+      x-required-permissions:
+        personal: Write
   /vas/v1/pricealerts/definitions:
     get:
       tags:
         - Price Alerts
       summary: Get all price alert definitions
-      description: "Get an unsorted list of all the price alert definitions belonging to the current user where the state matches the specified value. The alerts might belong to different accounts, should the user have more than one\r\n\r\nHad to set the type of state to a string to make the routing work correctly."
+      description: "Get an unsorted list of all the price alert definitions belonging to the current user where the state matches the specified value. The alerts might belong to different accounts, should the user have more than one\n\nHad to set the type of state to a string to make the routing work correctly."
       operationId: PriceAlertsV1GetAlertDefinitionsByStateAsync
       parameters:
         - name: $inlinecount
           in: query
+          description: Specifies that the response to the request should include a count of the number of entries in the collection
+          style: form
+          explode: false
           schema:
             enum:
               - AllPages
               - None
             type: string
+            x-enum-descriptions:
+              None: The result will not contain an inline count
+              AllPages: The result will contain a total count of items in the queried collection
+          example: AllPages
         - name: $skip
           in: query
+          description: The number of entries to skip from the beginning of the collection
+          style: form
+          explode: false
           schema:
             minimum: 0
             type: integer
             format: int32
+          example: 1
         - name: $top
           in: query
+          description: The number of entries to return from the beginning of the collection
+          style: form
+          explode: false
           schema:
             minimum: 0
             type: integer
             format: int32
             default: 200
+          example: 1
         - name: State
           in: query
           description: Optional state the price alert definitions should match. The values must be one of PriceAlertDefinitionState. The match is case insensitive.
+          style: form
+          explode: false
           schema:
             $ref: '#/components/schemas/PriceAlertDefinitionState'
       responses:
@@ -348,7 +383,7 @@ paths:
                     AlertDefinitionId: '30834'
                     AssetType: FxSpot
                     Comment: I believe EURUSD will go up within the next few years!
-                    ExpiryDate: '2016-09-30T12:00:00.0000000+00:00'
+                    ExpiryDate: '2016-09-30T12:00:00Z'
                     IsRecurring: true
                     Operator: GreaterOrEqual
                     PriceVariable: AskTick
@@ -356,7 +391,7 @@ paths:
                     TargetValue: 1.34595
                     Uic: 21
                     UserId: '2361528'
-                MaxRows: 134
+                MaxRows: 99
         '400':
           description: Bad Request
           content:
@@ -372,6 +407,7 @@ paths:
                       - NoValidInput
                       - UserSettingsCacheNothingToFlush
                     type: string
+                    example: None
                     x-enum-descriptions:
                       NoValidInput: No valid input values passed.
                       UserSettingsCacheNothingToFlush: There were no user settings to flush from the cache.
@@ -388,11 +424,13 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
+      x-required-permissions:
+        restricted: Read
     post:
       tags:
         - Price Alerts
       summary: Create a price alert definition
-      description: "Creates a new price alert definition. The created definition is returned with a couple of more properties, the price alert definition id being one of them\r\n\r\nAutomatically generates an ID for the newly added alert and composes its URI and returns that in the 'Location' header."
+      description: "Creates a new price alert definition. The created definition is returned with a couple of more properties, the price alert definition id being one of them\n\nAutomatically generates an ID for the newly added alert and composes its URI and returns that in the 'Location' header."
       operationId: PriceAlertsV1PostAlertDefinitionAsync
       requestBody:
         content:
@@ -403,7 +441,7 @@ paths:
               AccountId: 13457INET
               AssetType: FxSpot
               Comment: I believe EURUSD will go up within the next few years!
-              ExpiryDate: '2016-09-30T12:00:00.0000000+00:00'
+              ExpiryDate: '2016-09-30T12:00:00Z'
               IsRecurring: true
               Operator: GreaterOrEqual
               PriceVariable: AskTick
@@ -422,7 +460,7 @@ paths:
                 AlertDefinitionId: '30834'
                 AssetType: FxSpot
                 Comment: I believe EURUSD will go up within the next few years!
-                ExpiryDate: '2016-09-30T12:00:00.0000000+00:00'
+                ExpiryDate: '2016-09-30T12:00:00Z'
                 IsRecurring: true
                 Operator: GreaterOrEqual
                 PriceVariable: AskTick
@@ -447,6 +485,7 @@ paths:
                       - PriceAlertIdsDoNotMatch
                       - UserSettingsCacheNothingToFlush
                     type: string
+                    example: None
                     x-enum-descriptions:
                       NoValidInput: No valid input values passed.
                       InvalidInput: An error was encountered when processing given input parameters.
@@ -465,6 +504,8 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
+      x-required-permissions:
+        personal: Write
 components:
   schemas:
     AlertSound:
@@ -477,6 +518,7 @@ components:
         - None
         - Question
       type: string
+      example: None
       x-enum-descriptions:
         None: No sound.
         Asterisk: Asterisk sound.
@@ -544,6 +586,7 @@ components:
         - WarrantOpenEndKnockOut
         - WarrantSpread
       type: string
+      example: FxSpot
       x-enum-descriptions:
         FxSpot: Forex Spot.
         FxForwards: Forex Forward.
@@ -613,9 +656,10 @@ components:
         - GreaterOrEqual
         - LessOrEqual
       type: string
+      example: GreaterOrEqual
       x-enum-descriptions:
-        GreaterOrEqual: "The price is greater than or equal to (&gt;=) the value\r\n            specified in the alert definition."
-        LessOrEqual: "The price is less than or equal to (&lt;=) the value specified\r\n            in the alert definition."
+        GreaterOrEqual: "The price is greater than or equal to (&gt;=) the value\n            specified in the alert definition."
+        LessOrEqual: "The price is less than or equal to (&lt;=) the value specified\n            in the alert definition."
     PriceAlertDefinitionRequest:
       title: A price alert definition contains the information needed to know when to trigger an alert. Service clients subscribe to price alert definitions in order to receive the alerts.
       required:
@@ -632,6 +676,7 @@ components:
         AccountId:
           title: The account that owns this price alert definition.
           type: string
+          example: stringValue
         AssetType:
           title: The type of instrument that this alert is monitoring.
           allOf:
@@ -640,14 +685,20 @@ components:
           title: An optional comment associated with the price alert definition. The maximum supported length of the string is 128 characters.
           maxLength: 128
           type: string
+          example: stringValue
         ExpiryDate:
           title: The UTC date and time that the price alert definition will expire and then be removed from the system. The date and time is specified in Coordinated Universal Time (UTC) and should be formatted as "yyyy-mm-ddThh:mm:ssZ".
           type: string
           format: date-time
           x-type-name: UtcDateTime
+        IsExtendedHours:
+          title: An optional flag to indicate if price alert definition is valid in extended hours trading. Default will be set to false.
+          type: boolean
+          example: false
         IsRecurring:
           title: Is the alert only triggered once or will the alerts keep recurring until the alert expires.
           type: boolean
+          example: false
         Operator:
           title: The boolean operator used to compare the current price with the defined value.
           allOf:
@@ -663,14 +714,27 @@ components:
         TargetValue:
           title: The value that the current price is compared to.
           type: number
+          example: 10
         Uic:
           title: Universal Instrument Code (UIC).
           type: integer
           format: int32
+          example: 99
       additionalProperties: false
       description: 'Using nullable fields an the custom RequiredNullable attribute in order to make the fields appear on the error list, if the value is missing.'
+      example:
+        AccountId: 13457INET
+        AssetType: FxSpot
+        Comment: I believe EURUSD will go up within the next few years!
+        ExpiryDate: '2016-09-30T12:00:00.0000000+00:00'
+        IsRecurring: true
+        Operator: GreaterOrEqual
+        PriceVariable: AskTick
+        State: Enabled
+        TargetValue: 1.34595
+        Uic: 21
     PriceAlertDefinitionResponse:
-      title: "A price alert definition contains the information needed to know when to trigger an alert.\r\n            Service clients subscribe to price alert definitions in order to receive the alerts."
+      title: "A price alert definition contains the information needed to know when to trigger an alert.\n            Service clients subscribe to price alert definitions in order to receive the alerts."
       required:
         - AccountId
         - ExpiryDate
@@ -685,9 +749,11 @@ components:
         AccountId:
           title: The account that owns this price alert definition.
           type: string
+          example: stringValue
         AlertDefinitionId:
           title: The ID of this .
           type: string
+          example: stringValue
         AssetType:
           title: The type of instrument that this alert is monitoring.
           allOf:
@@ -695,18 +761,25 @@ components:
         ClientId:
           title: The client that owns this price alert definition.
           type: string
+          example: stringValue
         Comment:
           title: An optional comment associated with the price alert definition. The maximum supported length of the string is 128 characters.
           maxLength: 128
           type: string
+          example: stringValue
         ExpiryDate:
           title: The UTC date and time that the price alert definition will expire and then be removed from the system. The date and time is specified in Coordinated Universal Time (UTC) and should be formatted as "yyyy-mm-ddThh:mm:ssZ".
           type: string
           format: date-time
           x-type-name: UtcDateTime
+        IsExtendedHours:
+          title: An optional flag to indicate if price alert definition is valid in extended hours trading. Default will be set to false.
+          type: boolean
+          example: false
         IsRecurring:
           title: Is the alert only triggered once or will the alerts keep recurring until the alert expires.
           type: boolean
+          example: false
         Operator:
           title: The boolean operator used to compare the current price with the defined value.
           allOf:
@@ -722,14 +795,30 @@ components:
         TargetValue:
           title: The value that the current price is compared to.
           type: number
+          example: 10
         Uic:
           title: Universal Instrument Code (UIC).
           type: integer
           format: int32
+          example: 99
         UserId:
           title: The ID of the user that owns this price alert definition.
           type: string
+          example: stringValue
       additionalProperties: false
+      example:
+        AccountId: 13457INET
+        AlertDefinitionId: '30834'
+        AssetType: FxSpot
+        Comment: I believe EURUSD will go up within the next few years!
+        ExpiryDate: '2016-09-30T12:00:00.0000000+00:00'
+        IsRecurring: true
+        Operator: GreaterOrEqual
+        PriceVariable: AskTick
+        State: Enabled
+        TargetValue: 1.34595
+        Uic: 21
+        UserId: '2361528'
     PriceAlertDefinitionResponseListResult:
       type: object
       properties:
@@ -748,6 +837,21 @@ components:
           type: string
           description: The link for the next page of items in the feed.
       additionalProperties: false
+      example:
+        Data:
+          - AccountId: 13457INET
+            AlertDefinitionId: '30834'
+            AssetType: FxSpot
+            Comment: I believe EURUSD will go up within the next few years!
+            ExpiryDate: '2016-09-30T12:00:00Z'
+            IsRecurring: true
+            Operator: GreaterOrEqual
+            PriceVariable: AskTick
+            State: Enabled
+            TargetValue: 1.34595
+            Uic: 21
+            UserId: '2361528'
+        MaxRows: 99
     PriceAlertDefinitionState:
       title: Represents the state of an alert.
       enum:
@@ -755,10 +859,11 @@ components:
         - Enabled
         - RecentlyTriggered
       type: string
+      example: Enabled
       x-enum-descriptions:
         Enabled: The price alert is enabled and thus may cause notifications to be triggered.
         Disabled: The price alert is disabled and does not cause notifications to be triggered.
-        RecentlyTriggered: "The price alert is an enabled, recurring alert that was recently triggered, and thus it will not\r\n            be triggered again right away."
+        RecentlyTriggered: "The price alert is an enabled, recurring alert that was recently triggered, and thus it will not\n            be triggered again right away."
     PriceAlertUserSettingsRequest:
       title: Contains information about how to notify the user when an alert is triggered.
       type: object
@@ -766,17 +871,25 @@ components:
         EmailAddress:
           title: The email address to send alert notifications to.
           type: string
+          example: stringValue
         NotifyWithMail:
           title: Send an email when a notification is triggered.
           type: boolean
+          example: false
         NotifyWithPopup:
           title: Show triggered notifications with pop-ups.
           type: boolean
+          example: false
         Sound:
           title: The sound to play when showing a popup notification.
           allOf:
             - $ref: '#/components/schemas/AlertSound'
       additionalProperties: false
+      example:
+        EmailAddress: john.doe@broker.com
+        NotifyWithMail: true
+        NotifyWithPopup: true
+        Sound: None
     PriceAlertUserSettingsResponse:
       title: Contains information about how to notify the user when an alert is triggered.
       type: object
@@ -784,20 +897,30 @@ components:
         EmailAddress:
           title: The email address to send alert notifications to.
           type: string
+          example: stringValue
         EmailAddressValidated:
           title: Set to true if the email address has been validated.
           type: boolean
+          example: false
         NotifyWithMail:
           title: Send an email when a notification is triggered.
           type: boolean
+          example: false
         NotifyWithPopup:
           title: Show triggered notifications with pop-ups.
           type: boolean
+          example: false
         Sound:
           title: The sound to play when showing a popup notification.
           allOf:
             - $ref: '#/components/schemas/AlertSound'
       additionalProperties: false
+      example:
+        EmailAddress: john.doe@broker.com
+        EmailAddressValidated: true
+        NotifyWithMail: true
+        NotifyWithPopup: true
+        Sound: None
     PriceVariable:
       title: An aspect of a price that can be monitored.
       enum:
@@ -806,6 +929,7 @@ components:
         - PercentChange
         - Traded
       type: string
+      example: AskTick
       x-enum-descriptions:
         AskTick: Ask price tick.
         BidTick: Bid price tick.
@@ -831,27 +955,5 @@ components:
           tokenUrl: https://sim.logonvalidation.net/token
           scopes: { }
 tags:
-  - name: Air
-    description: 'Provides endpoints for getting recommendations, as part of the Automated Customer Experience (ACE) program.'
-  - name: Disclaimers
-    description: 'Provides endpoints for getting disclaimers for the loginflow for the calling user, by type, by key matching  and an endpoint to register response'
-  - name: GeoLocation
-    description: Provides endpoints for Geo location info
-  - name: Notifications
-    description: Provides end points for getting available notification combinations for targets to subscribe to.
-  - name: Partner Content - DeepLinks
-    description: 'End points serving public partner trade suggestion links, also known as order ticket deep links.'
-  - name: Partner Content - Documents
-    description: "Public read only end points serving custom partner content pages, including trade suggestions.\r\n            The partner content is specific to the logged-in user's parent partner and content must be available from the user's owner."
-  - name: Partner Content - TradeSuggestions Admin
-    description: "Partner document Trade Suggestions - Restricted endpoints for adding, editing and deleing partner content trade recommendations.\r\n            The partner content is specific to the logged-in user's parent partner and content must be available from the user's owner."
-  - name: Performance Profiler
-    description: Provides endpoint for posting performance profiler for the client
   - name: Price Alerts
     description: Provides endpoints for managing price alert definitions and notification settings.
-  - name: Recommender
-    description: "Provides v2 endpoints for getting recommendations for blog posts, financial calendar events, Saxo TV clips\r\n            and marketing compaigns, as part of the Automated Customer Experience (ACE) program."
-  - name: Signals
-    description: Provides endpoints for managing signals and for subscribing to signals.
-  - name: User Settings
-    description: Controller for the /vas/v1/userssettings endpoint.
