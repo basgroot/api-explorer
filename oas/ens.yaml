@@ -2,12 +2,306 @@ openapi: 3.0.1
 info:
   title: Services.Ens
   description: The Event Notification Services service group provides end points for setting up subscriptions for clients activities.
-  version: 2.2.200+0e54c4f855
-  x-framework-version: 22.0.46+a0002617f5
-  x-machine: SATOAWEB27-DK1
+  version: 2.2.225+4e98bd104e
+  x-framework-version: 37.0.4+b9d872a2f3
+  x-machine: SIMOAWEB11-DK1
 servers:
-  - url: https://gateway.saxobank.com/openapi
+  - url: https://gateway.saxobank.com/sim/openapi
 paths:
+  /ens/v1/activities:
+    get:
+      tags:
+        - Client Activities
+      summary: Get activities for specified client/Account.
+      description: Returns a list of activities specified by the parameters in the request.
+      operationId: EnsActivitiesGetActivitiesAsync
+      parameters:
+        - name: $skiptoken
+          in: query
+          description: Specifies an entity id to start retrieving entries from. This is normally only used in generated nextlinks.
+          schema:
+            type: string
+          example: B17D8890-3C7A-4A47-A9AA-01B022ED03A5
+        - name: $top
+          in: query
+          description: The number of entries to return from the beginning of the collection
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+            default: 0
+          example: 1
+        - name: AccountGroupKey
+          in: query
+          description: "account group key for accounts used in retrieving the trade data.\r\n             If specified, activities of the specified account will be returned/published otherwise activities of all accounts represented by ClientKey."
+          schema:
+            title: "account group key for accounts used in retrieving the trade data.\r\n             If specified, activities of the specified account will be returned/published otherwise activities of all accounts represented by ClientKey."
+            minLength: 1
+            type: string
+            x-type-name: AccountGroupKey
+          example: valueaf04a06e-3c0c-4f62-b66c-6e6eda035173
+        - name: AccountKey
+          in: query
+          description: "Unique key identifying the account used in retrieving the trade data.\r\n             If specified, activities of the specified account will be returned/published otherwise activities of all accounts represented by ClientKey."
+          schema:
+            title: "Unique key identifying the account used in retrieving the trade data.\r\n             If specified, activities of the specified account will be returned/published otherwise activities of all accounts represented by ClientKey."
+            minLength: 1
+            type: string
+            x-type-name: AccountKey
+          example: 18649353-7c02-4a3a-affe-3bc0d9486607
+        - name: Activities
+          in: query
+          description: Specification of activity typese to return in results.
+          required: true
+          schema:
+            title: Specification of activity typese to return in results.
+            type: array
+            items:
+              $ref: '#/components/schemas/ActivityType'
+          example:
+            - Positions
+        - name: CANotificationTypes
+          in: query
+          description: Corporate action notification type to get the response for.
+          schema:
+            title: Corporate action notification type to get the response for.
+            type: array
+            items:
+              $ref: '#/components/schemas/CANotificationType'
+          example:
+            - Update
+        - name: ClientKey
+          in: query
+          description: "Unique key identifying the client.\r\n            If specified, activities of the specified client will be returned/published otherwise for logged in client."
+          schema:
+            title: "Unique key identifying the client.\r\n            If specified, activities of the specified client will be returned/published otherwise for logged in client."
+            minLength: 1
+            type: string
+            x-type-name: ClientKey
+          example: 3bc254fa-7c84-40ed-8876-ec9886409356
+        - name: Duration
+          in: query
+          description: The order duration type.
+          schema:
+            title: The order duration type.
+            allOf:
+              - $ref: '#/components/schemas/OpenOrderDuration'
+          example: FillOrKill
+        - name: ExpirationDateTime
+          in: query
+          description: The expiration date should only be set if the duration type is GoodTillDate.
+          schema:
+            title: The expiration date should only be set if the duration type is GoodTillDate.
+            type: string
+            format: date-time
+            x-type-name: UtcDateTime
+          example: '2022-04-11T12:45:29.7789990+00:00'
+        - name: FieldGroups
+          in: query
+          description: Specification of field groups to return in results.
+          schema:
+            title: Specification of field groups to return in results.
+            type: array
+            items:
+              $ref: '#/components/schemas/ActivityFieldGroup'
+          example:
+            - ExchangeInfo
+        - name: FromDateTime
+          in: query
+          description: 'If specified, activities starting FromDateTime will be returned/published. Default returns current day activities'
+          schema:
+            title: 'If specified, activities starting FromDateTime will be returned/published. Default returns current day activities'
+            type: string
+            format: date-time
+            x-type-name: UtcDateTime
+          example: '2022-04-11T12:45:29.7789990+00:00'
+        - name: IncludeSubAccounts
+          in: query
+          description: 'If specified true, activities of sub-clients will also be returned/published.'
+          schema:
+            title: 'If specified true, activities of sub-clients will also be returned/published.'
+            type: boolean
+          example: true
+        - name: OrderStatuses
+          in: query
+          description: List of order statuses.
+          schema:
+            title: List of order statuses.
+            type: array
+            items:
+              $ref: '#/components/schemas/OrderStatus'
+          example:
+            - Cancelled
+        - name: OrderTypes
+          in: query
+          description: List of order types.
+          schema:
+            title: List of order types.
+            type: array
+            items:
+              $ref: '#/components/schemas/PlaceableOrderType'
+          example:
+            - TraspasoIn
+        - name: PositionEventFilter
+          in: query
+          description: Specify position event filter if any. Default is PositionEventFilter.All.
+          schema:
+            title: Specify position event filter if any. Default is PositionEventFilter.All.
+            allOf:
+              - $ref: '#/components/schemas/PositionEventFilter'
+          example: TradesOnly
+        - name: SequenceId
+          in: query
+          description: "If specified and message with SequenceId available in ENS cache, streaming of events start from SequenceId.\r\n            If sequenceId not found in ENS system, Subscription Error with \"Sequence id unavailable\"\r\n            If not specified and FromDateTime is not specified, subscription will be real-time subscription."
+          schema:
+            title: "If specified and message with SequenceId available in ENS cache, streaming of events start from SequenceId.\r\n            If sequenceId not found in ENS system, Subscription Error with \"Sequence id unavailable\"\r\n            If not specified and FromDateTime is not specified, subscription will be real-time subscription."
+            type: string
+          example: 1c891f8f-05f8-447a-b996-50ed2812fb3b
+        - name: TimeOnMargin
+          in: query
+          description: "Time the client has been on margin.\r\n            If specified, margin activities with greater or equal to the time specified otherwise all activities."
+          schema:
+            title: "Time the client has been on margin.\r\n            If specified, margin activities with greater or equal to the time specified otherwise all activities."
+            type: string
+          example: '00:00:00.0000128'
+        - name: ToDateTime
+          in: query
+          description: 'If specified, activities ending ToDateTime will be returned/published.'
+          schema:
+            title: 'If specified, activities ending ToDateTime will be returned/published.'
+            type: string
+            format: date-time
+            x-type-name: UtcDateTime
+          example: '2022-04-11T12:45:29.7789990+00:00'
+      responses:
+        '200':
+          description: Indicates that the request was performed correctly.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivityResponseListResult'
+              example:
+                Data: [ ]
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                required:
+                  - ErrorCode
+                  - Message
+                type: object
+                properties:
+                  ErrorCode:
+                    enum:
+                      - InvalidAccountKey
+                      - InvalidArguments
+                      - InvalidClientKey
+                      - InvalidModelState
+                      - UnauthorizedAccountKey
+                      - UnauthorizedClientKey
+                    type: string
+                    x-enum-descriptions:
+                      InvalidModelState: One or more properties of the request are invalid!
+                      InvalidArguments: Arguments Are Not Provided
+                      InvalidClientKey: ClientKey is not valid
+                      InvalidAccountKey: AccountKey is not valid
+                      UnauthorizedClientKey: User can not view activities for client
+                      UnauthorizedAccountKey: User can not view activities for account
+                  Message:
+                    type: string
+                  ModelState:
+                    $ref: '#/components/schemas/ModelStateDictionary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-required-permissions:
+        personal: Read
+  '/ens/v1/activities/subscriptions/{ContextId}':
+    delete:
+      tags:
+        - Client Activities
+      summary: Remove multiple subscriptions
+      description: 'Removes multiple all subscriptions for the current session on this resource, and frees all resources on the server.'
+      operationId: EnsActivitiesDeleteSubscriptions
+      parameters:
+        - name: ContextId
+          in: path
+          description: The context id part of the streaming session (used to identify the subscription within a streaming session).
+          required: true
+          schema:
+            type: string
+          example: '29931122'
+        - name: Tag
+          in: query
+          description: Optional. Remove only subscriptions that are marked with specified tag.
+          schema:
+            type: string
+          example: PAGE2
+      responses:
+        '204':
+          description: No Content
+        '202':
+          description: Subscription delete request will be processed eventually.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-required-permissions:
+        personal: Subscribe
+  '/ens/v1/activities/subscriptions/{ContextId}/{ReferenceId}':
+    delete:
+      tags:
+        - Client Activities
+      summary: Remove subscription
+      description: Removes subscription for the current session identified by subscription id.
+      operationId: EnsActivitiesDeleteSubscription
+      parameters:
+        - name: ContextId
+          in: path
+          description: Unique streaming context ID part of the streaming session.
+          required: true
+          schema:
+            type: string
+          example: '29931122'
+        - name: ReferenceId
+          in: path
+          description: Unique ID of the subscription
+          required: true
+          schema:
+            type: string
+          example: NP6783
+      responses:
+        '204':
+          description: No Content
+        '202':
+          description: Subscription delete request will be processed eventually.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      security:
+        - OpenApiOAuthSecurityScheme: [ ]
+        - OpenApiJWTSecurityScheme: [ ]
+      x-required-permissions:
+        personal: Subscribe
   /ens/v1/activities/subscriptions:
     post:
       tags:
@@ -33,10 +327,10 @@ paths:
                 FieldGroups:
                   - DisplayAndFormat
                   - ExchangeInfo
-                FromDateTime: '2015-02-02T01:02:03.0000000+00:00'
+                FromDateTime: '2015-02-02T01:02:03Z'
                 IncludeSubAccounts: false
                 SequenceId: '37456'
-              ContextId: Context_20220207085023137
+              ContextId: Context_20221031081659106
               ReferenceId: M_344
               RefreshRate: 0
       responses:
@@ -47,7 +341,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ActivitySubscriptionResponse'
               example:
-                ContextId: Context_20220207085023149
+                ContextId: Context_20221031081659111
                 InactivityTimeout: 30
                 ReferenceId: M_344
                 RefreshRate: 0
@@ -117,278 +411,10 @@ paths:
       security:
         - OpenApiOAuthSecurityScheme: [ ]
         - OpenApiJWTSecurityScheme: [ ]
-      x-streaming-type: '#/components/schemas/ActivityResponseDomainEvent'
-  '/ens/v1/activities/subscriptions/{contextId}/{referenceId}':
-    delete:
-      tags:
-        - Client Activities
-      summary: Remove subscription
-      description: Removes subscription for the current session identified by subscription id.
-      operationId: EnsActivitiesDeleteSubscription
-      parameters:
-        - name: contextId
-          in: path
-          description: Unique streaming context ID part of the streaming session.
-          required: true
-          schema:
-            type: string
-          example: '29931122'
-        - name: referenceId
-          in: path
-          description: Unique ID of the subscription
-          required: true
-          schema:
-            type: string
-          example: NP6783
-      responses:
-        '204':
-          description: No Content
-        '202':
-          description: Subscription delete request will be processed eventually.
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
-      security:
-        - OpenApiOAuthSecurityScheme: [ ]
-        - OpenApiJWTSecurityScheme: [ ]
-  '/ens/v1/activities/subscriptions/{contextId}':
-    delete:
-      tags:
-        - Client Activities
-      summary: Remove multiple subscriptions
-      description: 'Removes multiple all subscriptions for the current session on this resource, and frees all resources on the server.'
-      operationId: EnsActivitiesDeleteSubscriptions
-      parameters:
-        - name: contextId
-          in: path
-          description: The context id part of the streaming session (used to identify the subscription within a streaming session).
-          required: true
-          schema:
-            type: string
-          example: '29931122'
-        - name: tag
-          in: query
-          description: Optional. Remove only subscriptions that are marked with specified tag.
-          schema:
-            type: string
-          example: PAGE2
-      responses:
-        '204':
-          description: No Content
-        '202':
-          description: Subscription delete request will be processed eventually.
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
-      security:
-        - OpenApiOAuthSecurityScheme: [ ]
-        - OpenApiJWTSecurityScheme: [ ]
-  /ens/v1/activities:
-    get:
-      tags:
-        - Client Activities
-      summary: Get activities for specified client/Account.
-      description: Returns a list of activities specified by the parameters in the request.
-      operationId: EnsActivitiesGetActivitiesAsync
-      parameters:
-        - name: $skiptoken
-          in: query
-          schema:
-            type: string
-        - name: $top
-          in: query
-          schema:
-            minimum: 0
-            type: integer
-            format: int32
-            default: 0
-        - name: AccountGroupKey
-          in: query
-          description: "account group key for accounts used in retrieving the trade data.\r\n             If specified, activities of the specified account will be returned/published otherwise activities of all accounts represented by ClientKey."
-          schema:
-            title: "account group key for accounts used in retrieving the trade data.\r\n             If specified, activities of the specified account will be returned/published otherwise activities of all accounts represented by ClientKey."
-            allOf:
-              - minLength: 1
-                type: string
-                x-type-name: AccountGroupKey
-        - name: AccountKey
-          in: query
-          description: "Unique key identifying the account used in retrieving the trade data.\r\n             If specified, activities of the specified account will be returned/published otherwise activities of all accounts represented by ClientKey."
-          schema:
-            title: "Unique key identifying the account used in retrieving the trade data.\r\n             If specified, activities of the specified account will be returned/published otherwise activities of all accounts represented by ClientKey."
-            allOf:
-              - minLength: 1
-                type: string
-                x-type-name: AccountKey
-        - name: Activities
-          in: query
-          description: Specification of activity typese to return in results.
-          required: true
-          schema:
-            title: Specification of activity typese to return in results.
-            type: array
-            items:
-              $ref: '#/components/schemas/ActivityType'
-        - name: CANotificationTypes
-          in: query
-          description: Corporate action notification type to get the response for.
-          schema:
-            title: Corporate action notification type to get the response for.
-            type: array
-            items:
-              $ref: '#/components/schemas/CANotificationType'
-        - name: ClientKey
-          in: query
-          description: "Unique key identifying the client.\r\n            If specified, activities of the specified client will be returned/published otherwise for logged in client."
-          schema:
-            title: "Unique key identifying the client.\r\n            If specified, activities of the specified client will be returned/published otherwise for logged in client."
-            allOf:
-              - minLength: 1
-                type: string
-                x-type-name: ClientKey
-        - name: Duration
-          in: query
-          description: The order duration type.
-          schema:
-            title: The order duration type.
-            allOf:
-              - $ref: '#/components/schemas/OpenOrderDurationNullable'
-        - name: ExpirationDateTime
-          in: query
-          description: The expiration date should only be set if the duration type is GoodTillDate.
-          schema:
-            title: The expiration date should only be set if the duration type is GoodTillDate.
-            allOf:
-              - type: string
-                format: date-time
-                x-type-name: UtcDateTime
-        - name: FieldGroups
-          in: query
-          description: Specification of field groups to return in results.
-          schema:
-            title: Specification of field groups to return in results.
-            type: array
-            items:
-              $ref: '#/components/schemas/ActivityFieldGroup'
-        - name: FromDateTime
-          in: query
-          description: 'If specified, activities starting FromDateTime will be returned/published. Default returns current day activities'
-          schema:
-            title: 'If specified, activities starting FromDateTime will be returned/published. Default returns current day activities'
-            allOf:
-              - type: string
-                format: date-time
-                x-type-name: UtcDateTime
-        - name: IncludeSubAccounts
-          in: query
-          description: 'If specified true, activities of sub-clients will also be returned/published.'
-          schema:
-            title: 'If specified true, activities of sub-clients will also be returned/published.'
-            allOf:
-              - type: boolean
-        - name: OrderStatuses
-          in: query
-          description: List of order statuses.
-          schema:
-            title: List of order statuses.
-            type: array
-            items:
-              $ref: '#/components/schemas/OrderStatus'
-        - name: OrderTypes
-          in: query
-          description: List of order types.
-          schema:
-            title: List of order types.
-            type: array
-            items:
-              $ref: '#/components/schemas/PlaceableOrderType'
-        - name: PositionEventFilter
-          in: query
-          description: Specify position event filter if any. Default is PositionEventFilter.All.
-          schema:
-            title: Specify position event filter if any. Default is PositionEventFilter.All.
-            allOf:
-              - $ref: '#/components/schemas/PositionEventFilterNullable'
-        - name: SequenceId
-          in: query
-          description: "If specified and message with SequenceId available in ENS cache, streaming of events start from SequenceId.\r\n            If sequenceId not found in ENS system, Subscription Error with \"Sequence id unavailable\"\r\n            If not specified and FromDateTime is not specified, subscription will be real-time subscription."
-          schema:
-            title: "If specified and message with SequenceId available in ENS cache, streaming of events start from SequenceId.\r\n            If sequenceId not found in ENS system, Subscription Error with \"Sequence id unavailable\"\r\n            If not specified and FromDateTime is not specified, subscription will be real-time subscription."
-            type: string
-        - name: TimeOnMargin
-          in: query
-          description: "Time the client has been on margin.\r\n            If specified, margin activities with greater or equal to the time specified otherwise all activities."
-          schema:
-            title: "Time the client has been on margin.\r\n            If specified, margin activities with greater or equal to the time specified otherwise all activities."
-            allOf:
-              - type: string
-        - name: ToDateTime
-          in: query
-          description: 'If specified, activities ending ToDateTime will be returned/published.'
-          schema:
-            title: 'If specified, activities ending ToDateTime will be returned/published.'
-            allOf:
-              - type: string
-                format: date-time
-                x-type-name: UtcDateTime
-      responses:
-        '200':
-          description: Indicates that the request was performed correctly.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ActivityResponseListResult'
-              example:
-                Data: [ ]
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                required:
-                  - ErrorCode
-                  - Message
-                type: object
-                properties:
-                  ErrorCode:
-                    enum:
-                      - InvalidAccountKey
-                      - InvalidArguments
-                      - InvalidClientKey
-                      - InvalidModelState
-                      - UnauthorizedAccountKey
-                      - UnauthorizedClientKey
-                    type: string
-                    x-enum-descriptions:
-                      InvalidModelState: One or more properties of the request are invalid!
-                      InvalidArguments: Arguments Are Not Provided
-                      InvalidClientKey: ClientKey is not valid
-                      InvalidAccountKey: AccountKey is not valid
-                      UnauthorizedClientKey: User can not view activities for client
-                      UnauthorizedAccountKey: User can not view activities for account
-                  Message:
-                    type: string
-                  ModelState:
-                    $ref: '#/components/schemas/ModelStateDictionary'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
-      security:
-        - OpenApiOAuthSecurityScheme: [ ]
-        - OpenApiJWTSecurityScheme: [ ]
+      x-required-permissions:
+        personal: Subscribe
+      x-streaming-type:
+        $ref: '#/components/schemas/ActivityResponseDomainEvent'
 components:
   schemas:
     ActivityFieldGroup:
@@ -428,6 +454,7 @@ components:
         SequenceId:
           title: Unique number representing activity response.
           type: string
+      additionalProperties: false
     ActivityResponseDomainEvent:
       type: object
       properties:
@@ -437,9 +464,8 @@ components:
             - $ref: '#/components/schemas/ActivityResponse'
         PartitionNumber:
           title: The partition number if this DomainEvent is a partition.
-          allOf:
-            - type: integer
-              format: int32
+          type: integer
+          format: int32
         ReferenceId:
           title: 'Client specified id, which is sent back to the client with every data update.'
           type: string
@@ -450,9 +476,9 @@ components:
           x-type-name: UtcDateTime
         TotalPartitions:
           title: The total number of partitions if this DomainEvent is a partition.
-          allOf:
-            - type: integer
-              format: int32
+          type: integer
+          format: int32
+      additionalProperties: false
     ActivityResponseListResult:
       type: object
       properties:
@@ -470,6 +496,7 @@ components:
         __next:
           type: string
           description: The link for the next page of items in the feed.
+      additionalProperties: false
     ActivitySubscriptionRequest:
       title: Represent activity subscription request.
       required:
@@ -507,6 +534,7 @@ components:
         Tag:
           title: Optional client specified tag used for grouping subscriptions.
           type: string
+      additionalProperties: false
     ActivitySubscriptionResponse:
       title: Represents client\account activities subscription response.
       type: object
@@ -514,14 +542,10 @@ components:
         ContextId:
           title: The streaming context id that this response is associated with.
           type: string
-          deprecated: true
-          x-deprecated-date: '2022-11-01T00:00:00.0000000+00:00'
           x-display-order: 1
         ReferenceId:
           title: The reference id that (along with streaming context id and session id) identifies the subscription (within the context of a specific service/subscription type)
           type: string
-          deprecated: true
-          x-deprecated-date: '2022-11-01T00:00:00.0000000+00:00'
           x-display-order: 2
         Format:
           title: 'The media type (RFC 2046), of the serialized data updates that are streamed to the client.'
@@ -542,11 +566,10 @@ components:
           title: The value "Active".
           type: string
           description: This property is kept for backwards compatibility.
-          deprecated: true
-          x-deprecated-date: '2022-11-01T00:00:00.0000000+00:00'
         Tag:
           title: 'Client specified tag assigned to the subscription, if specified in the request.'
           type: string
+      additionalProperties: false
     ActivityType:
       title: Represents activity types supported by open-apis.
       enum:
@@ -586,6 +609,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CANotificationType'
+      additionalProperties: false
     ModelStateDictionary:
       type: object
       additionalProperties:
@@ -615,9 +639,6 @@ components:
         AtTheClose: Working at the closing auction only
         GoodTillDate: Working untill specified date
         GoodForPeriod: Working for specified period
-    OpenOrderDurationNullable:
-      allOf:
-        - $ref: '#/components/schemas/OpenOrderDuration'
     OrderDuration:
       title: "The time frame during which the order is valid.\r\n            If the DurationType is GoodTillDate, then an ExpirationDateTime must also be provided."
       type: object
@@ -628,26 +649,23 @@ components:
             - $ref: '#/components/schemas/OpenOrderDuration'
         ExpirationDate:
           title: 'The expiration date, should only be set if the duration type is GoodTillDate.'
-          allOf:
-            - type: string
-              format: date-time
-              x-type-name: UtcDateTime
+          type: string
+          format: date-time
+          x-type-name: UtcDateTime
         ExpirationDateContainsTime:
           title: 'The value indicating whether the ExpirationDateTime field contains the time. Notice, that the value can only be true for GoodTillDate duration type and the time must be provided in the ExpirationDateTime.'
-          allOf:
-            - type: boolean
+          type: boolean
         ExpirationDateTime:
           title: "The expiration date (and optionally time), should only be set if the duration type is GoodTillDate.\r\n            If the field contains the time, it must always be expressed in the exchange local time and the ExpirationDateContainsTime property must me set to true. \r\n            Time zone indication must never be added. The time part should be in the following format:\r\n            HH:mm, where HH is 24 hour clock. Seconds and milliseconds are not allowed."
-          allOf:
-            - type: string
-              format: date-time
-              x-type-name: UtcDateTime
+          type: string
+          format: date-time
+          x-type-name: UtcDateTime
         ExpiryTimeOnExchange:
           title: '(Deprecated) Expiry time for GoodTillDate order, Format can be "HH:mm, where HH is 24 hour clock.".'
-          allOf:
-            - type: string
+          type: string
           description: The field has been obsoleted and has no effect. Use ExpirationDateTime and ExpirationDateContainsTime instead.
           deprecated: true
+      additionalProperties: false
     OrderEventFilter:
       title: Order event filter
       type: object
@@ -666,6 +684,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PlaceableOrderType'
+      additionalProperties: false
     OrderStatus:
       title: Represents order status
       enum:
@@ -691,22 +710,22 @@ components:
       title: Placeable order type
       enum:
         - Algorithmic
-        - BreakoutTrigger
         - DealCapture
         - GuaranteedStop
         - Limit
-        - LimitTrigger
         - Market
         - PreviouslyQuoted
         - Stop
         - StopIfTraded
         - StopLimit
-        - StopTrigger
         - Switch
         - TrailingStop
         - TrailingStopIfTraded
         - Traspaso
         - TraspasoIn
+        - TriggerBreakout
+        - TriggerLimit
+        - TriggerStop
       type: string
       x-enum-descriptions:
         Market: Market order type
@@ -722,9 +741,9 @@ components:
         TraspasoIn: TrasapasoIn order type
         GuaranteedStop: GuaranteedStop order type
         PreviouslyQuoted: Previously quoted order type
-        LimitTrigger: Similar to Limit order type but used only with Trigger orders
-        StopTrigger: Similar to Stop order type but used only with Trigger orders
-        BreakoutTrigger: A Breakout Order (Trigger order with up and down prices)
+        TriggerLimit: Similar to Limit order type but used only with Trigger orders
+        TriggerStop: Similar to Stop order type but used only with Trigger orders
+        TriggerBreakout: A Breakout Order (Trigger order with up and down prices)
         DealCapture: "Deal Capture Order. Specify to capture trades, which are already registered on\r\n            Exchange, into Saxo System. Currently supported for selected partners only."
     PositionEventFilter:
       title: Position event filter. Default value is All.
@@ -735,9 +754,6 @@ components:
       x-enum-descriptions:
         TradesOnly: Positions events related fills or allocations.
         All: All positions events.
-    PositionEventFilterNullable:
-      allOf:
-        - $ref: '#/components/schemas/PositionEventFilter'
     SubscriptionActivityRequest:
       title: Subscription request
       required:
@@ -746,16 +762,14 @@ components:
       properties:
         AccountGroupKey:
           title: "account group key for accounts used in retrieving the trade data.\r\n             If specified, activities of the specified account will be returned/published otherwise activities of all accounts represented by ClientKey."
-          allOf:
-            - minLength: 1
-              type: string
-              x-type-name: AccountGroupKey
+          minLength: 1
+          type: string
+          x-type-name: AccountGroupKey
         AccountKey:
           title: "Unique key identifying the account used in retrieving the trade data.\r\n             If specified, activities of the specified account will be returned/published otherwise activities of all accounts represented by ClientKey."
-          allOf:
-            - minLength: 1
-              type: string
-              x-type-name: AccountKey
+          minLength: 1
+          type: string
+          x-type-name: AccountKey
         Activities:
           title: Specification of activity typese to return in results.
           type: array
@@ -763,10 +777,9 @@ components:
             $ref: '#/components/schemas/ActivityType'
         ClientKey:
           title: "Unique key identifying the client.\r\n            If specified, activities of the specified client will be returned/published otherwise for logged in client."
-          allOf:
-            - minLength: 1
-              type: string
-              x-type-name: ClientKey
+          minLength: 1
+          type: string
+          x-type-name: ClientKey
         CorporateActionEventFilter:
           title: 'Specify corporate action event filter, if any.'
           allOf:
@@ -778,14 +791,12 @@ components:
             $ref: '#/components/schemas/ActivityFieldGroup'
         FromDateTime:
           title: 'If specified, activities starting FromDateTime will be returned/published. Default returns current day activities'
-          allOf:
-            - type: string
-              format: date-time
-              x-type-name: UtcDateTime
+          type: string
+          format: date-time
+          x-type-name: UtcDateTime
         IncludeSubAccounts:
           title: 'If specified true, activities of sub-clients will also be returned/published.'
-          allOf:
-            - type: boolean
+          type: boolean
         OrderEventFilter:
           title: Specify order event filter if any.
           allOf:
@@ -793,20 +804,19 @@ components:
         PositionEventFilter:
           title: Specify position event filter if any. Default is PositionEventFilter.All.
           allOf:
-            - $ref: '#/components/schemas/PositionEventFilterNullable'
+            - $ref: '#/components/schemas/PositionEventFilter'
         SequenceId:
           title: "If specified and message with SequenceId available in ENS cache, streaming of events start from SequenceId.\r\n            If sequenceId not found in ENS system, Subscription Error with \"Sequence id unavailable\"\r\n            If not specified and FromDateTime is not specified, subscription will be real-time subscription."
           type: string
         TimeOnMargin:
           title: "Time the client has been on margin.\r\n            If specified, margin activities with greater or equal to the time specified otherwise all activities."
-          allOf:
-            - type: string
+          type: string
         ToDateTime:
           title: 'If specified, activities ending ToDateTime will be returned/published.'
-          allOf:
-            - type: string
-              format: date-time
-              x-type-name: UtcDateTime
+          type: string
+          format: date-time
+          x-type-name: UtcDateTime
+      additionalProperties: false
   responses:
     BadRequest:
       description: One or more of the provided parameters are invalid.
@@ -843,8 +853,8 @@ components:
       type: oauth2
       flows:
         authorizationCode:
-          authorizationUrl: https://live.logonvalidation.net/authorize
-          tokenUrl: https://live.logonvalidation.net/token
+          authorizationUrl: https://sim.logonvalidation.net/authorize
+          tokenUrl: https://sim.logonvalidation.net/token
           scopes: { }
 tags:
   - name: Client Activities
